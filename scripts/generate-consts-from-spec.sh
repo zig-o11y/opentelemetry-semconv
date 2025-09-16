@@ -2,13 +2,13 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CRATE_DIR="${SCRIPT_DIR}/.."
+PROJECT_DIR="${SCRIPT_DIR}/.."
 
 # freeze the spec version and generator version to make generation reproducible
 SPEC_VERSION=1.36.0
 WEAVER_VERSION=v0.16.1
 
-cd "$CRATE_DIR"
+cd "$PROJECT_DIR"
 
 rm -rf semantic-conventions || true
 mkdir semantic-conventions
@@ -18,7 +18,7 @@ git init
 git remote add origin https://github.com/open-telemetry/semantic-conventions.git
 git fetch origin "v$SPEC_VERSION"
 git reset --hard FETCH_HEAD
-cd "$CRATE_DIR"
+cd "$PROJECT_DIR"
 
 SED=(sed -i)
 if [[ "$(uname)" = "Darwin" ]]; then
@@ -29,9 +29,9 @@ fi
 "${SED[@]}" "s/\(opentelemetry.io\/schemas\/\)[^\"]*\"/\1$SPEC_VERSION\"/" scripts/templates/registry/zig/weaver.yaml
 
 docker run --rm \
-  --mount type=bind,source=$CRATE_DIR/semantic-conventions/model,target=/home/weaver/source,readonly \
-  --mount type=bind,source=$CRATE_DIR/scripts/templates,target=/home/weaver/templates,readonly \
-  --mount type=bind,source=$CRATE_DIR/src,target=/home/weaver/target \
+  --mount type=bind,source=$PROJECT_DIR/semantic-conventions/model,target=/home/weaver/source,readonly \
+  --mount type=bind,source=$PROJECT_DIR/scripts/templates,target=/home/weaver/templates,readonly \
+  --mount type=bind,source=$PROJECT_DIR/src,target=/home/weaver/target \
   otel/weaver:$WEAVER_VERSION \
   registry generate \
   --registry=/home/weaver/source \
