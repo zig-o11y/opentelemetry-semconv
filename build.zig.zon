@@ -1,0 +1,16 @@
+.{
+    .name = .opentelemetry_semconv,
+    .version = "0.1.0",
+    .minimum_zig_version = "0.15.1",
+    .dependencies = .{},
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "examples",
+        "scripts",
+        "LICENSE",
+        "README.md",
+    },
+    .fingerprint = 0x87fe0fed413e058,
+}

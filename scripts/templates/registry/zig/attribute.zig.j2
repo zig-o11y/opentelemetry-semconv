@@ -1,0 +1,46 @@
+// DO NOT EDIT, this is an auto-generated file
+//
+// If you want to update the file:
+// - Edit the template at scripts/templates/registry/zig/attribute.zig.j2
+// - Run the script at scripts/generate-consts-from-spec.sh
+
+//! # Semantic Attributes
+//!
+//! The entire set of semantic attributes (or [conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/)) defined by the project. The resource, metric, and trace modules reference these attributes.
+
+{% for root_ns in ctx %}
+    {% for attr in root_ns.attributes | rejectattr("name", "in", params.excluded_attributes) %}
+{# Escape any `<...>` tags to `[...]` to avoid documentation parsing issues. #}
+{% set safe_note = attr.note | replace('<', '[') | replace('>', ']') %}
+/// {{ attr.brief }}
+{% if safe_note %}
+/// 
+/// Notes: {{ safe_note | replace('\n', ' ') | replace('  ', ' ') | trim }}
+{% endif %}
+{% if attr.examples %}
+/// 
+/// Examples:
+{% if attr.examples is sequence %}
+    {% for example in attr.examples %}
+///     {{ example | replace('\n', '\\n') | replace('"', '\\"') }}
+    {% endfor %}
+{% else %}
+///     {{ attr.examples | replace('\n', '\\n') | replace('"', '\\"') }}
+{% endif %}
+{% endif %}
+{% if attr.stability == 'experimental' or attr.requirement_level == 'opt_in' %}
+/// 
+/// Note: This attribute is experimental and may change in the future.
+{% endif %}
+{% if attr.deprecated %}
+/// 
+/// Note: This attribute is deprecated. {{ attr.deprecated.note | default(attr.deprecated) }}
+{% endif %}
+pub const {{ attr.name | screaming_snake_case }}: []const u8 = "{{ attr.name }}";
+
+    {% endfor %}
+{% endfor %}
+
+test "semantic attributes" {
+    @import("std").testing.refAllDecls(@This());
+}
