@@ -1,0 +1,11 @@
+groups:
+  - id: registry.app
+    type: attribute_group
+    brief: Test attributes
+    attributes:
+      - id: app.installation.id
+        type: string
+        brief: A unique identifier
+      - id: app.jank.frame_count
+        type: int
+        brief: A number of frame renders

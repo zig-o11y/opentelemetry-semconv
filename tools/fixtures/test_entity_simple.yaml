@@ -1,0 +1,12 @@
+# Entity Schema Example - Simple Test Entity
+# This file demonstrates the entity schema which uses attribute references
+# instead of full attribute definitions. Entities reference attributes
+# that are defined in registry files.
+
+groups:
+  - id: test.simple_entity
+    type: entity
+    brief: A simple test entity demonstrating basic attribute references
+    attributes:
+      - ref: test.attr
+        requirement_level: required

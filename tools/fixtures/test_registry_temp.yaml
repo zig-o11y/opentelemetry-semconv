@@ -1,0 +1,19 @@
+# Registry Schema Example - Temporary Test Attributes
+# This file demonstrates the registry schema with various attribute types.
+# Registry files define complete attribute specifications that serve as the
+# source of truth for attribute definitions used by entity files.
+
+groups:
+  - id: test.group
+    brief: Test group for unit testing
+    attributes:
+      - id: test.string_attr
+        type: string
+        brief: A test string attribute
+        examples: ["value1", "value2"]
+        stability: experimental
+        requirement_level: recommended
+      - id: test.int_attr
+        type: int
+        brief: A test integer attribute
+        examples: [42, 100]

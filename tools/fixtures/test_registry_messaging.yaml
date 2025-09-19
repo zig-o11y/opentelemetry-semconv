@@ -1,0 +1,27 @@
+# Registry Schema Example - Messaging Attributes
+# This file demonstrates the registry schema for messaging semantic conventions.
+# It defines complete attribute specifications that can be referenced by entity files.
+# Registry files contain the full attribute definitions with types, examples, stability, etc.
+
+groups:
+  - id: messaging
+    brief: Messaging semantic conventions
+    attributes:
+      - id: messaging.system
+        type: string
+        brief: Messaging system name
+        examples: ["kafka", "rabbitmq", "activemq"]
+        stability: stable
+        requirement_level: required
+      - id: messaging.destination
+        type: string
+        brief: Message destination name
+        examples: ["user-events", "order-processing"]
+        stability: stable
+        requirement_level: recommended
+      - id: messaging.operation
+        type: string
+        brief: Type of messaging operation
+        examples: ["publish", "receive", "process"]
+        stability: experimental
+        requirement_level: recommended

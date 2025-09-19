@@ -1,0 +1,26 @@
+# Entity Schema Example - Messaging Entity
+# This file demonstrates the entity schema for messaging operations.
+# It references attributes defined in the registry schema files.
+
+groups:
+  - id: messaging.publisher_entity
+    type: entity
+    brief: Entity representing a message publisher
+    attributes:
+      - ref: messaging.system
+        requirement_level: required
+      - ref: messaging.destination
+        requirement_level: required
+      - ref: messaging.operation
+        requirement_level: optional
+
+  - id: messaging.consumer_entity
+    type: entity
+    brief: Entity representing a message consumer
+    attributes:
+      - ref: messaging.system
+        requirement_level: required
+      - ref: messaging.destination
+        requirement_level: recommended
+      - ref: messaging.operation
+        requirement_level: required

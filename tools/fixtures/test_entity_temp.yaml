@@ -1,0 +1,20 @@
+# Entity Schema Example - Test Entity with Multiple Attributes
+# This file demonstrates an entity schema that references multiple attributes
+# with different requirement levels.
+
+groups:
+  - id: test.complex_entity
+    type: entity
+    brief: A complex test entity with multiple attribute references
+    attributes:
+      - ref: test.string_attr
+        requirement_level: required
+      - ref: test.int_attr
+        requirement_level: recommended
+
+  - id: test.minimal_entity
+    type: entity
+    brief: A minimal entity with just one required attribute
+    attributes:
+      - ref: test.string_attr
+        requirement_level: required
