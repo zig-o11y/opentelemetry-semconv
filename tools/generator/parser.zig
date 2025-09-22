@@ -1,25 +1,19 @@
 const std = @import("std");
 const ArrayList = std.ArrayList;
 const Allocator = std.mem.Allocator;
-const yaml_parser = @import("yaml_parser.zig");
+const yaml = @import("yaml");
 const semconv = @import("semconv.zig");
+const YamlPreprocessor = @import("yaml_preprocessor.zig").YamlPreprocessor;
 
-const SpanParseError = error{
-    InvalidSpan,
-    InvalidGroup,
-    InvalidAttribute,
-    InvalidMetric,
-};
-
-/// Parser that converts YAML values to semantic convention structures
-pub const SemconvParser = struct {
+/// Simple parser for registry YAML files only
+pub const RegistryParser = struct {
     allocator: Allocator,
 
-    pub fn init(allocator: Allocator) SemconvParser {
-        return SemconvParser{ .allocator = allocator };
+    pub fn init(allocator: Allocator) RegistryParser {
+        return RegistryParser{ .allocator = allocator };
     }
 
-    pub fn parseFile(self: *SemconvParser, file_path: []const u8) !semconv.SemanticConvention {
+    pub fn parseFile(self: *RegistryParser, file_path: []const u8) !semconv.Registry {
         // Read file content
         const file = try std.fs.cwd().openFile(file_path, .{});
         defer file.close();
@@ -30,16 +24,27 @@ pub const SemconvParser = struct {
 
         _ = try file.readAll(content);
 
-        // Parse YAML using clean method to avoid memory leaks
-        var yaml_value = try yaml_parser.YamlParser.parseClean(self.allocator, content);
-        defer yaml_value.deinit(self.allocator);
+        // Preprocess YAML to handle block scalars that zig-yaml doesn't support yet
+        var preprocessor = YamlPreprocessor.init(self.allocator);
+        const processed_content = try preprocessor.preprocessContent(content);
+        defer self.allocator.free(processed_content);
 
-        // Convert to semantic convention
-        return self.yamlToSemanticConvention(yaml_value, file_path);
+        // Debug: save preprocessed content to file
+        std.fs.cwd().writeFile(.{ .sub_path = "debug_preprocessed.yaml", .data = processed_content }) catch {};
+
+        // Parse YAML using zig-yaml library
+        var yaml_parser = yaml.Yaml{ .source = processed_content };
+        defer yaml_parser.deinit(self.allocator);
+
+        // Load the YAML into an untyped representation
+        try yaml_parser.load(self.allocator);
+
+        // Convert to registry
+        return self.yamlToRegistry(&yaml_parser, file_path);
     }
 
-    pub fn yamlToSemanticConvention(self: *SemconvParser, yaml_value: yaml_parser.YamlValue, file_path: []const u8) !semconv.SemanticConvention {
-        var result = semconv.SemanticConvention.init(self.allocator);
+    fn yamlToRegistry(self: *RegistryParser, yaml_doc: *yaml.Yaml, file_path: []const u8) !semconv.Registry {
+        var result = semconv.Registry.init(self.allocator);
 
         // Extract file name and namespace
         const file_name = std.fs.path.basename(file_path);
@@ -49,61 +54,24 @@ pub const SemconvParser = struct {
         const namespace = std.fs.path.basename(dir_path);
         result.namespace = try self.allocator.dupe(u8, namespace);
 
-        const root_obj = yaml_value.asObject() orelse return result;
+        // Access the loaded documents
+        if (yaml_doc.docs.items.len == 0) return result;
 
-        // Parse groups
-        if (root_obj.get("groups")) |groups_value| {
-            if (groups_value.asArray()) |groups_array| {
-                for (groups_array.items) |group_value| {
-                    // Check group type first
-                    const group_obj = group_value.asObject() orelse continue;
-                    const group_type = if (group_obj.get("type")) |type_value|
-                        type_value.asString() orelse "attribute_group"
-                    else
-                        "attribute_group";
+        const first_doc = yaml_doc.docs.items[0];
 
-                    // Only parse attribute_group types for now
-                    // TODO: Add proper entity parsing support
-                    if (std.mem.eql(u8, group_type, "attribute_group")) {
-                        if (self.parseAttributeGroup(group_value)) |group| {
-                            try result.groups.append(group);
-                        } else |err| {
-                            std.debug.print("Warning: Failed to parse attribute group: {}\n", .{err});
-                        }
-                    } else if (std.mem.eql(u8, group_type, "entity")) {
-                        if (self.parseEntity(group_value)) |entity| {
-                            try result.entities.append(entity);
-                        } else |err| {
-                            std.debug.print("Warning: Failed to parse entity: {}\n", .{err});
-                        }
-                    }
-                    // Skip other types for now
-                }
-            }
-        }
+        // The document should be a mapping with a "groups" key
+        if (first_doc != .map) return result;
 
-        // Parse spans
-        if (root_obj.get("spans")) |spans_value| {
-            if (spans_value.asArray()) |spans_array| {
-                for (spans_array.items) |span_value| {
-                    if (self.parseSpanDefinition(span_value)) |span| {
-                        try result.spans.append(span);
-                    } else |err| {
-                        std.debug.print("Warning: Failed to parse span: {}\n", .{err});
-                    }
-                }
-            }
-        }
+        const root_map = first_doc.map;
+        if (root_map.get("groups")) |groups_node| {
+            // Parse groups
+            if (groups_node == .list) {
+                const groups_list = groups_node.list;
 
-        // Parse metrics
-        if (root_obj.get("metrics")) |metrics_value| {
-            if (metrics_value.asArray()) |metrics_array| {
-                for (metrics_array.items) |metric_value| {
-                    if (self.parseMetricDefinition(metric_value)) |metric| {
-                        try result.metrics.append(metric);
-                    } else |err| {
-                        std.debug.print("Warning: Failed to parse metric: {}\n", .{err});
-                    }
+                // Standard processing: each item is a group
+                for (groups_list) |group_item| {
+                    const group = try self.parseAttributeGroup(group_item);
+                    try result.groups.append(group);
                 }
             }
         }
@@ -111,59 +79,78 @@ pub const SemconvParser = struct {
         return result;
     }
 
-    fn parseAttributeGroup(self: *SemconvParser, yaml_value: yaml_parser.YamlValue) !semconv.AttributeGroup {
+    fn parseAttributeGroup(self: *RegistryParser, yaml_value: yaml.Yaml.Value) !semconv.AttributeGroup {
         var group = semconv.AttributeGroup.init(self.allocator);
 
-        const obj = yaml_value.asObject() orelse return error.InvalidGroup;
+        if (yaml_value != .map) return error.InvalidGroup;
+        const obj = yaml_value.map;
 
         // Required fields
         if (obj.get("id")) |id_value| {
-            if (id_value.asString()) |id| {
-                group.id = try self.allocator.dupe(u8, id);
+            if (id_value == .string) {
+                group.id = try self.allocator.dupe(u8, id_value.string);
+            } else {
+                group.id = try self.allocator.dupe(u8, "");
             }
+        } else {
+            group.id = try self.allocator.dupe(u8, "");
         }
 
         if (obj.get("brief")) |brief_value| {
-            if (brief_value.asString()) |brief| {
-                group.brief = try self.allocator.dupe(u8, brief);
+            if (brief_value == .string) {
+                group.brief = try self.allocator.dupe(u8, brief_value.string);
+            } else {
+                group.brief = try self.allocator.dupe(u8, "");
             }
+        } else {
+            group.brief = try self.allocator.dupe(u8, "");
         }
 
         // Optional fields
         if (obj.get("type")) |type_value| {
-            if (type_value.asString()) |type_str| {
-                group.type = try self.allocator.dupe(u8, type_str);
+            if (type_value == .string) {
+                group.type = try self.allocator.dupe(u8, type_value.string);
             }
         } else {
             group.type = try self.allocator.dupe(u8, "attribute_group");
         }
 
+        if (obj.get("display_name")) |display_name_value| {
+            if (display_name_value == .string) {
+                group.display_name = try self.allocator.dupe(u8, display_name_value.string);
+            }
+        }
+
         if (obj.get("note")) |note_value| {
-            if (note_value.asString()) |note| {
-                group.note = try self.allocator.dupe(u8, note);
-            }
-        }
-
-        if (obj.get("prefix")) |prefix_value| {
-            if (prefix_value.asString()) |prefix| {
-                group.prefix = try self.allocator.dupe(u8, prefix);
-            }
-        }
-
-        if (obj.get("extends")) |extends_value| {
-            if (extends_value.asString()) |extends| {
-                group.extends = try self.allocator.dupe(u8, extends);
+            if (note_value == .string) {
+                group.note = try self.allocator.dupe(u8, note_value.string);
             }
         }
 
         // Parse attributes
         if (obj.get("attributes")) |attrs_value| {
-            if (attrs_value.asArray()) |attrs_array| {
-                for (attrs_array.items) |attr_value| {
+            if (attrs_value == .list) {
+                const attrs_array = attrs_value.list;
+                std.debug.print("Debug: Found {} attributes in YAML\n", .{attrs_array.len});
+                for (attrs_array) |attr_value| {
                     if (self.parseAttribute(attr_value)) |attr| {
                         try group.attributes.append(attr);
                     } else |err| {
-                        std.debug.print("Warning: Failed to parse attribute: {}\n", .{err});
+                        // Extract attribute ID for error reporting
+                        if (attr_value == .map) {
+                            const attr_obj = attr_value.map;
+                            if (attr_obj.get("id")) |id_value| {
+                                if (id_value == .string) {
+                                    std.debug.print("Warning: Failed to parse attribute '{s}': {}\n", .{ id_value.string, err });
+                                } else {
+                                    std.debug.print("Warning: Failed to parse attribute (no ID): {}\n", .{err});
+                                }
+                            } else {
+                                std.debug.print("Warning: Failed to parse attribute (no ID field): {}\n", .{err});
+                            }
+                        } else {
+                            std.debug.print("Warning: Failed to parse attribute (not object): {}\n", .{err});
+                        }
                     }
                 }
             }
@@ -172,95 +159,12 @@ pub const SemconvParser = struct {
         return group;
     }
 
-    fn parseEntity(self: *SemconvParser, yaml_value: yaml_parser.YamlValue) !semconv.Entity {
-        var entity = semconv.Entity.init(self.allocator);
-
-        const obj = yaml_value.asObject() orelse return error.InvalidEntity;
-
-        // Required fields
-        if (obj.get("id")) |id_value| {
-            if (id_value.asString()) |id| {
-                entity.id = try self.allocator.dupe(u8, id);
-            }
+    fn parseAttribute(self: *RegistryParser, yaml_value: yaml.Yaml.Value) !semconv.Attribute {
+        if (yaml_value != .map) {
+            std.debug.print("Warning: Expected object for attribute, got: {any}\n", .{yaml_value});
+            return error.InvalidAttribute;
         }
-
-        if (obj.get("brief")) |brief_value| {
-            if (brief_value.asString()) |brief| {
-                entity.brief = try self.allocator.dupe(u8, brief);
-            }
-        }
-
-        // Optional fields
-        if (obj.get("type")) |type_value| {
-            if (type_value.asString()) |type_str| {
-                entity.type = try self.allocator.dupe(u8, type_str);
-            }
-        } else {
-            entity.type = try self.allocator.dupe(u8, "entity");
-        }
-
-        if (obj.get("name")) |name_value| {
-            if (name_value.asString()) |name| {
-                entity.name = try self.allocator.dupe(u8, name);
-            }
-        }
-
-        if (obj.get("note")) |note_value| {
-            if (note_value.asString()) |note| {
-                entity.note = try self.allocator.dupe(u8, note);
-            }
-        }
-
-        if (obj.get("stability")) |stability_value| {
-            if (stability_value.asString()) |stability| {
-                entity.stability = try self.allocator.dupe(u8, stability);
-            }
-        }
-
-        // Parse attribute references
-        if (obj.get("attributes")) |attrs_value| {
-            if (attrs_value.asArray()) |attrs_array| {
-                for (attrs_array.items) |attr_value| {
-                    if (self.parseAttributeReference(attr_value)) |attr_ref| {
-                        try entity.attributes.append(attr_ref);
-                    } else |err| {
-                        std.debug.print("Warning: Failed to parse attribute reference: {}\n", .{err});
-                    }
-                }
-            }
-        }
-
-        return entity;
-    }
-
-    fn parseAttributeReference(self: *SemconvParser, yaml_value: yaml_parser.YamlValue) !semconv.AttributeReference {
-        const obj = yaml_value.asObject() orelse return error.InvalidAttributeReference;
-
-        var attr_ref = semconv.AttributeReference{
-            .ref = "",
-            .requirement_level = null,
-        };
-
-        // Required ref field
-        if (obj.get("ref")) |ref_value| {
-            if (ref_value.asString()) |ref| {
-                attr_ref.ref = try self.allocator.dupe(u8, ref);
-            }
-        }
-
-        // Optional requirement_level field
-        if (obj.get("requirement_level")) |requirement_level_value| {
-            if (requirement_level_value.asString()) |requirement_level| {
-                attr_ref.requirement_level = try self.allocator.dupe(u8, requirement_level);
-            }
-        }
-
-        return attr_ref;
-    }
-
-    fn parseAttribute(self: *SemconvParser, yaml_value: yaml_parser.YamlValue) !semconv.Attribute {
-        const obj = yaml_value.asObject() orelse return error.InvalidAttribute;
-
+        const obj = yaml_value.map;
         var attr = semconv.Attribute{
             .id = "",
             .type = .string,
@@ -269,60 +173,60 @@ pub const SemconvParser = struct {
 
         // Required fields
         if (obj.get("id")) |id_value| {
-            if (id_value.asString()) |id| {
-                attr.id = try self.allocator.dupe(u8, id);
+            if (id_value == .string) {
+                attr.id = try self.allocator.dupe(u8, id_value.string);
+            } else {
+                attr.id = try self.allocator.dupe(u8, "");
             }
+        } else {
+            attr.id = try self.allocator.dupe(u8, "");
         }
 
         if (obj.get("brief")) |brief_value| {
-            if (brief_value.asString()) |brief| {
-                attr.brief = try self.allocator.dupe(u8, brief);
+            if (brief_value == .string) {
+                attr.brief = try self.allocator.dupe(u8, brief_value.string);
+            } else {
+                attr.brief = try self.allocator.dupe(u8, "");
             }
+        } else {
+            attr.brief = try self.allocator.dupe(u8, "");
         }
 
-        // Type
+        // Parse type - can be string or object with members
         if (obj.get("type")) |type_value| {
-            if (type_value.asString()) |type_str| {
-                attr.type = semconv.AttributeType.fromString(type_str);
+            if (type_value == .string) {
+                attr.type = semconv.AttributeType.fromString(type_value.string);
+            } else if (type_value == .map) {
+                // This is an enum type with members
+                attr.type = .enum_type;
+                const type_obj = type_value.map;
+                if (type_obj.get("members")) |members_value| {
+                    if (members_value == .list) {
+                        const members_array = members_value.list;
+                        attr.enum_members = ArrayList(semconv.EnumMember).init(self.allocator);
+                        for (members_array) |member_value| {
+                            if (self.parseEnumMember(member_value)) |member| {
+                                try attr.enum_members.?.append(member);
+                            } else |err| {
+                                std.debug.print("Warning: Failed to parse enum member: {}\n", .{err});
+                            }
+                        }
+                    }
+                }
             }
         }
 
         // Optional fields
         if (obj.get("note")) |note_value| {
-            if (note_value.asString()) |note| {
-                attr.note = try self.allocator.dupe(u8, note);
-            }
-        }
-
-        if (obj.get("tag")) |tag_value| {
-            if (tag_value.asString()) |tag| {
-                attr.tag = try self.allocator.dupe(u8, tag);
-            }
-        }
-
-        if (obj.get("deprecated")) |deprecated_value| {
-            if (deprecated_value.asString()) |deprecated| {
-                attr.deprecated = try self.allocator.dupe(u8, deprecated);
-            }
-        }
-
-        if (obj.get("prefix")) |prefix_value| {
-            if (prefix_value.asString()) |prefix| {
-                attr.prefix = try self.allocator.dupe(u8, prefix);
+            if (note_value == .string) {
+                attr.note = try self.allocator.dupe(u8, note_value.string);
             }
         }
 
         // Stability
         if (obj.get("stability")) |stability_value| {
-            if (stability_value.asString()) |stability_str| {
-                attr.stability = semconv.StabilityLevel.fromString(stability_str);
-            }
-        }
-
-        // Requirement level
-        if (obj.get("requirement_level")) |req_value| {
-            if (req_value.asString()) |req_str| {
-                attr.requirement_level = semconv.RequirementLevel.fromString(req_str);
+            if (stability_value == .string) {
+                attr.stability = semconv.StabilityLevel.fromString(stability_value.string);
             }
         }
 
@@ -330,171 +234,73 @@ pub const SemconvParser = struct {
         if (obj.get("examples")) |examples_value| {
             attr.examples = ArrayList([]const u8).init(self.allocator);
 
-            if (examples_value.asArray()) |examples_array| {
-                for (examples_array.items) |example_value| {
-                    if (example_value.asString()) |example| {
-                        try attr.examples.?.append(try self.allocator.dupe(u8, example));
+            if (examples_value == .list) {
+                const examples_array = examples_value.list;
+                for (examples_array) |example_value| {
+                    if (example_value == .string) {
+                        try attr.examples.?.append(try self.allocator.dupe(u8, example_value.string));
+                    } else if (example_value == .int) {
+                        const example_str = try std.fmt.allocPrint(self.allocator, "{d}", .{example_value.int});
+                        try attr.examples.?.append(example_str);
                     }
                 }
-            } else if (examples_value.asString()) |example| {
-                try attr.examples.?.append(try self.allocator.dupe(u8, example));
-            }
-        }
-
-        // Enum values (from members or allow_custom_values)
-        if (obj.get("members")) |members_value| {
-            if (members_value.asArray()) |members_array| {
-                attr.enum_values = ArrayList([]const u8).init(self.allocator);
-
-                for (members_array.items) |member_value| {
-                    if (member_value.asObject()) |member_obj| {
-                        if (member_obj.get("id")) |id_value| {
-                            if (id_value.asString()) |id| {
-                                try attr.enum_values.?.append(try self.allocator.dupe(u8, id));
-                            }
-                        } else if (member_obj.get("value")) |value_value| {
-                            if (value_value.asString()) |value| {
-                                try attr.enum_values.?.append(try self.allocator.dupe(u8, value));
-                            }
-                        }
-                    } else if (member_value.asString()) |member_str| {
-                        try attr.enum_values.?.append(try self.allocator.dupe(u8, member_str));
-                    }
-                }
+            } else if (examples_value == .string) {
+                try attr.examples.?.append(try self.allocator.dupe(u8, examples_value.string));
+            } else if (examples_value == .int) {
+                const example_str = try std.fmt.allocPrint(self.allocator, "{d}", .{examples_value.int});
+                try attr.examples.?.append(example_str);
             }
         }
 
         return attr;
     }
 
-    fn parseSpanDefinition(self: *SemconvParser, yaml_value: yaml_parser.YamlValue) !semconv.SpanDefinition {
-        const obj = yaml_value.asObject() orelse return error.InvalidSpan;
+    fn parseEnumMember(self: *RegistryParser, yaml_value: yaml.Yaml.Value) !semconv.EnumMember {
+        if (yaml_value != .map) return error.InvalidEnumMember;
+        const obj = yaml_value.map;
 
-        var span = semconv.SpanDefinition{
-            .span_name = "",
-            .type = "span",
+        var member = semconv.EnumMember{
+            .id = "",
+            .value = "",
             .brief = "",
         };
 
-        // Required fields
-        if (obj.get("span_name")) |name_value| {
-            if (name_value.asString()) |name| {
-                span.span_name = try self.allocator.dupe(u8, name);
+        if (obj.get("id")) |id_value| {
+            if (id_value == .string) {
+                member.id = try self.allocator.dupe(u8, id_value.string);
+            } else {
+                member.id = try self.allocator.dupe(u8, "");
             }
+        } else {
+            member.id = try self.allocator.dupe(u8, "");
+        }
+
+        if (obj.get("value")) |value_value| {
+            if (value_value == .string) {
+                member.value = try self.allocator.dupe(u8, value_value.string);
+            } else {
+                member.value = try self.allocator.dupe(u8, "");
+            }
+        } else {
+            member.value = try self.allocator.dupe(u8, "");
         }
 
         if (obj.get("brief")) |brief_value| {
-            if (brief_value.asString()) |brief| {
-                span.brief = try self.allocator.dupe(u8, brief);
-            }
-        }
-
-        // Optional fields
-        if (obj.get("type")) |type_value| {
-            if (type_value.asString()) |type_str| {
-                span.type = try self.allocator.dupe(u8, type_str);
+            if (brief_value == .string) {
+                member.brief = try self.allocator.dupe(u8, brief_value.string);
+            } else {
+                member.brief = try self.allocator.dupe(u8, "");
             }
         } else {
-            span.type = try self.allocator.dupe(u8, "span");
+            member.brief = try self.allocator.dupe(u8, "");
         }
 
-        if (obj.get("note")) |note_value| {
-            if (note_value.asString()) |note| {
-                span.note = try self.allocator.dupe(u8, note);
+        if (obj.get("stability")) |stability_value| {
+            if (stability_value == .string) {
+                member.stability = semconv.StabilityLevel.fromString(stability_value.string);
             }
         }
 
-        // Attributes
-        if (obj.get("attributes")) |attrs_value| {
-            if (attrs_value.asArray()) |attrs_array| {
-                span.attributes = ArrayList([]const u8).init(self.allocator);
-                for (attrs_array.items) |attr_value| {
-                    if (attr_value.asString()) |attr| {
-                        try span.attributes.?.append(try self.allocator.dupe(u8, attr));
-                    }
-                }
-            }
-        }
-
-        // Events
-        if (obj.get("events")) |events_value| {
-            if (events_value.asArray()) |events_array| {
-                span.events = ArrayList([]const u8).init(self.allocator);
-                for (events_array.items) |event_value| {
-                    if (event_value.asString()) |event| {
-                        try span.events.?.append(try self.allocator.dupe(u8, event));
-                    }
-                }
-            }
-        }
-
-        return span;
-    }
-
-    fn parseMetricDefinition(self: *SemconvParser, yaml_value: yaml_parser.YamlValue) !semconv.MetricDefinition {
-        const obj = yaml_value.asObject() orelse return error.InvalidMetric;
-
-        var metric = semconv.MetricDefinition{
-            .metric_name = "",
-            .type = "metric",
-            .brief = "",
-            .instrument = "counter",
-        };
-
-        // Required fields
-        if (obj.get("metric_name")) |name_value| {
-            if (name_value.asString()) |name| {
-                metric.metric_name = try self.allocator.dupe(u8, name);
-            }
-        }
-
-        if (obj.get("brief")) |brief_value| {
-            if (brief_value.asString()) |brief| {
-                metric.brief = try self.allocator.dupe(u8, brief);
-            }
-        }
-
-        if (obj.get("instrument")) |instrument_value| {
-            if (instrument_value.asString()) |instrument| {
-                metric.instrument = try self.allocator.dupe(u8, instrument);
-            }
-        } else {
-            metric.instrument = try self.allocator.dupe(u8, "counter");
-        }
-
-        // Optional fields
-        if (obj.get("type")) |type_value| {
-            if (type_value.asString()) |type_str| {
-                metric.type = try self.allocator.dupe(u8, type_str);
-            }
-        } else {
-            metric.type = try self.allocator.dupe(u8, "metric");
-        }
-
-        if (obj.get("unit")) |unit_value| {
-            if (unit_value.asString()) |unit| {
-                metric.unit = try self.allocator.dupe(u8, unit);
-            }
-        }
-
-        if (obj.get("note")) |note_value| {
-            if (note_value.asString()) |note| {
-                metric.note = try self.allocator.dupe(u8, note);
-            }
-        }
-
-        // Attributes
-        if (obj.get("attributes")) |attrs_value| {
-            if (attrs_value.asArray()) |attrs_array| {
-                metric.attributes = ArrayList([]const u8).init(self.allocator);
-                for (attrs_array.items) |attr_value| {
-                    if (attr_value.asString()) |attr| {
-                        try metric.attributes.?.append(try self.allocator.dupe(u8, attr));
-                    }
-                }
-            }
-        }
-
-        return metric;
+        return member;
     }
 };

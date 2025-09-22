@@ -56,6 +56,13 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    // Add yaml dependency to the automation tool
+    const yaml_dep = b.dependency("zig_yaml", .{
+        .target = target,
+        .optimize = optimize,
+    });
+    automation_exe.root_module.addImport("yaml", yaml_dep.module("yaml"));
+
     b.installArtifact(automation_exe);
 
     // Run command
@@ -76,7 +83,23 @@ pub fn build(b: *std.Build) void {
         .optimize = .Debug,
     });
 
+    // Add yaml dependency to tests too
+    tool_unit_tests.root_module.addImport("yaml", yaml_dep.module("yaml"));
+
     const run_unit_tests = b.addRunArtifact(tool_unit_tests);
     const tool_test_step = b.step("test-tools", "Run unit tests for tooling");
     tool_test_step.dependOn(&run_unit_tests.step);
+
+    // YAML API test
+    const yaml_test = b.addExecutable(.{
+        .name = "yaml-test",
+        .root_source_file = b.path("test_yaml_api.zig"),
+        .target = target,
+        .optimize = .Debug,
+    });
+    yaml_test.root_module.addImport("yaml", yaml_dep.module("yaml"));
+
+    const run_yaml_test = b.addRunArtifact(yaml_test);
+    const yaml_test_step = b.step("test-yaml", "Test YAML API");
+    yaml_test_step.dependOn(&run_yaml_test.step);
 }

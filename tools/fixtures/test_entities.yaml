@@ -1,9 +1,0 @@
-groups:
-  - id: test.entity
-    type: entity
-    brief: A test entity for validation
-    attributes:
-      - ref: app.installation.id
-        requirement_level: required
-      - ref: app.jank.frame_count
-        requirement_level: optional

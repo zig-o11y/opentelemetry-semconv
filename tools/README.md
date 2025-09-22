@@ -69,25 +69,21 @@ The `tools/fixtures/` directory contains example files for both schemas:
 ## Structure
 
 - `src/main.zig` - Main automation tool executable
-- `src/yaml_parser.zig` - Simple YAML parser for semantic convention files
 - `src/semconv.zig` - Data structures for semantic conventions
-- `src/parser.zig` - Parser that converts YAML to semantic convention structures
+- `src/parser.zig` - Parser that converts YAML to semantic convention structures (uses zig-yaml library)
 - `src/generator.zig` - Zig code generator for registry files
 - `src/test.zig` - Unit tests
-- `build.zig` - Build configuration
 
 ## Building
 
 ```bash
-cd tools
-zig build
+zig build generate -- <args>
 ```
 
 ## Running Tests
 
 ```bash
-cd tools
-zig build test
+zig build test-tools
 ```
 
 ## Usage
@@ -95,20 +91,15 @@ zig build test
 ### Generate from local YAML file
 
 ```bash
-zig build run -- local /path/to/registry.yaml namespace_name
+zig build generate -- local /path/to/registry.yaml namespace_name
 ```
 
 ### Test the tool
 
 ```bash
-zig build run -- test namespace_name
+zig build generate -- test namespace_name
 ```
 
-### Help
-
-```bash
-zig build run -- help
-```
 
 ## Examples
 
@@ -135,38 +126,19 @@ groups:
 EOF
 
 # Generate the Zig code
-zig build run -- local test_messaging.yaml messaging
+zig build generate -- local test_messaging.yaml messaging
 ```
 
 This will:
 1. Parse the YAML file
-2. Generate `../src/messaging/registry.zig` with the semantic convention definitions
-3. Update `../src/root.zig` to export the new namespace
+2. Generate `src/messaging/registry.zig` with the semantic convention definitions
+3. Update `src/root.zig` to export the new namespace
 
 ## Architecture
 
 The tool uses a pipeline approach:
 
-1. **YAML Parser** - Custom simple YAML parser for OpenTelemetry files
+1. **YAML Parser** - Uses the zig-yaml library for robust YAML parsing of OpenTelemetry files
 2. **Semantic Convention Parser** - Converts YAML structures to typed data
 3. **Code Generator** - Generates idiomatic Zig code from semantic conventions
 4. **File Manager** - Handles file I/O and directory creation
-
-## Generated Code Structure
-
-For each namespace, the tool generates:
-
-- `registry.zig` - Main registry with all attributes and utility functions
-- `common.zig` - Common attribute groups (if present)
-- `spans.zig` - Span definitions (if present)  
-- `metrics.zig` - Metric definitions (if present)
-
-The generated code follows the same patterns as the manually created namespaces, ensuring consistency across the entire codebase.
-
-## Benefits
-
-- **Consistency**: All generated code follows the same patterns
-- **Speed**: Automates the tedious process of converting YAML to Zig
-- **Accuracy**: Reduces human errors in translation
-- **Maintainability**: Easy to update when OpenTelemetry specs change
-- **Type Safety**: Leverages Zig's type system for semantic conventions

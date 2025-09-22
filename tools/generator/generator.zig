@@ -3,15 +3,15 @@ const ArrayList = std.ArrayList;
 const Allocator = std.mem.Allocator;
 const semconv = @import("semconv.zig");
 
-/// Generator for Zig semantic convention code
-pub const ZigCodeGenerator = struct {
+/// Simple generator for registry Zig code
+pub const RegistryCodeGenerator = struct {
     allocator: Allocator,
 
-    pub fn init(allocator: Allocator) ZigCodeGenerator {
-        return ZigCodeGenerator{ .allocator = allocator };
+    pub fn init(allocator: Allocator) RegistryCodeGenerator {
+        return RegistryCodeGenerator{ .allocator = allocator };
     }
 
-    pub fn generateRegistryFile(self: *ZigCodeGenerator, semconv_data: semconv.SemanticConvention) ![]u8 {
+    pub fn generateRegistryFile(self: *RegistryCodeGenerator, registry: semconv.Registry, output_file: []const u8) ![]u8 {
         var lines = ArrayList([]const u8).init(self.allocator);
         defer {
             for (lines.items) |line| {
@@ -20,439 +20,436 @@ pub const ZigCodeGenerator = struct {
             lines.deinit();
         }
 
-        const namespace_title = toTitleCase(self.allocator, semconv_data.namespace) catch semconv_data.namespace;
-        defer if (!std.mem.eql(u8, namespace_title, semconv_data.namespace)) self.allocator.free(namespace_title);
-
-        const namespace_upper = toUpperCase(self.allocator, semconv_data.namespace) catch semconv_data.namespace;
-        defer if (!std.mem.eql(u8, namespace_upper, semconv_data.namespace)) self.allocator.free(namespace_upper);
-
         // File header
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! {s} semantic conventions for OpenTelemetry", .{namespace_title}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! Generated from {s}", .{semconv_data.file_name}));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "//! Generated from {s}", .{registry.file_name}));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "//! Namespace: {s}", .{registry.namespace}));
+        try lines.append(try self.allocator.dupe(u8, "//! This file contains semantic convention registry definitions."));
         try lines.append(try self.allocator.dupe(u8, ""));
         try lines.append(try self.allocator.dupe(u8, "const std = @import(\"std\");"));
-        try lines.append(try self.allocator.dupe(u8, "const types = @import(\"../types.zig\");"));
+
+        // Determine correct import path for types.zig based on output file location
+        // If the output file is in a subdirectory of src/, use "../types.zig", otherwise use "types.zig"
+        const types_import_path = if (std.mem.startsWith(u8, output_file, "src/") and std.mem.indexOf(u8, output_file[4..], "/") != null)
+            "../types.zig"
+        else
+            "types.zig";
+        try lines.append(try std.fmt.allocPrint(self.allocator, "const types = @import(\"{s}\");", .{types_import_path}));
         try lines.append(try self.allocator.dupe(u8, ""));
 
-        // Generate attribute constants for all groups
-        for (semconv_data.groups.items) |group| {
-            if (group.attributes.items.len > 0) {
-                try self.generateGroupAttributes(&lines, group);
-                try lines.append(try self.allocator.dupe(u8, ""));
-            }
-        }
-
-        // Generate utility functions if needed
-        if (self.needsUtils(semconv_data.namespace)) {
-            try self.generateUtils(&lines, semconv_data.namespace);
-            try lines.append(try self.allocator.dupe(u8, ""));
-        }
-
-        // Generate registry structure
-        const file_base_name = blk: {
-            const file_name = std.fs.path.basename(semconv_data.file_name);
-            if (std.mem.endsWith(u8, file_name, ".yaml")) {
-                break :blk file_name[0 .. file_name.len - 5]; // Remove ".yaml"
-            } else if (std.mem.endsWith(u8, file_name, ".yml")) {
-                break :blk file_name[0 .. file_name.len - 4]; // Remove ".yml"
-            } else {
-                break :blk file_name;
-            }
-        };
-        try self.generateRegistryStruct(&lines, semconv_data, namespace_upper, namespace_title, file_base_name);
-
-        return try self.joinLines(lines.items);
-    }
-
-    pub fn generateCommonFile(self: *ZigCodeGenerator, semconv_data: semconv.SemanticConvention) !?[]u8 {
-        var attribute_groups = ArrayList(semconv.AttributeGroup).init(self.allocator);
-        defer attribute_groups.deinit();
-
-        // Find attribute groups with valid IDs
-        for (semconv_data.groups.items) |group| {
-            if (std.mem.eql(u8, group.type, "attribute_group") and group.id.len > 0) {
-                try attribute_groups.append(group);
-            }
-        }
-
-        if (attribute_groups.items.len == 0) {
-            return null;
-        }
-
-        var lines = ArrayList([]const u8).init(self.allocator);
-        defer {
-            for (lines.items) |line| {
-                self.allocator.free(line);
-            }
-            lines.deinit();
-        }
-
-        const namespace_title = toTitleCase(self.allocator, semconv_data.namespace) catch semconv_data.namespace;
-        defer if (!std.mem.eql(u8, namespace_title, semconv_data.namespace)) self.allocator.free(namespace_title);
-
-        // File header
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! {s} common attribute groups", .{namespace_title}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! Generated from {s}", .{semconv_data.file_name}));
-        try lines.append(try self.allocator.dupe(u8, ""));
-        try lines.append(try self.allocator.dupe(u8, "const std = @import(\"std\");"));
-        try lines.append(try self.allocator.dupe(u8, "const types = @import(\"../types.zig\");"));
-        try lines.append(try self.allocator.dupe(u8, "const registry = @import(\"registry.zig\");"));
-        try lines.append(try self.allocator.dupe(u8, ""));
-
-        for (attribute_groups.items) |group| {
-            try self.generateAttributeGroupStruct(&lines, group);
-            try lines.append(try self.allocator.dupe(u8, ""));
+        // Generate registry as a list of attributes
+        for (registry.groups.items) |group| {
+            try self.generateRegistry(&lines, group, registry.namespace);
         }
 
         return try self.joinLines(lines.items);
     }
 
-    pub fn generateSpansFile(self: *ZigCodeGenerator, semconv_data: semconv.SemanticConvention) !?[]u8 {
-        if (semconv_data.spans.items.len == 0) {
-            return null;
-        }
-
-        var lines = ArrayList([]const u8).init(self.allocator);
-        defer {
-            for (lines.items) |line| {
-                self.allocator.free(line);
-            }
-            lines.deinit();
-        }
-
-        const namespace_title = toTitleCase(self.allocator, semconv_data.namespace) catch semconv_data.namespace;
-        defer if (!std.mem.eql(u8, namespace_title, semconv_data.namespace)) self.allocator.free(namespace_title);
-
-        // File header
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! {s} span definitions", .{namespace_title}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! Generated from {s}", .{semconv_data.file_name}));
-        try lines.append(try self.allocator.dupe(u8, ""));
-        try lines.append(try self.allocator.dupe(u8, "const std = @import(\"std\");"));
-        try lines.append(try self.allocator.dupe(u8, "const types = @import(\"../types.zig\");"));
-        try lines.append(try self.allocator.dupe(u8, ""));
-
-        for (semconv_data.spans.items) |span| {
-            try self.generateSpanStruct(&lines, span);
-            try lines.append(try self.allocator.dupe(u8, ""));
-        }
-
-        return try self.joinLines(lines.items);
-    }
-
-    pub fn generateMetricsFile(self: *ZigCodeGenerator, semconv_data: semconv.SemanticConvention) !?[]u8 {
-        if (semconv_data.metrics.items.len == 0) {
-            return null;
-        }
-
-        var lines = ArrayList([]const u8).init(self.allocator);
-        defer {
-            for (lines.items) |line| {
-                self.allocator.free(line);
-            }
-            lines.deinit();
-        }
-
-        const namespace_title = toTitleCase(self.allocator, semconv_data.namespace) catch semconv_data.namespace;
-        defer if (!std.mem.eql(u8, namespace_title, semconv_data.namespace)) self.allocator.free(namespace_title);
-
-        // File header
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! {s} metric definitions", .{namespace_title}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "//! Generated from {s}", .{semconv_data.file_name}));
-        try lines.append(try self.allocator.dupe(u8, ""));
-        try lines.append(try self.allocator.dupe(u8, "const std = @import(\"std\");"));
-        try lines.append(try self.allocator.dupe(u8, "const types = @import(\"../types.zig\");"));
-        try lines.append(try self.allocator.dupe(u8, ""));
-
-        for (semconv_data.metrics.items) |metric| {
-            try self.generateMetricStruct(&lines, metric);
-            try lines.append(try self.allocator.dupe(u8, ""));
-        }
-
-        return try self.joinLines(lines.items);
-    }
-
-    fn generateGroupAttributes(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
-        try lines.append(try std.fmt.allocPrint(self.allocator, "// {s}", .{group.brief}));
-        if (group.note) |note| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "// {s}", .{note}));
-        }
-        try lines.append(try self.allocator.dupe(u8, ""));
-
-        for (group.attributes.items) |attr| {
-            try self.generateAttributeConstant(lines, attr, group.prefix);
-        }
-    }
-
-    fn generateAttributeConstant(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), attr: semconv.Attribute, group_prefix: ?[]const u8) !void {
-        // Create constant name
-        var attr_id = attr.id;
-        if (group_prefix) |prefix| {
-            if (std.mem.startsWith(u8, attr_id, prefix)) {
-                const prefix_len = prefix.len;
-                if (attr_id.len > prefix_len and attr_id[prefix_len] == '.') {
-                    attr_id = attr_id[prefix_len + 1 ..];
-                }
-            }
-        }
-
-        const const_name = try toConstantName(self.allocator, attr_id);
-        defer self.allocator.free(const_name);
-
-        const zig_type = attr.type.toZigType();
-        const stability = attr.stability.toZigCode();
-        const requirement = attr.requirement_level.toZigCode();
-
-        // Documentation comments
-        try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{attr.brief}));
-        if (attr.note) |note| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{note}));
-        }
-        if (attr.examples) |examples| {
-            if (examples.items.len > 0) {
-                const examples_str = try self.formatExamples(examples.items[0..@min(3, examples.items.len)]);
-                defer self.allocator.free(examples_str);
-                try lines.append(try std.fmt.allocPrint(self.allocator, "/// Examples: {s}", .{examples_str}));
-            }
-        }
-        if (attr.deprecated) |deprecated| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// @deprecated {s}", .{deprecated}));
-        }
-
-        // Attribute definition
-        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = types.Attribute({s})", .{ const_name, zig_type }));
-        try lines.append(try self.allocator.dupe(u8, "    .init(.{"));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "        .name = \"{s}\",", .{attr.id}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "        .type = {s},", .{zig_type}));
-
-        const escaped_brief = try escapeString(self.allocator, attr.brief);
-        defer self.allocator.free(escaped_brief);
-        try lines.append(try std.fmt.allocPrint(self.allocator, "        .brief = \"{s}\",", .{escaped_brief}));
-
-        try lines.append(try std.fmt.allocPrint(self.allocator, "        .stability = {s},", .{stability}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "        .requirement_level = {s},", .{requirement}));
-
-        if (attr.note) |note| {
-            const escaped_note = try escapeString(self.allocator, note);
-            defer self.allocator.free(escaped_note);
-            try lines.append(try std.fmt.allocPrint(self.allocator, "        .note = \"{s}\",", .{escaped_note}));
-        }
-
-        if (attr.examples) |examples| {
-            if (examples.items.len > 0) {
-                const examples_array = try self.formatExamplesArray(examples.items);
-                defer self.allocator.free(examples_array);
-                try lines.append(try std.fmt.allocPrint(self.allocator, "        .examples = {s},", .{examples_array}));
-            }
-        }
-
-        try lines.append(try self.allocator.dupe(u8, "    });"));
-        try lines.append(try self.allocator.dupe(u8, ""));
-    }
-
-    fn generateRegistryStruct(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), semconv_data: semconv.SemanticConvention, namespace_upper: []const u8, namespace_title: []const u8, file_base_name: []const u8) !void {
-        const file_title = toTitleCase(self.allocator, file_base_name) catch file_base_name;
-        defer if (!std.mem.eql(u8, file_title, file_base_name)) self.allocator.free(file_title);
-
-        try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s} semantic convention {s}", .{ namespace_title, file_base_name }));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s}{s} = struct {{", .{ namespace_upper, file_title }));
-
-        for (semconv_data.groups.items) |group| {
-            if (group.attributes.items.len > 0) {
-                try lines.append(try std.fmt.allocPrint(self.allocator, "    // {s}", .{group.brief}));
-                for (group.attributes.items) |attr| {
-                    var attr_id = attr.id;
-                    if (group.prefix) |prefix| {
-                        if (std.mem.startsWith(u8, attr_id, prefix)) {
-                            const prefix_len = prefix.len;
-                            if (attr_id.len > prefix_len and attr_id[prefix_len] == '.') {
-                                attr_id = attr_id[prefix_len + 1 ..];
-                            }
-                        }
-                    }
-
-                    const const_name = try toConstantName(self.allocator, attr_id);
-                    defer self.allocator.free(const_name);
-
-                    const lowercase_name = try toLowerCase(self.allocator, const_name);
-                    defer self.allocator.free(lowercase_name);
-
-                    try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s} = {s};", .{ lowercase_name, const_name }));
-                }
-                try lines.append(try self.allocator.dupe(u8, ""));
-            }
-        }
-
-        // Process entities
-        for (semconv_data.entities.items) |entity| {
-            if (entity.attributes.items.len > 0) {
-                try lines.append(try std.fmt.allocPrint(self.allocator, "    // Entity: {s}", .{entity.brief}));
-                for (entity.attributes.items) |attr_ref| {
-                    // Convert attribute reference to constant name (e.g., "app.installation.id" -> "APP_INSTALLATION_ID")
-                    const ref_const_name = try toConstantName(self.allocator, attr_ref.ref);
-                    defer self.allocator.free(ref_const_name);
-
-                    // Convert to lowercase field name (e.g., "APP_INSTALLATION_ID" -> "app_installation_id")
-                    const field_name = try toLowerCase(self.allocator, ref_const_name);
-                    defer self.allocator.free(field_name);
-
-                    if (attr_ref.requirement_level) |requirement_level| {
-                        try lines.append(try std.fmt.allocPrint(self.allocator, "    // Requirement Level: {s}", .{requirement_level}));
-                    }
-                    // Reference the constant from the global scope or registry
-                    try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s} = {s}; // ref: {s}", .{ field_name, ref_const_name, attr_ref.ref }));
-                }
-                try lines.append(try self.allocator.dupe(u8, ""));
-            }
-        }
-
-        try lines.append(try self.allocator.dupe(u8, "};"));
-    }
-
-    fn generateAttributeGroupStruct(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
-        const struct_name = try toStructName(self.allocator, group.id);
-        defer self.allocator.free(struct_name);
-
+    fn generateRegistry(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup, namespace: []const u8) !void {
+        // Group comment
         try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{group.brief}));
+        if (group.display_name) |display_name| {
+            try lines.append(try std.fmt.allocPrint(self.allocator, "/// Display name: {s}", .{display_name}));
+        }
         if (group.note) |note| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{note}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "/// Note: {s}", .{note}));
         }
-        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = struct {{", .{struct_name}));
 
+        // Generate enum types for attributes with enum members
         for (group.attributes.items) |attr| {
-            var attr_id = attr.id;
-            if (group.prefix) |prefix| {
-                if (std.mem.startsWith(u8, attr_id, prefix)) {
-                    const prefix_len = prefix.len;
-                    if (attr_id.len > prefix_len and attr_id[prefix_len] == '.') {
-                        attr_id = attr_id[prefix_len + 1 ..];
-                    }
+            if (attr.enum_members) |enum_members| {
+                const variant_name = try self.attributeIdToEnumVariant(attr.id);
+                defer self.allocator.free(variant_name);
+
+                const enum_type_name = try std.fmt.allocPrint(self.allocator, "{s}Value", .{variant_name});
+                defer self.allocator.free(enum_type_name);
+
+                try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = enum {{", .{enum_type_name}));
+
+                // Generate enum variants
+                for (enum_members.items) |member| {
+                    const member_name = try self.enumIdToName(member.id);
+                    defer self.allocator.free(member_name);
+
+                    const escaped_brief = try self.escapeString(member.brief);
+                    defer self.allocator.free(escaped_brief);
+
+                    try lines.append(try std.fmt.allocPrint(self.allocator, "    /// {s}", .{escaped_brief}));
+                    try lines.append(try std.fmt.allocPrint(self.allocator, "    {s},", .{member_name}));
                 }
-            }
 
-            const const_name = try toConstantName(self.allocator, attr_id);
-            defer self.allocator.free(const_name);
+                // Add toString method
+                try lines.append(try self.allocator.dupe(u8, ""));
+                try lines.append(try self.allocator.dupe(u8, "    pub fn toString(self: @This()) []const u8 {"));
+                try lines.append(try self.allocator.dupe(u8, "        return switch (self) {"));
 
-            const lowercase_name = try toLowerCase(self.allocator, const_name);
-            defer self.allocator.free(lowercase_name);
+                for (enum_members.items) |member| {
+                    const member_name = try self.enumIdToName(member.id);
+                    defer self.allocator.free(member_name);
 
-            try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s} = registry.{s};", .{ lowercase_name, const_name }));
-        }
-
-        try lines.append(try self.allocator.dupe(u8, "};"));
-    }
-
-    fn generateSpanStruct(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), span: semconv.SpanDefinition) !void {
-        const struct_name = try toStructName(self.allocator, span.span_name);
-        defer self.allocator.free(struct_name);
-
-        try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{span.brief}));
-        if (span.note) |note| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{note}));
-        }
-        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = struct {{", .{struct_name}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const name = \"{s}\";", .{span.span_name}));
-
-        if (span.attributes) |attributes| {
-            if (attributes.items.len > 0) {
-                try lines.append(try self.allocator.dupe(u8, "    pub const attributes = &[_][]const u8{"));
-                for (attributes.items) |attr| {
-                    try lines.append(try std.fmt.allocPrint(self.allocator, "        \"{s}\",", .{attr}));
+                    try lines.append(try std.fmt.allocPrint(self.allocator, "            .{s} => \"{s}\",", .{ member_name, member.value }));
                 }
-                try lines.append(try self.allocator.dupe(u8, "    };"));
+
+                try lines.append(try self.allocator.dupe(u8, "        };"));
+                try lines.append(try self.allocator.dupe(u8, "    }"));
+                try lines.append(try self.allocator.dupe(u8, "};"));
+                try lines.append(try self.allocator.dupe(u8, ""));
             }
         }
 
-        if (span.events) |events| {
-            if (events.items.len > 0) {
-                try lines.append(try self.allocator.dupe(u8, "    pub const events = &[_][]const u8{"));
-                for (events.items) |event| {
-                    try lines.append(try std.fmt.allocPrint(self.allocator, "        \"{s}\",", .{event}));
-                }
-                try lines.append(try self.allocator.dupe(u8, "    };"));
-            }
-        }
+        // Generate union type for attribute returns
+        const union_name = try self.namespaceToRegistryName(namespace);
+        defer self.allocator.free(union_name);
 
-        try lines.append(try self.allocator.dupe(u8, "};"));
-    }
+        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s}Attribute = union(enum) {{", .{union_name}));
+        try lines.append(try self.allocator.dupe(u8, "    string: types.StringAttribute,"));
 
-    fn generateMetricStruct(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), metric: semconv.MetricDefinition) !void {
-        const struct_name = try toStructName(self.allocator, metric.metric_name);
-        defer self.allocator.free(struct_name);
+        // Add enum attribute types
+        for (group.attributes.items) |attr| {
+            if (attr.enum_members) |_| {
+                const variant_name = try self.attributeIdToEnumVariant(attr.id);
+                defer self.allocator.free(variant_name);
 
-        try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{metric.brief}));
-        if (metric.note) |note| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{note}));
-        }
-        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = struct {{", .{struct_name}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const name = \"{s}\";", .{metric.metric_name}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const instrument = \"{s}\";", .{metric.instrument}));
+                const enum_type_name = try std.fmt.allocPrint(self.allocator, "{s}Value", .{variant_name});
+                defer self.allocator.free(enum_type_name);
 
-        if (metric.unit) |unit| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const unit = \"{s}\";", .{unit}));
-        }
-
-        if (metric.attributes) |attributes| {
-            if (attributes.items.len > 0) {
-                try lines.append(try self.allocator.dupe(u8, "    pub const attributes = &[_][]const u8{"));
-                for (attributes.items) |attr| {
-                    try lines.append(try std.fmt.allocPrint(self.allocator, "        \"{s}\",", .{attr}));
-                }
-                try lines.append(try self.allocator.dupe(u8, "    };"));
+                try lines.append(try std.fmt.allocPrint(self.allocator, "    {s}: types.EnumAttribute({s}),", .{ variant_name, enum_type_name }));
             }
         }
 
         try lines.append(try self.allocator.dupe(u8, "};"));
-    }
+        try lines.append(try self.allocator.dupe(u8, ""));
 
-    fn generateUtils(self: *ZigCodeGenerator, lines: *ArrayList([]const u8), namespace: []const u8) !void {
-        const utils_name = try std.fmt.allocPrint(self.allocator, "{s}Utils", .{toTitleCase(self.allocator, namespace) catch namespace});
-        defer self.allocator.free(utils_name);
+        // Generate enum name from namespace (e.g., "http" -> "Http", "container" -> "Container")
+        const enum_name = try self.namespaceToRegistryName(namespace);
+        defer self.allocator.free(enum_name);
 
-        try lines.append(try std.fmt.allocPrint(self.allocator, "/// Utility functions for {s} semantic conventions", .{namespace}));
-        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = struct {{", .{utils_name}));
+        // Generate the enum declaration
+        try lines.append(try std.fmt.allocPrint(self.allocator, "pub const {s} = enum {{", .{enum_name}));
 
-        if (std.mem.eql(u8, namespace, "database")) {
-            try lines.append(try self.allocator.dupe(u8, "    /// Classify database system type"));
-            try lines.append(try self.allocator.dupe(u8, "    pub fn classifySystem(system: []const u8) []const u8 {"));
-            try lines.append(try self.allocator.dupe(u8, "        // Implementation would go here"));
-            try lines.append(try self.allocator.dupe(u8, "        _ = system;"));
-            try lines.append(try self.allocator.dupe(u8, "        return \"unknown\";"));
-            try lines.append(try self.allocator.dupe(u8, "    }"));
-            try lines.append(try self.allocator.dupe(u8, ""));
-            try lines.append(try self.allocator.dupe(u8, "    /// Sanitize database query for logging"));
-            try lines.append(try self.allocator.dupe(u8, "    pub fn sanitizeQuery(query: []const u8) []const u8 {"));
-            try lines.append(try self.allocator.dupe(u8, "        // Implementation would go here"));
-            try lines.append(try self.allocator.dupe(u8, "        _ = query;"));
-            try lines.append(try self.allocator.dupe(u8, "        return \"[sanitized]\";"));
-            try lines.append(try self.allocator.dupe(u8, "    }"));
-        } else if (std.mem.eql(u8, namespace, "aws")) {
-            try lines.append(try self.allocator.dupe(u8, "    /// Parse AWS ARN components"));
-            try lines.append(try self.allocator.dupe(u8, "    pub fn parseArn(arn: []const u8) ?struct { service: []const u8, region: []const u8, resource: []const u8 } {"));
-            try lines.append(try self.allocator.dupe(u8, "        // Implementation would go here"));
-            try lines.append(try self.allocator.dupe(u8, "        _ = arn;"));
-            try lines.append(try self.allocator.dupe(u8, "        return null;"));
-            try lines.append(try self.allocator.dupe(u8, "    }"));
-        } else if (std.mem.eql(u8, namespace, "azure")) {
-            try lines.append(try self.allocator.dupe(u8, "    /// Validate Azure resource provider namespace"));
-            try lines.append(try self.allocator.dupe(u8, "    pub fn validateResourceProvider(provider: []const u8) bool {"));
-            try lines.append(try self.allocator.dupe(u8, "        // Implementation would go here"));
-            try lines.append(try self.allocator.dupe(u8, "        _ = provider;"));
-            try lines.append(try self.allocator.dupe(u8, "        return true;"));
-            try lines.append(try self.allocator.dupe(u8, "    }"));
+        // Generate enum variants
+        for (group.attributes.items) |attr| {
+            const variant_name = try self.attributeIdToEnumVariant(attr.id);
+            defer self.allocator.free(variant_name);
+
+            const escaped_brief = try self.escapeString(attr.brief);
+            defer self.allocator.free(escaped_brief);
+
+            try lines.append(try std.fmt.allocPrint(self.allocator, "    /// {s}", .{escaped_brief}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "    {s},", .{variant_name}));
         }
 
+        try lines.append(try self.allocator.dupe(u8, ""));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "    /// Returns the appropriate attribute type for this {s} attribute", .{namespace}));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub fn attribute(self: @This()) {s}Attribute {{", .{union_name}));
+        try lines.append(try self.allocator.dupe(u8, "        return switch (self) {"));
+
+        // Generate switch cases for each variant
+        for (group.attributes.items) |attr| {
+            const variant_name = try self.attributeIdToEnumVariant(attr.id);
+            defer self.allocator.free(variant_name);
+
+            try lines.append(try std.fmt.allocPrint(self.allocator, "            .{s} => ", .{variant_name}));
+            try self.generateAttributeReturn(lines, attr);
+        }
+
+        try lines.append(try self.allocator.dupe(u8, "        };"));
+        try lines.append(try self.allocator.dupe(u8, "    }"));
         try lines.append(try self.allocator.dupe(u8, "};"));
+        try lines.append(try self.allocator.dupe(u8, ""));
     }
 
-    fn needsUtils(self: *ZigCodeGenerator, namespace: []const u8) bool {
-        _ = self;
-        return std.mem.eql(u8, namespace, "database") or
-            std.mem.eql(u8, namespace, "aws") or
-            std.mem.eql(u8, namespace, "azure") or
-            std.mem.eql(u8, namespace, "gcp");
+    fn generateRegistryAttribute(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), attr: semconv.Attribute, is_last: bool) !void {
+        // Start the attribute definition
+        const stability_name = try self.stabilityToTypesStability(attr.stability);
+        defer self.allocator.free(stability_name);
+
+        // For now, treat all attributes as string attributes with recommended requirement level
+        // TODO: Map actual requirement levels from YAML if available
+        try lines.append(try self.allocator.dupe(u8, "    types.StringAttribute.init("));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "        \"{s}\",", .{attr.id}));
+
+        // Handle brief description (simplified for now)
+        const escaped_brief = try self.escapeString(attr.brief);
+        defer self.allocator.free(escaped_brief);
+        try lines.append(try std.fmt.allocPrint(self.allocator, "        \"{s}\",", .{escaped_brief}));
+
+        try lines.append(try std.fmt.allocPrint(self.allocator, "        .{s},", .{stability_name}));
+        try lines.append(try self.allocator.dupe(u8, "        .recommended,"));
+
+        // Close the attribute definition
+        if (attr.note) |note| {
+            const escaped_note = try self.escapeString(note);
+            defer self.allocator.free(escaped_note);
+            try lines.append(try std.fmt.allocPrint(self.allocator, "    ).withNote(\"{s}\"){s}", .{ escaped_note, if (is_last) "" else "," }));
+        } else {
+            try lines.append(try std.fmt.allocPrint(self.allocator, "    ){s}", .{if (is_last) "" else ","}));
+        }
     }
 
-    fn formatExamples(self: *ZigCodeGenerator, examples: [][]const u8) ![]u8 {
+    fn generateEnum(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), attr: semconv.Attribute, field_name: []const u8) !void {
+        // Generate enum type
+        const enum_name = try self.capitalizeFirst(field_name);
+        defer self.allocator.free(enum_name);
+
+        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s} = enum {{", .{enum_name}));
+
+        // Generate enum values
+        if (attr.enum_members) |members| {
+            for (members.items) |member| {
+                const member_name = try self.enumIdToName(member.id);
+                defer self.allocator.free(member_name);
+                try lines.append(try std.fmt.allocPrint(self.allocator, "        /// {s}", .{member.brief}));
+                try lines.append(try std.fmt.allocPrint(self.allocator, "        {s},", .{member_name}));
+            }
+        }
+
+        try lines.append(try self.allocator.dupe(u8, ""));
+        try lines.append(try self.allocator.dupe(u8, "        pub fn toString(self: @This()) []const u8 {"));
+        try lines.append(try self.allocator.dupe(u8, "            return switch (self) {"));
+
+        if (attr.enum_members) |members| {
+            for (members.items) |member| {
+                const member_name = try self.enumIdToName(member.id);
+                defer self.allocator.free(member_name);
+                try lines.append(try std.fmt.allocPrint(self.allocator, "                .{s} => \"{s}\",", .{ member_name, member.value }));
+            }
+        }
+
+        try lines.append(try self.allocator.dupe(u8, "            };"));
+        try lines.append(try self.allocator.dupe(u8, "        }"));
+        try lines.append(try self.allocator.dupe(u8, "    };"));
+        try lines.append(try self.allocator.dupe(u8, ""));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s}: []const u8 = \"{s}\";", .{ field_name, attr.id }));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s}_type: type = {s};", .{ field_name, enum_name }));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s}_stability = \"{s}\";", .{ field_name, @tagName(attr.stability) }));
+    }
+
+    // Utility functions
+
+    fn namespaceToRegistryName(self: *RegistryCodeGenerator, namespace: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        var capitalize_next = true;
+        for (namespace) |c| {
+            if (c == '.' or c == '_' or c == '-') {
+                capitalize_next = true;
+            } else if (capitalize_next) {
+                try result.append(std.ascii.toUpper(c));
+                capitalize_next = false;
+            } else {
+                try result.append(c);
+            }
+        }
+
+        return result.toOwnedSlice();
+    }
+
+    fn attributeIdToEnumVariant(self: *RegistryCodeGenerator, id: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        // Find the first dot to skip the namespace prefix
+        var start_index: usize = 0;
+        if (std.mem.indexOf(u8, id, ".")) |dot_idx| {
+            start_index = dot_idx + 1;
+        }
+
+        var capitalize_next = false;
+        for (id[start_index..]) |c| {
+            if (c == '.' or c == '_' or c == '-') {
+                capitalize_next = true;
+            } else if (capitalize_next) {
+                try result.append(std.ascii.toUpper(c));
+                capitalize_next = false;
+            } else {
+                try result.append(c);
+            }
+        }
+
+        // If we have an empty result or it starts with a number, prefix with underscore
+        if (result.items.len == 0 or std.ascii.isDigit(result.items[0])) {
+            var prefixed = ArrayList(u8).init(self.allocator);
+            defer prefixed.deinit();
+            try prefixed.append('_');
+            try prefixed.appendSlice(result.items);
+            return prefixed.toOwnedSlice();
+        }
+
+        return result.toOwnedSlice();
+    }
+
+    fn generateAttributeReturn(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), attr: semconv.Attribute) !void {
+        const stability_name = try self.stabilityToTypesStability(attr.stability);
+        defer self.allocator.free(stability_name);
+
+        const escaped_brief = try self.escapeString(attr.brief);
+        defer self.allocator.free(escaped_brief);
+
+        // Check if this is an enum attribute
+        if (attr.enum_members) |enum_members| {
+            // Generate EnumAttribute with enum values
+            const variant_name = try self.attributeIdToEnumVariant(attr.id);
+            defer self.allocator.free(variant_name);
+
+            const enum_type_name = try std.fmt.allocPrint(self.allocator, "{s}Value", .{variant_name});
+            defer self.allocator.free(enum_type_name);
+
+            try lines.append(try std.fmt.allocPrint(self.allocator, "HttpAttribute{{ .{s} = types.EnumAttribute({s}).init(", .{ variant_name, enum_type_name }));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                    \"{s}\",", .{attr.id}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                    \"{s}\",", .{escaped_brief}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                    .{s},", .{stability_name}));
+            try lines.append(try self.allocator.dupe(u8, "                    .recommended,"));
+            try lines.append(try self.allocator.dupe(u8, "                    &.{"));
+
+            // Generate enum value list
+            for (enum_members.items, 0..) |member, i| {
+                const member_name = try self.enumIdToName(member.id);
+                defer self.allocator.free(member_name);
+
+                const comma = if (i == enum_members.items.len - 1) "" else ",";
+                try lines.append(try std.fmt.allocPrint(self.allocator, "                        .{s}{s}", .{ member_name, comma }));
+            }
+
+            try lines.append(try self.allocator.dupe(u8, "                    },"));
+            try lines.append(try self.allocator.dupe(u8, "                )"));
+
+            if (attr.note) |note| {
+                const escaped_note = try self.escapeString(note);
+                defer self.allocator.free(escaped_note);
+                try lines.append(try std.fmt.allocPrint(self.allocator, "                .withNote(\"{s}\") }},", .{escaped_note}));
+            } else {
+                try lines.append(try self.allocator.dupe(u8, "                },"));
+            }
+        } else {
+            // Regular string/int/double attribute
+            try lines.append(try self.allocator.dupe(u8, "HttpAttribute{ .string = types.StringAttribute.init("));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                    \"{s}\",", .{attr.id}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                    \"{s}\",", .{escaped_brief}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                    .{s},", .{stability_name}));
+            try lines.append(try self.allocator.dupe(u8, "                    .recommended,"));
+
+            if (attr.note) |note| {
+                const escaped_note = try self.escapeString(note);
+                defer self.allocator.free(escaped_note);
+                try lines.append(try std.fmt.allocPrint(self.allocator, "                ).withNote(\"{s}\") }},", .{escaped_note}));
+            } else {
+                try lines.append(try self.allocator.dupe(u8, "                ) },"));
+            }
+        }
+    }
+
+    fn stabilityToTypesStability(self: *RegistryCodeGenerator, stability: semconv.StabilityLevel) ![]u8 {
+        const stability_str = switch (stability) {
+            .stable => "stable",
+            .experimental => "experimental",
+            .development => "development",
+            .deprecated => "deprecated",
+        };
+        return try self.allocator.dupe(u8, stability_str);
+    }
+
+    fn escapeString(self: *RegistryCodeGenerator, input: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        for (input) |c| {
+            switch (c) {
+                '"' => try result.appendSlice("\\\""),
+                '\\' => try result.appendSlice("\\\\"),
+                '\n' => try result.appendSlice("\\n"),
+                '\r' => try result.appendSlice("\\r"),
+                '\t' => try result.appendSlice("\\t"),
+                else => try result.append(c),
+            }
+        }
+
+        return result.toOwnedSlice();
+    }
+
+    fn groupIdToStructName(self: *RegistryCodeGenerator, id: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        var capitalize_next = true;
+        for (id) |c| {
+            if (c == '.' or c == '_' or c == '-') {
+                capitalize_next = true;
+            } else if (capitalize_next) {
+                try result.append(std.ascii.toUpper(c));
+                capitalize_next = false;
+            } else {
+                try result.append(c);
+            }
+        }
+
+        return result.toOwnedSlice();
+    }
+
+    fn attributeIdToFieldName(self: *RegistryCodeGenerator, id: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        for (id) |c| {
+            if (c == '.' or c == '-') {
+                try result.append('_');
+            } else {
+                try result.append(c);
+            }
+        }
+
+        return result.toOwnedSlice();
+    }
+
+    fn enumIdToName(self: *RegistryCodeGenerator, id: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        for (id) |c| {
+            if (c == '.' or c == '-' or c == ' ') {
+                try result.append('_');
+            } else {
+                try result.append(std.ascii.toLower(c));
+            }
+        }
+
+        return result.toOwnedSlice();
+    }
+
+    fn capitalizeFirst(self: *RegistryCodeGenerator, s: []const u8) ![]u8 {
+        if (s.len == 0) return try self.allocator.dupe(u8, s);
+
+        var result = try self.allocator.alloc(u8, s.len);
+        result[0] = std.ascii.toUpper(s[0]);
+        for (s[1..], 1..) |c, i| {
+            result[i] = c;
+        }
+        return result;
+    }
+
+    fn splitNote(self: *RegistryCodeGenerator, note: []const u8) !ArrayList([]const u8) {
+        var lines = ArrayList([]const u8).init(self.allocator);
+
+        var start: usize = 0;
+        var i: usize = 0;
+        while (i < note.len) {
+            if (note[i] == '\n') {
+                if (i > start) {
+                    try lines.append(try self.allocator.dupe(u8, note[start..i]));
+                }
+                start = i + 1;
+            }
+            i += 1;
+        }
+
+        if (start < note.len) {
+            try lines.append(try self.allocator.dupe(u8, note[start..]));
+        }
+
+        return lines;
+    }
+
+    fn formatExamples(self: *RegistryCodeGenerator, examples: [][]const u8) ![]u8 {
         var result = ArrayList(u8).init(self.allocator);
         defer result.deinit();
 
@@ -466,23 +463,7 @@ pub const ZigCodeGenerator = struct {
         return result.toOwnedSlice();
     }
 
-    fn formatExamplesArray(self: *ZigCodeGenerator, examples: [][]const u8) ![]u8 {
-        var result = ArrayList(u8).init(self.allocator);
-        defer result.deinit();
-
-        try result.appendSlice("&[_][]const u8{");
-        for (examples, 0..) |example, i| {
-            if (i > 0) try result.appendSlice(", ");
-            try result.append('"');
-            try result.appendSlice(example);
-            try result.append('"');
-        }
-        try result.append('}');
-
-        return result.toOwnedSlice();
-    }
-
-    fn joinLines(self: *ZigCodeGenerator, lines: [][]const u8) ![]u8 {
+    fn joinLines(self: *RegistryCodeGenerator, lines: [][]const u8) ![]u8 {
         var total_len: usize = 0;
         for (lines) |line| {
             total_len += line.len + 1; // +1 for newline
@@ -501,84 +482,3 @@ pub const ZigCodeGenerator = struct {
         return result;
     }
 };
-
-// Utility functions for string conversion
-
-fn toConstantName(allocator: Allocator, name: []const u8) ![]u8 {
-    var result = ArrayList(u8).init(allocator);
-    defer result.deinit();
-
-    for (name) |c| {
-        if (c == '.' or c == '-') {
-            try result.append('_');
-        } else {
-            try result.append(std.ascii.toUpper(c));
-        }
-    }
-
-    return result.toOwnedSlice();
-}
-
-fn toStructName(allocator: Allocator, name: []const u8) ![]u8 {
-    var result = ArrayList(u8).init(allocator);
-    defer result.deinit();
-
-    var capitalize_next = true;
-    for (name) |c| {
-        if (c == '.' or c == '-' or c == '_') {
-            capitalize_next = true;
-        } else if (capitalize_next) {
-            try result.append(std.ascii.toUpper(c));
-            capitalize_next = false;
-        } else {
-            try result.append(c);
-        }
-    }
-
-    return result.toOwnedSlice();
-}
-
-fn toLowerCase(allocator: Allocator, s: []const u8) ![]u8 {
-    var result = try allocator.alloc(u8, s.len);
-    for (s, 0..) |c, i| {
-        result[i] = std.ascii.toLower(c);
-    }
-    return result;
-}
-
-fn toUpperCase(allocator: Allocator, s: []const u8) ![]u8 {
-    var result = try allocator.alloc(u8, s.len);
-    for (s, 0..) |c, i| {
-        result[i] = std.ascii.toUpper(c);
-    }
-    return result;
-}
-
-fn toTitleCase(allocator: Allocator, s: []const u8) ![]u8 {
-    if (s.len == 0) return try allocator.dupe(u8, s);
-
-    var result = try allocator.alloc(u8, s.len);
-    result[0] = std.ascii.toUpper(s[0]);
-    for (s[1..], 1..) |c, i| {
-        result[i] = c;
-    }
-    return result;
-}
-
-fn escapeString(allocator: Allocator, s: []const u8) ![]u8 {
-    var result = ArrayList(u8).init(allocator);
-    defer result.deinit();
-
-    for (s) |c| {
-        switch (c) {
-            '\\' => try result.appendSlice("\\\\"),
-            '"' => try result.appendSlice("\\\""),
-            '\n' => try result.appendSlice("\\n"),
-            '\r' => try result.appendSlice("\\r"),
-            '\t' => try result.appendSlice("\\t"),
-            else => try result.append(c),
-        }
-    }
-
-    return result.toOwnedSlice();
-}
