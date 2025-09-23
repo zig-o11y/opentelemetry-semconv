@@ -8,16 +8,7 @@ pub const RegistryCodeGenerator = struct {
     allocator: Allocator,
 
     // Zig reserved keywords that need to be escaped with @""
-    const zig_keywords = [_][]const u8{
-        "addrspace", "align", "allowzero", "and", "anyframe", "anytype", 
-        "asm", "async", "await", "break", "callconv", "catch", "comptime", 
-        "const", "continue", "defer", "else", "enum", "errdefer", "error", 
-        "export", "extern", "fn", "for", "if", "inline", "linksection", 
-        "noalias", "noinline", "nosuspend", "null", "opaque", "or", "orelse", 
-        "packed", "pub", "resume", "return", "struct", "suspend", "switch", 
-        "test", "threadlocal", "try", "union", "unreachable", "usingnamespace", 
-        "var", "volatile", "while"
-    };
+    const zig_keywords = [_][]const u8{ "addrspace", "align", "allowzero", "and", "anyframe", "anytype", "asm", "async", "await", "break", "callconv", "catch", "comptime", "const", "continue", "defer", "else", "enum", "errdefer", "error", "export", "extern", "fn", "for", "if", "inline", "linksection", "noalias", "noinline", "nosuspend", "null", "opaque", "or", "orelse", "packed", "pub", "resume", "return", "struct", "suspend", "switch", "test", "threadlocal", "try", "union", "unreachable", "usingnamespace", "var", "volatile", "while" };
 
     pub fn init(allocator: Allocator) RegistryCodeGenerator {
         return RegistryCodeGenerator{ .allocator = allocator };

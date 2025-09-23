@@ -31,13 +31,16 @@ pub const YamlPreprocessor = struct {
         var key_line: ?[]const u8 = null;
 
         while (lines.next()) |line| {
+            // Strip comments from the line (everything after #)
+            const line_without_comments = self.stripComments(line);
+            
             if (in_block_scalar) {
-                const line_indent = countLeadingSpaces(line);
+                const line_indent = countLeadingSpaces(line_without_comments);
 
                 // Check if we're still in the block scalar
-                if (line.len == 0 or line_indent > block_indent) {
+                if (line_without_comments.len == 0 or line_indent > block_indent) {
                     // Still in block scalar, collect the line
-                    try collected_lines.append(line);
+                    try collected_lines.append(line_without_comments);
                 } else {
                     // End of block scalar, process what we collected
                     try self.writeBlockScalar(&result, key_line.?, block_type, collected_lines.items, block_indent);
@@ -48,15 +51,15 @@ pub const YamlPreprocessor = struct {
                     key_line = null;
 
                     // Check if this line starts a new block scalar
-                    if (self.isBlockScalarLine(line)) |info| {
+                    if (self.isBlockScalarLine(line_without_comments)) |info| {
                         // This line starts a new block scalar
                         in_block_scalar = true;
                         block_type = info.indicator;
-                        block_indent = countLeadingSpaces(line);
-                        key_line = line[0 .. info.colon_pos + 1]; // Keep the key part
+                        block_indent = countLeadingSpaces(line_without_comments);
+                        key_line = line_without_comments[0 .. info.colon_pos + 1]; // Keep the key part
                     } else {
                         // Process this line normally (with template type quoting if needed)
-                        const processed_line = try self.quoteTemplateTypesIfNeeded(line);
+                        const processed_line = try self.quoteTemplateTypesIfNeeded(line_without_comments);
                         defer self.allocator.free(processed_line);
                         try result.appendSlice(processed_line);
                         try result.append('\n');
@@ -64,15 +67,15 @@ pub const YamlPreprocessor = struct {
                 }
             } else {
                 // Check if this line starts a block scalar
-                if (self.isBlockScalarLine(line)) |info| {
+                if (self.isBlockScalarLine(line_without_comments)) |info| {
                     // Found block scalar
                     in_block_scalar = true;
                     block_type = info.indicator;
-                    block_indent = countLeadingSpaces(line);
-                    key_line = line[0 .. info.colon_pos + 1]; // Keep the key part
+                    block_indent = countLeadingSpaces(line_without_comments);
+                    key_line = line_without_comments[0 .. info.colon_pos + 1]; // Keep the key part
                 } else {
                     // Normal line, process for template types and copy
-                    const processed_line = try self.quoteTemplateTypesIfNeeded(line);
+                    const processed_line = try self.quoteTemplateTypesIfNeeded(line_without_comments);
                     defer self.allocator.free(processed_line);
                     try result.appendSlice(processed_line);
                     try result.append('\n');
@@ -241,5 +244,51 @@ pub const YamlPreprocessor = struct {
         }
 
         return null;
+    }
+
+    /// Strip comments from a line (everything after #)
+    /// Only strips comments that are not within quoted strings or block scalars
+    fn stripComments(self: *YamlPreprocessor, line: []const u8) []const u8 {
+        _ = self; // unused
+        
+        var in_single_quote = false;
+        var in_double_quote = false;
+        var i: usize = 0;
+        
+        while (i < line.len) {
+            const char = line[i];
+            
+            switch (char) {
+                '\'' => {
+                    if (!in_double_quote) {
+                        in_single_quote = !in_single_quote;
+                    }
+                },
+                '"' => {
+                    if (!in_single_quote) {
+                        in_double_quote = !in_double_quote;
+                    }
+                },
+                '\\' => {
+                    // Skip next character if we're inside quotes (escape sequence)
+                    if ((in_single_quote or in_double_quote) and i + 1 < line.len) {
+                        i += 1; // Skip the escaped character
+                    }
+                },
+                '#' => {
+                    // Only treat as comment if we're not inside quotes
+                    if (!in_single_quote and !in_double_quote) {
+                        // Return everything before the #, trimmed of trailing whitespace
+                        return std.mem.trimRight(u8, line[0..i], " \t");
+                    }
+                },
+                else => {},
+            }
+            
+            i += 1;
+        }
+        
+        // No comment found, return the original line
+        return line;
     }
 };
