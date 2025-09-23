@@ -14,6 +14,29 @@ pub const RegistryCodeGenerator = struct {
         return RegistryCodeGenerator{ .allocator = allocator };
     }
 
+    /// Helper function to format multi-line strings as proper Zig comments
+    /// Splits the input string by newlines and prefixes each line with the specified comment prefix
+    fn formatMultiLineComment(self: *RegistryCodeGenerator, text: []const u8, comment_prefix: []const u8, lines: *ArrayList([]const u8)) !void {
+        var line_iter = std.mem.splitSequence(u8, text, "\n");
+        while (line_iter.next()) |line| {
+            // Trim whitespace from each line
+            const trimmed_line = std.mem.trim(u8, line, " \t\r");
+            if (trimmed_line.len > 0) {
+                try lines.append(try std.fmt.allocPrint(self.allocator, "{s} {s}", .{ comment_prefix, trimmed_line }));
+            } else {
+                // For empty lines, just add the comment prefix
+                try lines.append(try std.fmt.allocPrint(self.allocator, "{s}", .{comment_prefix}));
+            }
+        }
+    }
+
+    /// Helper function specifically for formatting comments on struct/enum members with proper indentation
+    fn formatMemberComment(self: *RegistryCodeGenerator, text: []const u8, indent: []const u8, lines: *ArrayList([]const u8)) !void {
+        const comment_prefix = try std.fmt.allocPrint(self.allocator, "{s}///", .{indent});
+        defer self.allocator.free(comment_prefix);
+        try self.formatMultiLineComment(text, comment_prefix, lines);
+    }
+
     pub fn generateRegistryFile(self: *RegistryCodeGenerator, registry: semconv.Registry, output_file: []const u8) ![]u8 {
         var lines = ArrayList([]const u8).init(self.allocator);
         defer {
@@ -53,13 +76,13 @@ pub const RegistryCodeGenerator = struct {
     }
 
     fn generateRegistry(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
-        // Group comment
-        try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{group.brief}));
+        // Group comment - use multi-line comment helper for proper formatting
+        try self.formatMultiLineComment(group.brief, "///", lines);
         if (group.display_name) |display_name| {
             try lines.append(try std.fmt.allocPrint(self.allocator, "/// Display name: {s}", .{display_name}));
         }
         if (group.note) |note| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// Note: {s}", .{note}));
+            try self.formatMultiLineComment(note, "///", lines);
         }
 
         // Generate enum types for attributes with enum members
@@ -81,10 +104,8 @@ pub const RegistryCodeGenerator = struct {
                     const member_name = try self.enumIdToName(member.id);
                     defer self.allocator.free(member_name);
 
-                    const escaped_brief = try self.escapeString(member.brief);
-                    defer self.allocator.free(escaped_brief);
-
-                    try lines.append(try std.fmt.allocPrint(self.allocator, "    /// {s}", .{escaped_brief}));
+                    // Use helper function for multi-line comments
+                    try self.formatMemberComment(member.brief, "    ", lines);
                     try lines.append(try std.fmt.allocPrint(self.allocator, "    {s},", .{member_name}));
                 }
 
@@ -122,10 +143,8 @@ pub const RegistryCodeGenerator = struct {
             const variant_name = try self.attributeIdToEnumVariant(attr.id);
             defer self.allocator.free(variant_name);
 
-            const escaped_brief = try self.escapeString(attr.brief);
-            defer self.allocator.free(escaped_brief);
-
-            try lines.append(try std.fmt.allocPrint(self.allocator, "    /// {s}", .{escaped_brief}));
+            // Use helper function for multi-line comments
+            try self.formatMemberComment(attr.brief, "    ", lines);
 
             // Check if this is an enum attribute
             if (attr.enum_members) |_| {
@@ -189,7 +208,7 @@ pub const RegistryCodeGenerator = struct {
 
                 const member_name = try self.enumIdToName(member.id);
                 defer self.allocator.free(member_name);
-                try lines.append(try std.fmt.allocPrint(self.allocator, "        /// {s}", .{member.brief}));
+                try self.formatMemberComment(member.brief, "        ", lines);
                 try lines.append(try std.fmt.allocPrint(self.allocator, "        {s},", .{member_name}));
             }
         }
@@ -513,6 +532,17 @@ pub const RegistryCodeGenerator = struct {
     fn updateRootZig(self: *RegistryCodeGenerator, output_file: []const u8, namespace: []const u8) !void {
         const root_path = "src/root.zig";
 
+        // Escape namespace if it's a reserved keyword
+        const escaped_namespace = blk: {
+            for (zig_keywords) |keyword| {
+                if (std.mem.eql(u8, namespace, keyword)) {
+                    break :blk try std.fmt.allocPrint(self.allocator, "@\"{s}\"", .{namespace});
+                }
+            }
+            break :blk try self.allocator.dupe(u8, namespace);
+        };
+        defer self.allocator.free(escaped_namespace);
+
         // Read current root.zig content
         const file = std.fs.cwd().openFile(root_path, .{}) catch |err| switch (err) {
             error.FileNotFound => {
@@ -525,7 +555,7 @@ pub const RegistryCodeGenerator = struct {
                     \\
                 ;
                 try new_file.writeAll(initial_content);
-                const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ namespace, output_file[4..] }); // Remove "src/" prefix
+                const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ escaped_namespace, output_file[4..] }); // Remove "src/" prefix
                 defer self.allocator.free(export_line);
                 try new_file.writeAll(export_line);
                 return;
@@ -537,12 +567,20 @@ pub const RegistryCodeGenerator = struct {
         const content = try file.readToEndAlloc(self.allocator, 1024 * 1024);
         defer self.allocator.free(content);
 
-        // Check if export already exists
-        const expected_export = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace});
+        // Check if export already exists (check for both escaped and unescaped versions)
+        const expected_export = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{escaped_namespace});
         defer self.allocator.free(expected_export);
+
+        const expected_export_unescaped = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace});
+        defer self.allocator.free(expected_export_unescaped);
 
         if (std.mem.indexOf(u8, content, expected_export)) |_| {
             // Export already exists, don't add it again
+            return;
+        }
+
+        if (std.mem.indexOf(u8, content, expected_export_unescaped)) |_| {
+            // Export already exists (unescaped version), don't add it again
             return;
         }
 
@@ -553,7 +591,7 @@ pub const RegistryCodeGenerator = struct {
             output_file;
 
         // Create new export line
-        const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ namespace, relative_path });
+        const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ escaped_namespace, relative_path });
         defer self.allocator.free(export_line);
 
         // Append to file

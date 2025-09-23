@@ -1,0 +1,13 @@
+groups:
+  - id: registry.error
+    type: attribute_group
+    display_name: Error Attributes
+    brief: >
+      Error-related attributes.
+    attributes:
+      - id: error.type
+        type: string
+        stability: stable
+        brief: >
+          Describes a class of error the operation ended with.
+        examples: ['timeout', 'java.net.UnknownHostException', 'server_certificate_invalid', '500']
