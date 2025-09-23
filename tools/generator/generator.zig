@@ -75,6 +75,9 @@ pub const RegistryCodeGenerator = struct {
 
                 // Generate enum variants
                 for (enum_members.items) |member| {
+                    // Skip deprecated members to avoid duplicates
+                    if (member.deprecated) continue;
+
                     const member_name = try self.enumIdToName(member.id);
                     defer self.allocator.free(member_name);
 
@@ -91,6 +94,9 @@ pub const RegistryCodeGenerator = struct {
                 try lines.append(try self.allocator.dupe(u8, "        return switch (self) {"));
 
                 for (enum_members.items) |member| {
+                    // Skip deprecated members to avoid duplicates
+                    if (member.deprecated) continue;
+
                     const member_name = try self.enumIdToName(member.id);
                     defer self.allocator.free(member_name);
 
@@ -178,6 +184,9 @@ pub const RegistryCodeGenerator = struct {
         // Generate enum values
         if (attr.enum_members) |members| {
             for (members.items) |member| {
+                // Skip deprecated members to avoid duplicates
+                if (member.deprecated) continue;
+
                 const member_name = try self.enumIdToName(member.id);
                 defer self.allocator.free(member_name);
                 try lines.append(try std.fmt.allocPrint(self.allocator, "        /// {s}", .{member.brief}));
@@ -191,6 +200,9 @@ pub const RegistryCodeGenerator = struct {
 
         if (attr.enum_members) |members| {
             for (members.items) |member| {
+                // Skip deprecated members to avoid duplicates
+                if (member.deprecated) continue;
+
                 const member_name = try self.enumIdToName(member.id);
                 defer self.allocator.free(member_name);
                 try lines.append(try std.fmt.allocPrint(self.allocator, "                .{s} => \"{s}\",", .{ member_name, member.value }));

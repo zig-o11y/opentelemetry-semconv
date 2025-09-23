@@ -297,6 +297,11 @@ pub const RegistryParser = struct {
             }
         }
 
+        // Check if the member is deprecated
+        if (obj.get("deprecated")) |_| {
+            member.deprecated = true;
+        }
+
         return member;
     }
 };

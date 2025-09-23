@@ -62,6 +62,7 @@ pub const EnumMember = struct {
     value: []const u8,
     brief: []const u8,
     stability: StabilityLevel = .experimental,
+    deprecated: bool = false,
 
     pub fn deinit(self: *EnumMember, allocator: Allocator) void {
         allocator.free(self.id);
