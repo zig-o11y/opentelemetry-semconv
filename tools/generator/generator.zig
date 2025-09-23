@@ -44,7 +44,12 @@ pub const RegistryCodeGenerator = struct {
             try self.generateRegistry(&lines, group);
         }
 
-        return try self.joinLines(lines.items);
+        const generated_code = try self.joinLines(lines.items);
+
+        // Update root.zig to include this registry
+        try self.updateRootZig(output_file, registry.namespace);
+
+        return generated_code;
     }
 
     fn generateRegistry(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
@@ -491,5 +496,58 @@ pub const RegistryCodeGenerator = struct {
         }
 
         return result;
+    }
+
+    fn updateRootZig(self: *RegistryCodeGenerator, output_file: []const u8, namespace: []const u8) !void {
+        const root_path = "src/root.zig";
+
+        // Read current root.zig content
+        const file = std.fs.cwd().openFile(root_path, .{}) catch |err| switch (err) {
+            error.FileNotFound => {
+                // Create new root.zig if it doesn't exist
+                const new_file = try std.fs.cwd().createFile(root_path, .{});
+                defer new_file.close();
+
+                const initial_content =
+                    \\// Auto-generated exports for OpenTelemetry semantic conventions
+                    \\
+                ;
+                try new_file.writeAll(initial_content);
+                const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ namespace, output_file[4..] }); // Remove "src/" prefix
+                defer self.allocator.free(export_line);
+                try new_file.writeAll(export_line);
+                return;
+            },
+            else => return err,
+        };
+        defer file.close();
+
+        const content = try file.readToEndAlloc(self.allocator, 1024 * 1024);
+        defer self.allocator.free(content);
+
+        // Check if export already exists
+        const expected_export = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace});
+        defer self.allocator.free(expected_export);
+
+        if (std.mem.indexOf(u8, content, expected_export)) |_| {
+            // Export already exists, don't add it again
+            return;
+        }
+
+        // Calculate relative path from src/root.zig to the output file
+        const relative_path = if (std.mem.startsWith(u8, output_file, "src/"))
+            output_file[4..] // Remove "src/" prefix
+        else
+            output_file;
+
+        // Create new export line
+        const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ namespace, relative_path });
+        defer self.allocator.free(export_line);
+
+        // Append to file
+        const append_file = try std.fs.cwd().openFile(root_path, .{ .mode = .write_only });
+        defer append_file.close();
+        try append_file.seekFromEnd(0);
+        try append_file.writeAll(export_line);
     }
 };

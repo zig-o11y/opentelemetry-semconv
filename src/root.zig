@@ -18,10 +18,6 @@ const std = @import("std");
 // Core type definitions
 pub const types = @import("types.zig");
 
-// Semantic convention modules - registry files (main attribute definitions)
-pub const http = @import("http/registry.zig");
-pub const container = @import("container/registry.zig");
-
 // Re-export commonly used types for convenience
 pub const StabilityLevel = types.StabilityLevel;
 pub const RequirementLevel = types.RequirementLevel;
@@ -152,3 +148,8 @@ test "namespace extraction" {
     try testing.expect(extractNamespace("simple_name") == null);
     try testing.expect(extractNamespace("no_dots_here") == null);
 }
+
+// Semantic convention modules - registry files (main attribute definitions)
+pub const http = @import("http/registry.zig");
+pub const container = @import("container/registry.zig");
+pub const log = @import("log/registry.zig");
