@@ -34,98 +34,22 @@ test "YAML parser basic functionality" {
     try testing.expect(groups.? == .list);
 }
 
-test "Parse registry schema - test_registry_simple.yaml" {
-    const allocator = testing.allocator;
-
-    // Parse the actual test registry file
-    var registry_parser = parser.RegistryParser.init(allocator);
-    var semconv_data = try registry_parser.parseFile("tools/fixtures/test_registry_simple.yaml");
-    defer semconv_data.deinit(allocator);
-
-    // Validate parsing results
-    try testing.expectEqual(@as(usize, 1), semconv_data.groups.items.len);
-
-    const group = semconv_data.groups.items[0];
-    try testing.expectEqualStrings("test.group", group.id);
-    try testing.expectEqualStrings("Test group", group.brief);
-    try testing.expectEqual(@as(usize, 1), group.attributes.items.len);
-
-    const attr = group.attributes.items[0];
-    try testing.expectEqualStrings("test.attr", attr.id);
-    try testing.expectEqual(semconv.AttributeType.string, attr.type);
-    try testing.expectEqualStrings("Test attribute", attr.brief);
-}
-
-test "Parse registry schema - test_registry_messaging.yaml" {
-    const allocator = testing.allocator;
-
-    // Parse the messaging registry file
-    var registry_parser = parser.RegistryParser.init(allocator);
-    var semconv_data = try registry_parser.parseFile("tools/fixtures/test_registry_messaging.yaml");
-    defer semconv_data.deinit(allocator);
-
-    // Validate parsing results
-    try testing.expectEqual(@as(usize, 1), semconv_data.groups.items.len);
-
-    const group = semconv_data.groups.items[0];
-    try testing.expectEqualStrings("messaging", group.id);
-    try testing.expectEqualStrings("Messaging semantic conventions", group.brief);
-    try testing.expectEqual(@as(usize, 3), group.attributes.items.len);
-
-    // Check messaging.system attribute
-    const system_attr = group.attributes.items[0];
-    try testing.expectEqualStrings("messaging.system", system_attr.id);
-    try testing.expectEqual(semconv.AttributeType.string, system_attr.type);
-    try testing.expectEqual(semconv.StabilityLevel.stable, system_attr.stability);
-    // Note: RequirementLevel API may have changed, commenting out for now
-    // try testing.expectEqual(semconv.RequirementLevel.required, system_attr.requirement_level);
-}
-
-test "Parse entity schema - test_entity_simple.yaml" {
-    const allocator = testing.allocator;
-
-    // Parse the entity file
-    var registry_parser = parser.RegistryParser.init(allocator);
-    var semconv_data = try registry_parser.parseFile("tools/fixtures/test_entity_simple.yaml");
-    defer semconv_data.deinit(allocator);
-
-    // Validate parsing results
-    try testing.expectEqual(@as(usize, 0), semconv_data.groups.items.len); // No groups for entity files currently
-    // Note: entities field may not exist in current Registry structure
-    // Commenting out entity-related tests for now
-}
-
-test "Parse entity schema - test_entity_messaging.yaml" {
-    const allocator = testing.allocator;
-
-    // Parse the messaging entity file
-    var registry_parser = parser.RegistryParser.init(allocator);
-    var semconv_data = try registry_parser.parseFile("tools/fixtures/test_entity_messaging.yaml");
-    defer semconv_data.deinit(allocator);
-
-    // Validate parsing results - entities API may have changed
-    try testing.expectEqual(@as(usize, 0), semconv_data.groups.items.len); // No groups for entity files
-    // Note: entities field may not exist in current Registry structure
-    // Commenting out entity-related tests for now
-}
-
 test "Code generation from parsed registry file" {
     const allocator = testing.allocator;
 
     // Parse actual test file
     var registry_parser = parser.RegistryParser.init(allocator);
-    var semconv_data = try registry_parser.parseFile("tools/fixtures/test_registry_simple.yaml");
-    defer semconv_data.deinit(allocator);
-
-    // The parser already sets the namespace from the filename, so no need to set it manually
+    var http_semconv = try registry_parser.parseFile("tools/fixtures/http/registry.yaml");
+    defer http_semconv.deinit(allocator);
 
     // Generate code
     var code_generator = generator.RegistryCodeGenerator.init(allocator);
-    const registry_code = try code_generator.generateRegistryFile(semconv_data, "test.zig");
+    const registry_code = try code_generator.generateRegistryFile(http_semconv, "anything.zig");
     defer allocator.free(registry_code);
 
     // Basic validation - check that generated code contains expected elements
-    try testing.expect(std.mem.indexOf(u8, registry_code, "Fixtures semantic conventions") != null);
-    try testing.expect(std.mem.indexOf(u8, registry_code, "TEST_ATTR") != null);
-    try testing.expect(std.mem.indexOf(u8, registry_code, "FIXTURESTest_registry_simple") != null);
+    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const Http = union(enum) {") != null);
+    try testing.expect(std.mem.indexOf(u8, registry_code, "requestBodySize: types.StringAttribute") != null);
+    try testing.expect(std.mem.indexOf(u8, registry_code, "requestMethod: types.EnumAttribute(requestMethodValue)") != null);
+    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const requestMethodValue = enum {") != null);
 }

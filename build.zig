@@ -7,6 +7,8 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const test_filter = b.option([]const u8, "test-filter", "filter for tests") orelse &.{};
+
     // This creates a "module", which represents a collection of source files alongside
     // some compilation options, such as optimization mode and linked system libraries.
     // Every executable or library we compile will be based on one or more modules.
@@ -38,6 +40,7 @@ pub fn build(b: *std.Build) void {
     // but does not run it.
     const lib_unit_tests = b.addTest(.{
         .root_module = lib_mod,
+        .filters = &.{test_filter},
     });
 
     const run_lib_unit_tests = b.addRunArtifact(lib_unit_tests);
@@ -45,7 +48,7 @@ pub fn build(b: *std.Build) void {
     // Similar to creating the run step earlier, this exposes a `test` step to
     // the `zig build --help` menu, providing a way for the user to request
     // running the unit tests.
-    const test_step = b.step("test", "Run unit tests");
+    const test_step = b.step("test", "Run unit tests for generated code and tooling");
     test_step.dependOn(&run_lib_unit_tests.step);
 
     // Automation tool executable
@@ -81,25 +84,12 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("tools/generator/test.zig"),
         .target = target,
         .optimize = .Debug,
+        .filters = &.{test_filter},
     });
 
     // Add yaml dependency to tests too
     tool_unit_tests.root_module.addImport("yaml", yaml_dep.module("yaml"));
 
     const run_unit_tests = b.addRunArtifact(tool_unit_tests);
-    const tool_test_step = b.step("test-tools", "Run unit tests for tooling");
-    tool_test_step.dependOn(&run_unit_tests.step);
-
-    // YAML API test
-    const yaml_test = b.addExecutable(.{
-        .name = "yaml-test",
-        .root_source_file = b.path("test_yaml_api.zig"),
-        .target = target,
-        .optimize = .Debug,
-    });
-    yaml_test.root_module.addImport("yaml", yaml_dep.module("yaml"));
-
-    const run_yaml_test = b.addRunArtifact(yaml_test);
-    const yaml_test_step = b.step("test-yaml", "Test YAML API");
-    yaml_test_step.dependOn(&run_yaml_test.step);
+    test_step.dependOn(&run_unit_tests.step);
 }

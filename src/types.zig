@@ -234,15 +234,15 @@ pub fn EnumAttribute(comptime EnumType: type) type {
 
         /// The base attribute definition
         base: StringAttribute,
-        /// Well-known enum values
-        well_known_values: []const EnumType,
+        /// Well-known enum values as the enum type for type safety
+        well_known_values: EnumType,
 
         pub fn init(
             name: []const u8,
             brief: []const u8,
             stability: StabilityLevel,
             requirement_level: RequirementLevel,
-            well_known_values: []const EnumType,
+            well_known_values: EnumType,
         ) Self {
             return Self{
                 .base = StringAttribute.init(name, brief, stability, requirement_level),

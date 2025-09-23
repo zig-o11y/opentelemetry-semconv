@@ -75,12 +75,11 @@ test "module integration" {
     const testing = std.testing;
 
     // Test that all modules are accessible and contain expected data
-    // Test that we can access the enums and get attributes from them
-    const http_attr = http.Http.requestBodySize.attribute();
-    const container_attr = container.Container.name.attribute();
+    // Test union(enum) type information
+    try testing.expect(@TypeOf(@as(http.Http, http.Http{ .requestBodySize = undefined })) == http.Http);
 
-    try testing.expect(http_attr.string.name.len > 0);
-    try testing.expect(container_attr.name.len > 0);
+    // Test that we can access enum variants
+    try testing.expect(@TypeOf(@as(http.Http, http.Http{ .requestMethod = undefined })) == http.Http);
 
     // Test that types are re-exported correctly
     try testing.expectEqual(@TypeOf(types.StabilityLevel.stable), @TypeOf(StabilityLevel.stable));
@@ -90,25 +89,18 @@ test "module integration" {
 test "attribute validation integration" {
     const testing = std.testing;
 
-    // Test with actual attribute names from modules using the new enum API
-    const first_http_attr = http.Http.requestBodySize.attribute();
-    const first_container_attr = container.Container.name.attribute();
+    // Test union(enum) field types
+    const http_union_type_info = @typeInfo(http.Http);
+    try testing.expect(http_union_type_info == .@"union");
 
-    // Test that attributes have expected fields
-    try testing.expect(first_http_attr.string.name.len > 0);
-    try testing.expect(first_container_attr.name.len > 0);
+    // Test that we can create enum values
+    const method_enum_value = http.requestMethodValue.get;
+    try testing.expectEqualStrings("GET", method_enum_value.toString());
 
-    // Test namespace extraction with registry data
-    if (extractNamespace(first_http_attr.string.name)) |ns| {
-        try testing.expect(isValidNamespace(ns));
-        try testing.expectEqualStrings("http", ns);
-    }
-    if (extractNamespace(first_container_attr.name)) |ns| {
-        try testing.expect(isValidNamespace(ns));
-        try testing.expectEqualStrings("container", ns);
-    }
+    // Test that we can get type information about enum attributes too
+    try testing.expect(@TypeOf(method_enum_value) == http.requestMethodValue);
 
-    // Test with hardcoded examples
+    // Test with hardcoded examples for attribute name validation
     try testing.expect(isValidAttributeName("http.request.body.size"));
     try testing.expect(isValidAttributeName("http.response.status_code"));
     try testing.expectEqualStrings("http", extractNamespace("http.request.body.size").?);

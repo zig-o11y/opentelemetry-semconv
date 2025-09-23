@@ -29,9 +29,6 @@ pub const RegistryParser = struct {
         const processed_content = try preprocessor.preprocessContent(content);
         defer self.allocator.free(processed_content);
 
-        // Debug: save preprocessed content to file
-        std.fs.cwd().writeFile(.{ .sub_path = "debug_preprocessed.yaml", .data = processed_content }) catch {};
-
         // Parse YAML using zig-yaml library
         var yaml_parser = yaml.Yaml{ .source = processed_content };
         defer yaml_parser.deinit(self.allocator);
@@ -131,7 +128,6 @@ pub const RegistryParser = struct {
         if (obj.get("attributes")) |attrs_value| {
             if (attrs_value == .list) {
                 const attrs_array = attrs_value.list;
-                std.debug.print("Debug: Found {} attributes in YAML\n", .{attrs_array.len});
                 for (attrs_array) |attr_value| {
                     if (self.parseAttribute(attr_value)) |attr| {
                         try group.attributes.append(attr);
