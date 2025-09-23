@@ -403,6 +403,19 @@ pub const RegistryCodeGenerator = struct {
         return result.toOwnedSlice();
     }
 
+    /// Helper function to convert namespace names to valid Zig identifiers
+    /// Replaces dashes with underscores to create valid Zig export names
+    fn namespaceToZigIdentifier(self: *RegistryCodeGenerator, namespace: []const u8) ![]u8 {
+        var result = try self.allocator.alloc(u8, namespace.len);
+        for (namespace, 0..) |c, i| {
+            switch (c) {
+                '-' => result[i] = '_',
+                else => result[i] = c,
+            }
+        }
+        return result;
+    }
+
     fn groupIdToStructName(self: *RegistryCodeGenerator, id: []const u8) ![]u8 {
         var result = ArrayList(u8).init(self.allocator);
         defer result.deinit();
@@ -532,14 +545,18 @@ pub const RegistryCodeGenerator = struct {
     fn updateRootZig(self: *RegistryCodeGenerator, output_file: []const u8, namespace: []const u8) !void {
         const root_path = "src/root.zig";
 
+        // Convert namespace to valid Zig identifier (replace dashes with underscores)
+        const zig_identifier = try self.namespaceToZigIdentifier(namespace);
+        defer self.allocator.free(zig_identifier);
+
         // Escape namespace if it's a reserved keyword
         const escaped_namespace = blk: {
             for (zig_keywords) |keyword| {
-                if (std.mem.eql(u8, namespace, keyword)) {
-                    break :blk try std.fmt.allocPrint(self.allocator, "@\"{s}\"", .{namespace});
+                if (std.mem.eql(u8, zig_identifier, keyword)) {
+                    break :blk try std.fmt.allocPrint(self.allocator, "@\"{s}\"", .{zig_identifier});
                 }
             }
-            break :blk try self.allocator.dupe(u8, namespace);
+            break :blk try self.allocator.dupe(u8, zig_identifier);
         };
         defer self.allocator.free(escaped_namespace);
 
@@ -567,20 +584,28 @@ pub const RegistryCodeGenerator = struct {
         const content = try file.readToEndAlloc(self.allocator, 1024 * 1024);
         defer self.allocator.free(content);
 
-        // Check if export already exists (check for both escaped and unescaped versions)
+        // Check if export already exists (check for escaped, unescaped, and identifier versions)
         const expected_export = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{escaped_namespace});
         defer self.allocator.free(expected_export);
 
-        const expected_export_unescaped = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace});
-        defer self.allocator.free(expected_export_unescaped);
+        const expected_export_identifier = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{zig_identifier});
+        defer self.allocator.free(expected_export_identifier);
+
+        const expected_export_original = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace});
+        defer self.allocator.free(expected_export_original);
 
         if (std.mem.indexOf(u8, content, expected_export)) |_| {
             // Export already exists, don't add it again
             return;
         }
 
-        if (std.mem.indexOf(u8, content, expected_export_unescaped)) |_| {
-            // Export already exists (unescaped version), don't add it again
+        if (std.mem.indexOf(u8, content, expected_export_identifier)) |_| {
+            // Export already exists (identifier version), don't add it again
+            return;
+        }
+
+        if (std.mem.indexOf(u8, content, expected_export_original)) |_| {
+            // Export already exists (original namespace version), don't add it again
             return;
         }
 

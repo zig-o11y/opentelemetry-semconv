@@ -1,0 +1,11 @@
+groups:
+  - id: registry.user_agent
+    type: attribute_group
+    brief: "User agent related attributes."
+    display_name: "User Agent Attributes"
+    attributes:
+      - id: user_agent.original
+        stability: stable
+        type: string
+        brief: "Value of the HTTP User-Agent header sent by the client."
+        examples: ["CERN-LineMode/2.15 libwww/2.17b3"]

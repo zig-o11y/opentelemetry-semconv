@@ -150,6 +150,46 @@ test "namespace extraction" {
 }
 
 // Semantic convention modules - registry files (main attribute definitions)
-pub const http = @import("http/registry.zig");
+pub const app = @import("app/registry.zig");
+pub const android = @import("android/registry.zig");
+pub const cassandra = @import("cassandra/registry.zig");
+pub const client = @import("client/registry.zig");
+pub const cloud = @import("cloud/registry.zig");
 pub const container = @import("container/registry.zig");
+pub const http = @import("http/registry.zig");
 pub const log = @import("log/registry.zig");
+pub const cloudevents = @import("cloudevents/registry.zig");
+pub const cloudfoundry = @import("cloudfoundry/registry.zig");
+pub const cpu = @import("cpu/registry.zig");
+pub const cpython = @import("cpython/registry.zig");
+pub const deployment = @import("deployment/registry.zig");
+pub const destination = @import("destination/registry.zig");
+pub const device = @import("device/registry.zig");
+pub const disk = @import("disk/registry.zig");
+pub const dotnet = @import("dotnet/registry.zig");
+pub const elasticsearch = @import("elasticsearch/registry.zig");
+pub const enduser = @import("enduser/registry.zig");
+pub const @"error" = @import("error/registry.zig");
+pub const event = @import("event/registry.zig");
+pub const faas = @import("faas/registry.zig");
+pub const geo = @import("geo/registry.zig");
+pub const go = @import("go/registry.zig");
+pub const graphql = @import("graphql/registry.zig");
+pub const heroku = @import("heroku/registry.zig");
+pub const ios = @import("ios/registry.zig");
+pub const jvm = @import("jvm/registry.zig");
+pub const k8s = @import("k8s/registry.zig");
+pub const linux = @import("linux/registry.zig");
+pub const nfs = @import("nfs/registry.zig");
+pub const nodejs = @import("nodejs/registry.zig");
+pub const oci = @import("oci/registry.zig");
+pub const onc_rpc = @import("onc_rpc/registry.zig");
+pub const openai = @import("openai/registry.zig");
+pub const opentracing = @import("opentracing/registry.zig");
+pub const os = @import("os/registry.zig");
+pub const peer = @import("peer/registry.zig");
+pub const pprof = @import("pprof/registry.zig");
+pub const profile = @import("profile/registry.zig");
+pub const rpc = @import("rpc/registry.zig");
+pub const security_rule = @import("security-rule/registry.zig");
+pub const user_agent = @import("user-agent/registry.zig");
