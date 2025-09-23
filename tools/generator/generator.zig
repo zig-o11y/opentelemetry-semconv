@@ -7,6 +7,18 @@ const semconv = @import("semconv.zig");
 pub const RegistryCodeGenerator = struct {
     allocator: Allocator,
 
+    // Zig reserved keywords that need to be escaped with @""
+    const zig_keywords = [_][]const u8{
+        "addrspace", "align", "allowzero", "and", "anyframe", "anytype", 
+        "asm", "async", "await", "break", "callconv", "catch", "comptime", 
+        "const", "continue", "defer", "else", "enum", "errdefer", "error", 
+        "export", "extern", "fn", "for", "if", "inline", "linksection", 
+        "noalias", "noinline", "nosuspend", "null", "opaque", "or", "orelse", 
+        "packed", "pub", "resume", "return", "struct", "suspend", "switch", 
+        "test", "threadlocal", "try", "union", "unreachable", "usingnamespace", 
+        "var", "volatile", "while"
+    };
+
     pub fn init(allocator: Allocator) RegistryCodeGenerator {
         return RegistryCodeGenerator{ .allocator = allocator };
     }
@@ -38,13 +50,13 @@ pub const RegistryCodeGenerator = struct {
 
         // Generate registry as a list of attributes
         for (registry.groups.items) |group| {
-            try self.generateRegistry(&lines, group, registry.namespace);
+            try self.generateRegistry(&lines, group);
         }
 
         return try self.joinLines(lines.items);
     }
 
-    fn generateRegistry(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup, namespace: []const u8) !void {
+    fn generateRegistry(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
         // Group comment
         try lines.append(try std.fmt.allocPrint(self.allocator, "/// {s}", .{group.brief}));
         if (group.display_name) |display_name| {
@@ -97,7 +109,7 @@ pub const RegistryCodeGenerator = struct {
         }
 
         // Generate union type for attribute returns
-        const union_name = try self.namespaceToRegistryName(namespace);
+        const union_name = try self.groupIdToUnionName(group.id);
         defer self.allocator.free(union_name);
 
         // Generate the union(enum) declaration directly
@@ -214,6 +226,34 @@ pub const RegistryCodeGenerator = struct {
         return result.toOwnedSlice();
     }
 
+    fn groupIdToUnionName(self: *RegistryCodeGenerator, group_id: []const u8) ![]u8 {
+        var result = ArrayList(u8).init(self.allocator);
+        defer result.deinit();
+
+        var capitalize_next = true;
+        for (group_id) |c| {
+            if (c == '.' or c == '_' or c == '-') {
+                capitalize_next = true;
+            } else if (capitalize_next) {
+                try result.append(std.ascii.toUpper(c));
+                capitalize_next = false;
+            } else {
+                try result.append(c);
+            }
+        }
+
+        // If we have an empty result or it starts with a number, prefix with underscore
+        if (result.items.len == 0 or std.ascii.isDigit(result.items[0])) {
+            var prefixed = ArrayList(u8).init(self.allocator);
+            defer prefixed.deinit();
+            try prefixed.append('_');
+            try prefixed.appendSlice(result.items);
+            return prefixed.toOwnedSlice();
+        }
+
+        return result.toOwnedSlice();
+    }
+
     fn attributeIdToEnumVariant(self: *RegistryCodeGenerator, id: []const u8) ![]u8 {
         var result = ArrayList(u8).init(self.allocator);
         defer result.deinit();
@@ -322,7 +362,18 @@ pub const RegistryCodeGenerator = struct {
             }
         }
 
-        return result.toOwnedSlice();
+        const name = try result.toOwnedSlice();
+        defer self.allocator.free(name);
+
+        // Check if the name is a reserved keyword
+        for (zig_keywords) |keyword| {
+            if (std.mem.eql(u8, name, keyword)) {
+                // Escape with @"" syntax
+                return try std.fmt.allocPrint(self.allocator, "@\"{s}\"", .{name});
+            }
+        }
+
+        return try self.allocator.dupe(u8, name);
     }
 
     fn capitalizeFirst(self: *RegistryCodeGenerator, s: []const u8) ![]u8 {

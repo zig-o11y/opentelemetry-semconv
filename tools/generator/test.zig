@@ -48,7 +48,7 @@ test "Code generation from parsed registry file" {
     defer allocator.free(registry_code);
 
     // Basic validation - check that generated code contains expected elements
-    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const Http = union(enum) {") != null);
+    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const RegistryHttp = union(enum) {") != null);
     try testing.expect(std.mem.indexOf(u8, registry_code, "requestBodySize: types.StringAttribute") != null);
     try testing.expect(std.mem.indexOf(u8, registry_code, "requestMethod: types.EnumAttribute(requestMethodValue)") != null);
     try testing.expect(std.mem.indexOf(u8, registry_code, "pub const requestMethodValue = enum {") != null);

@@ -76,10 +76,10 @@ test "module integration" {
 
     // Test that all modules are accessible and contain expected data
     // Test union(enum) type information
-    try testing.expect(@TypeOf(@as(http.Http, http.Http{ .requestBodySize = undefined })) == http.Http);
+    try testing.expect(@TypeOf(@as(http.RegistryHttp, http.RegistryHttp{ .requestBodySize = undefined })) == http.RegistryHttp);
 
     // Test that we can access enum variants
-    try testing.expect(@TypeOf(@as(http.Http, http.Http{ .requestMethod = undefined })) == http.Http);
+    try testing.expect(@TypeOf(@as(http.RegistryHttp, http.RegistryHttp{ .requestMethod = undefined })) == http.RegistryHttp);
 
     // Test that types are re-exported correctly
     try testing.expectEqual(@TypeOf(types.StabilityLevel.stable), @TypeOf(StabilityLevel.stable));
@@ -90,7 +90,7 @@ test "attribute validation integration" {
     const testing = std.testing;
 
     // Test union(enum) field types
-    const http_union_type_info = @typeInfo(http.Http);
+    const http_union_type_info = @typeInfo(http.RegistryHttp);
     try testing.expect(http_union_type_info == .@"union");
 
     // Test that we can create enum values
