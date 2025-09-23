@@ -126,6 +126,11 @@ pub const RegistryCodeGenerator = struct {
             }
         }
 
+        try lines.append(try self.allocator.dupe(u8, ""));
+        
+        // Generate toAttribute method
+        try self.generateToAttributeMethod(lines, group);
+
         try lines.append(try self.allocator.dupe(u8, "};"));
         try lines.append(try self.allocator.dupe(u8, ""));
     }
@@ -194,6 +199,61 @@ pub const RegistryCodeGenerator = struct {
         try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s}: []const u8 = \"{s}\";", .{ field_name, attr.id }));
         try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s}_type: type = {s};", .{ field_name, enum_name }));
         try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s}_stability = \"{s}\";", .{ field_name, @tagName(attr.stability) }));
+    }
+
+    fn generateToAttributeMethod(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
+        try lines.append(try self.allocator.dupe(u8, "    /// Extract attribute information from this union variant"));
+        try lines.append(try self.allocator.dupe(u8, "    pub fn toAttribute(self: @This()) types.AttributeInfo {"));
+        try lines.append(try self.allocator.dupe(u8, "        return switch (self) {"));
+
+        // Generate switch cases for each attribute
+        for (group.attributes.items) |attr| {
+            const variant_name = try self.attributeIdToEnumVariant(attr.id);
+            defer self.allocator.free(variant_name);
+
+            const stability_name = try self.stabilityToTypesStability(attr.stability);
+            defer self.allocator.free(stability_name);
+
+            const escaped_brief = try self.escapeString(attr.brief);
+            defer self.allocator.free(escaped_brief);
+
+            // Generate the switch case
+            try lines.append(try std.fmt.allocPrint(self.allocator, "            .{s} => types.AttributeInfo{{", .{variant_name}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                .name = \"{s}\",", .{attr.id}));
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                .brief = \"{s}\",", .{escaped_brief}));
+            
+            if (attr.note) |note| {
+                const escaped_note = try self.escapeString(note);
+                defer self.allocator.free(escaped_note);
+                try lines.append(try std.fmt.allocPrint(self.allocator, "                .note = \"{s}\",", .{escaped_note}));
+            } else {
+                try lines.append(try self.allocator.dupe(u8, "                .note = null,"));
+            }
+            
+            try lines.append(try std.fmt.allocPrint(self.allocator, "                .stability = .{s},", .{stability_name}));
+            
+            if (attr.examples) |examples| {
+                if (examples.items.len > 0) {
+                    try lines.append(try self.allocator.dupe(u8, "                .examples = &.{"));
+                    for (examples.items, 0..) |example, i| {
+                        const escaped_example = try self.escapeString(example);
+                        defer self.allocator.free(escaped_example);
+                        const comma = if (i == examples.items.len - 1) "" else ",";
+                        try lines.append(try std.fmt.allocPrint(self.allocator, "                    \"{s}\"{s}", .{ escaped_example, comma }));
+                    }
+                    try lines.append(try self.allocator.dupe(u8, "                },"));
+                } else {
+                    try lines.append(try self.allocator.dupe(u8, "                .examples = null,"));
+                }
+            } else {
+                try lines.append(try self.allocator.dupe(u8, "                .examples = null,"));
+            }
+            
+            try lines.append(try self.allocator.dupe(u8, "            },"));
+        }
+
+        try lines.append(try self.allocator.dupe(u8, "        };"));
+        try lines.append(try self.allocator.dupe(u8, "    }"));
     }
 
     // Utility functions
