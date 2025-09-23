@@ -33,7 +33,7 @@ pub const YamlPreprocessor = struct {
         while (lines.next()) |line| {
             // Strip comments from the line (everything after #)
             const line_without_comments = self.stripComments(line);
-            
+
             if (in_block_scalar) {
                 const line_indent = countLeadingSpaces(line_without_comments);
 
@@ -250,14 +250,14 @@ pub const YamlPreprocessor = struct {
     /// Only strips comments that are not within quoted strings or block scalars
     fn stripComments(self: *YamlPreprocessor, line: []const u8) []const u8 {
         _ = self; // unused
-        
+
         var in_single_quote = false;
         var in_double_quote = false;
         var i: usize = 0;
-        
+
         while (i < line.len) {
             const char = line[i];
-            
+
             switch (char) {
                 '\'' => {
                     if (!in_double_quote) {
@@ -284,10 +284,10 @@ pub const YamlPreprocessor = struct {
                 },
                 else => {},
             }
-            
+
             i += 1;
         }
-        
+
         // No comment found, return the original line
         return line;
     }

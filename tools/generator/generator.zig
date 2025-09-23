@@ -127,7 +127,7 @@ pub const RegistryCodeGenerator = struct {
         }
 
         try lines.append(try self.allocator.dupe(u8, ""));
-        
+
         // Generate toAttribute method
         try self.generateToAttributeMethod(lines, group);
 
@@ -203,7 +203,7 @@ pub const RegistryCodeGenerator = struct {
 
     fn generateToAttributeMethod(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
         try lines.append(try self.allocator.dupe(u8, "    /// Extract attribute information from this union variant"));
-        try lines.append(try self.allocator.dupe(u8, "    pub fn toAttribute(self: @This()) types.AttributeInfo {"));
+        try lines.append(try self.allocator.dupe(u8, "    pub fn get(self: @This()) types.AttributeInfo {"));
         try lines.append(try self.allocator.dupe(u8, "        return switch (self) {"));
 
         // Generate switch cases for each attribute
@@ -221,7 +221,7 @@ pub const RegistryCodeGenerator = struct {
             try lines.append(try std.fmt.allocPrint(self.allocator, "            .{s} => types.AttributeInfo{{", .{variant_name}));
             try lines.append(try std.fmt.allocPrint(self.allocator, "                .name = \"{s}\",", .{attr.id}));
             try lines.append(try std.fmt.allocPrint(self.allocator, "                .brief = \"{s}\",", .{escaped_brief}));
-            
+
             if (attr.note) |note| {
                 const escaped_note = try self.escapeString(note);
                 defer self.allocator.free(escaped_note);
@@ -229,9 +229,9 @@ pub const RegistryCodeGenerator = struct {
             } else {
                 try lines.append(try self.allocator.dupe(u8, "                .note = null,"));
             }
-            
+
             try lines.append(try std.fmt.allocPrint(self.allocator, "                .stability = .{s},", .{stability_name}));
-            
+
             if (attr.examples) |examples| {
                 if (examples.items.len > 0) {
                     try lines.append(try self.allocator.dupe(u8, "                .examples = &.{"));
@@ -248,7 +248,7 @@ pub const RegistryCodeGenerator = struct {
             } else {
                 try lines.append(try self.allocator.dupe(u8, "                .examples = null,"));
             }
-            
+
             try lines.append(try self.allocator.dupe(u8, "            },"));
         }
 
