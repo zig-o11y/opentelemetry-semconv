@@ -56,37 +56,14 @@ All the namespaces from the official OpenTelemetry semconv are defined, most not
 Many semantic conventions include well-known enum values:
 
 ```zig
-const http_method = semconv.http.HttpRequestMethod.GET;
-std.debug.print("HTTP method: {s}\n", .{http_method.toString()});
 
-// Parse from string
-if (semconv.http.HttpRequestMethod.fromString("POST")) |method| {
-    std.debug.print("Parsed method: {s}\n", .{method.toString()});
-}
-```
-
-### Helper Functions
-
-The library includes helper functions for common operations:
-
-```zig
-// HTTP helpers
-const is_error = semconv.http.isErrorStatus(404); // true
-const status_class = semconv.http.getStatusClass(200); // 2
-
-// Network helpers
-const is_ipv4 = semconv.network.isIPv4Address("192.168.1.1"); // true
-
-// URL helpers
-var parsed = semconv.url.ParsedUrl.init("https://example.com/path?query=value");
-try parsed.parse(allocator);
 ```
 
 ## Building
 
 ### As a Dependency
 
-Fetch the library with `zig build fetch`, then add to your `build.zig`:
+Fetch the library with `zig build fetch --save`, then add to your `build.zig`:
 
 ```zig
 const semconv_dep = b.dependency("opentelemetry_semconv", .{});
@@ -96,9 +73,6 @@ exe.root_module.addImport("opentelemetry_semconv", semconv_dep.module("opentelem
 ### Building Standalone
 
 ```bash
-# Run tests
-zig test src/root.zig
-
 # Build (if building as executable)
 zig build
 ```
@@ -136,7 +110,7 @@ EnumAttribute(EnumType) = struct {
 Run the test suite:
 
 ```bash
-zig test src/root.zig
+zig build test
 ```
 
 All modules include comprehensive tests covering:
@@ -145,19 +119,6 @@ All modules include comprehensive tests covering:
 - Helper function behavior
 - Edge cases and validation
 
-## Contributing
-
-This library is generated from the OpenTelemetry semantic conventions specification. To add new semantic conventions:
-
-1. Add the new namespace directory under `src/`
-2. Create a `mod.zig` file following the established patterns
-3. Export the module in `src/root.zig`
-4. Add comprehensive tests
-5. Update this README
-
-## License
-
-This project is licensed under the same terms as the OpenTelemetry project.
 
 ## Compatibility
 
