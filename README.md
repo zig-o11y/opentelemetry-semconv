@@ -47,17 +47,26 @@ All the namespaces from the official OpenTelemetry semconv are defined, most not
 - `semconv.url` - URL semantic conventions
 - `semconv.server` - Server semantic conventions
 - `semconv.client` - Client semantic conventions
-- `semconv.err` - Error semantic conventions (note: `error` is a Zig keyword)
+- `semconv."@error"` - Error semantic conventions
 - `semconv.user_agent` - User Agent semantic conventions
 - `semconv.telemetry` - Telemetry SDK semantic conventions
 
 ### Working with Enums
 
-Many semantic conventions include well-known enum values:
+Many semantic conventions include well-known enum values, for example for `http`:
 
 ```zig
+const semconv = @import("opentelemetry-semconv");
 
+const http_attr = semconv.http.RegistryHttp{ .requestMethod = .get};
+const attribute_name = if(http_attr.get().stability == .stable){
+    http_attr.get().name;
+} else "custom.http.request.attribute.key"
 ```
+
+You can use stability levels to discern if an attribute should be in place.
+
+Each attribute comes with examples, and the enums allow type-safe assertions.
 
 ## Building
 
@@ -67,7 +76,7 @@ Fetch the library with `zig build fetch --save`, then add to your `build.zig`:
 
 ```zig
 const semconv_dep = b.dependency("opentelemetry_semconv", .{});
-exe.root_module.addImport("opentelemetry_semconv", semconv_dep.module("opentelemetry-semconv"));
+exe.root_module.addImport("opentelemetry-semconv", semconv_dep.module("opentelemetry-semconv"));
 ```
 
 ### Building Standalone
@@ -82,7 +91,7 @@ zig build
 The library is organized as follows:
 
 - `src/types.zig` - Core type definitions for attributes, stability levels, etc.
-- `src/*/*.zig` - Individual semantic convention namespace modules, divided by 
+- `src/*/*.zig` - Individual semantic convention namespace modules
 - `src/root.zig` - Main library interface
 
 ### Type System
@@ -122,6 +131,6 @@ All modules include comprehensive tests covering:
 
 ## Compatibility
 
-- **Zig Version**: 0.14.x
+- **Zig Version**: 0.14.x+
 - **OpenTelemetry Spec**: v1.28.0
 - **Platforms**: All platforms supported by Zig
