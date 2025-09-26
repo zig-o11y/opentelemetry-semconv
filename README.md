@@ -23,13 +23,16 @@ const std = @import("std");
 const semconv = @import("opentelemetry-semconv");
 
 pub fn main() !void {
-    // Use Deployment semantic conventions
-    const deploy_attr = semconv.deployment.deployment_environment_name;
-    const deploy_key = deploy_attr.name;
-    const deploy_status = .succeeded;
+    // Use HTTP semantic conventions
+    const http_method_attr = semconv.http.Registry.http_request_method;
+    const method_value = semconv.http.Registry.requestMethodValue.get;
+
+    // Use JVM semantic conventions
+    const jvm_version_attr = semconv.jvm.Registry.jvm_version;
 
     // Here you would actually set the attribute on metrics data point, log/event or trace attributes
-    std.debug.print("Setting event with attribute: {s} = {s}\n", .{deploy_key, deploy_status.toString()});
+    std.debug.print("HTTP Method: {s} = {s}\n", .{ http_method_attr.base.name, method_value.toString() });
+    std.debug.print("JVM Version attribute: {s}\n", .{jvm_version_attr.name});
 }
 ```
 
@@ -53,10 +56,17 @@ Many semantic conventions include well-known enum values, for example for `http`
 ```zig
 const semconv = @import("opentelemetry-semconv");
 
-const http_attr = semconv.http.RegistryHttp{ .requestMethod = .get};
-const attribute_name = if(http_attr.get().stability == .stable){
-    http_attr.get().name;
-} else "custom.http.request.attribute.key"
+// Access HTTP request method attribute and enum values
+const http_method_attr = semconv.http.Registry.http_request_method;
+const get_method = semconv.http.Registry.requestMethodValue.get;
+
+// Check stability and use the attribute
+const attribute_name = if (http_method_attr.base.stability == .stable)
+    http_method_attr.base.name
+else
+    "custom.http.request.method";
+
+std.debug.print("Attribute: {s}, Method: {s}\n", .{ attribute_name, get_method.toString() });
 ```
 
 You can use stability levels to discern if an attribute should be in place.
@@ -94,19 +104,24 @@ The library is organized as follows:
 The library uses a hierarchical type system:
 
 ```zig
-// Base attribute type (generic)
-Attribute(ValueType)
-
-// Specialized attribute types
-StringAttribute = Attribute([]const u8)
-IntAttribute = Attribute(i64)
-BoolAttribute = Attribute(bool)
+// Base attribute types
+StringAttribute = struct {
+    name: []const u8,
+    brief: []const u8,
+    note: ?[]const u8,
+    stability: StabilityLevel,
+    requirement_level: RequirementLevel,
+}
 
 // Enum attributes with well-known values
 EnumAttribute(EnumType) = struct {
     base: StringAttribute,
-    well_known_values: []const EnumType,
+    well_known_values: EnumType,
 }
+
+// Accessing attributes
+const http_method = semconv.http.Registry.http_request_method; // EnumAttribute
+const http_body_size = semconv.http.Registry.http_request_body_size; // StringAttribute
 ```
 
 ## Testing
