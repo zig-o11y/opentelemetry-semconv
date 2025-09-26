@@ -103,20 +103,3 @@ pub const cassandra_speculative_execution_count = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This section defines attributes for Cassandra.
-/// Display name: Cassandra Attributes
-pub const Registry = struct {
-    /// The data center of the coordinating node for a query.
-    pub const coordinatorDc = cassandra_coordinator_dc;
-    /// The ID of the coordinating node for a query.
-    pub const coordinatorId = cassandra_coordinator_id;
-    /// The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
-    pub const consistencyLevel = cassandra_consistency_level;
-    /// Whether or not the query is idempotent.
-    pub const queryIdempotent = cassandra_query_idempotent;
-    /// The fetch size used for paging, i.e. how many rows will be returned at once.
-    pub const pageSize = cassandra_page_size;
-    /// The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
-    pub const speculativeExecutionCount = cassandra_speculative_execution_count;
-};
-

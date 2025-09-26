@@ -31,10 +31,3 @@ pub const linux_memory_slab_state = types.EnumAttribute(memorySlabStateValue){
     .well_known_values = memorySlabStateValue.reclaimable,
 };
 
-/// Describes Linux Memory attributes
-/// Display name: Linux Memory Attributes
-pub const Registry = struct {
-    /// The Linux Slab memory state
-    pub const memorySlabState = linux_memory_slab_state;
-};
-

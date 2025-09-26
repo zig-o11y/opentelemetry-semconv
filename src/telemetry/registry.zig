@@ -97,18 +97,3 @@ pub const telemetry_distro_version = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines attributes for telemetry SDK.
-/// Display name: Telemetry Attributes
-pub const Registry = struct {
-    /// The name of the telemetry SDK as defined above.
-    pub const sdkName = telemetry_sdk_name;
-    /// The language of the telemetry SDK.
-    pub const sdkLanguage = telemetry_sdk_language;
-    /// The version string of the telemetry SDK.
-    pub const sdkVersion = telemetry_sdk_version;
-    /// The name of the auto instrumentation agent or distribution, if used.
-    pub const distroName = telemetry_distro_name;
-    /// The version string of the auto instrumentation agent or distribution, if used.
-    pub const distroVersion = telemetry_distro_version;
-};
-

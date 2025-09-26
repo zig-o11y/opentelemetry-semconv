@@ -85,22 +85,3 @@ pub const log_record_original = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines log attributes
-/// Display name: General Log Attributes
-pub const Registry = struct {
-    /// The stream associated with the log. See below for a list of well-known values.
-    pub const iostream = log_iostream;
-    /// The basename of the file.
-    pub const fileName = log_file_name;
-    /// The full path to the file.
-    pub const filePath = log_file_path;
-    /// The basename of the file, with symlinks resolved.
-    pub const fileNameResolved = log_file_name_resolved;
-    /// The full path to the file, with symlinks resolved.
-    pub const filePathResolved = log_file_path_resolved;
-    /// A unique identifier for the Log Record.
-    pub const recordUid = log_record_uid;
-    /// The complete original Log Record.
-    pub const recordOriginal = log_record_original;
-};
-

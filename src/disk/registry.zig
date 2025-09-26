@@ -31,10 +31,3 @@ pub const disk_io_direction = types.EnumAttribute(ioDirectionValue){
     .well_known_values = ioDirectionValue.read,
 };
 
-/// These attributes may be used for any disk related operation.
-/// Display name: Disk Attributes
-pub const Registry = struct {
-    /// The disk IO operation direction.
-    pub const ioDirection = disk_io_direction;
-};
-

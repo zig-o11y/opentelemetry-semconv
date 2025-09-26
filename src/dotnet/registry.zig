@@ -40,10 +40,3 @@ pub const dotnet_gc_heap_generation = types.EnumAttribute(gcHeapGenerationValue)
     .well_known_values = gcHeapGenerationValue.gen0,
 };
 
-/// This document defines .NET related attributes.
-/// Display name: .NET Attributes
-pub const Registry = struct {
-    /// Name of the garbage collector managed heap generation.
-    pub const gcHeapGeneration = dotnet_gc_heap_generation;
-};
-

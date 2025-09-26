@@ -86,26 +86,3 @@ pub const app_build_id = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Describes attributes related to client-side applications (e.g. web apps or mobile apps).
-/// Display name: Application Attributes
-pub const Registry = struct {
-    /// A unique identifier representing the installation of an application on a specific device
-    pub const installationId = app_installation_id;
-    /// A number of frame renders that experienced jank.
-    pub const jankFrameCount = app_jank_frame_count;
-    /// The minimum rendering threshold for this jank, in seconds.
-    pub const jankThreshold = app_jank_threshold;
-    /// The time period, in seconds, for which this jank is being reported.
-    pub const jankPeriod = app_jank_period;
-    /// The x (horizontal) coordinate of a screen coordinate, in screen pixels.
-    pub const screenCoordinateX = app_screen_coordinate_x;
-    /// The y (vertical) component of a screen coordinate, in screen pixels.
-    pub const screenCoordinateY = app_screen_coordinate_y;
-    /// An identifier that uniquely differentiates this widget from other widgets in the same application.
-    pub const widgetId = app_widget_id;
-    /// The name of an application widget.
-    pub const widgetName = app_widget_name;
-    /// Unique identifier for a particular build or compilation of the application.
-    pub const buildId = app_build_id;
-};
-

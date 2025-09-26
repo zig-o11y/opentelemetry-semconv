@@ -195,20 +195,3 @@ pub const cloud_platform = types.EnumAttribute(platformValue){
     .well_known_values = platformValue.alibaba_cloud_ecs,
 };
 
-/// A cloud environment (e.g. GCP, Azure, AWS).
-/// Display name: Cloud Attributes
-pub const Registry = struct {
-    /// Name of the cloud provider.
-    pub const provider = cloud_provider;
-    /// The cloud account ID the resource is assigned to.
-    pub const accountId = cloud_account_id;
-    /// The geographical region within a cloud provider. When associated with a resource, this attribute specifies the region where the resource operates. When calling services or APIs deployed on a cloud, this attribute identifies the region where the called destination is deployed.
-    pub const region = cloud_region;
-    /// Cloud provider-specific native identifier of the monitored cloud resource (e.g. an [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) on AWS, a [fully qualified resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) on Azure, a [full resource name](https://google.aip.dev/122
-    pub const resourceId = cloud_resource_id;
-    /// Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
-    pub const availabilityZone = cloud_availability_zone;
-    /// The cloud platform in use.
-    pub const platform = cloud_platform;
-};
-

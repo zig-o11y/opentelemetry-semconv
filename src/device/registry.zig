@@ -41,16 +41,3 @@ pub const device_model_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Describes device attributes.
-/// Display name: Device Attributes
-pub const Registry = struct {
-    /// A unique identifier representing the device
-    pub const id = device_id;
-    /// The name of the device manufacturer
-    pub const manufacturer = device_manufacturer;
-    /// The model identifier for the device
-    pub const modelIdentifier = device_model_identifier;
-    /// The marketing name for the device model
-    pub const modelName = device_model_name;
-};
-

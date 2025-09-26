@@ -94,19 +94,3 @@ pub const os_build_id = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// The operating system (OS) on which the process represented by this resource is running.
-/// Display name: Operating System Attributes
-/// In case of virtualized environments, this is the operating system as it is observed by the process, i.e., the virtualized guest rather than the underlying host.
-pub const Registry = struct {
-    /// The operating system type.
-    pub const @"type" = os_type;
-    /// Human readable (not intended to be parsed) OS version information, like e.g. reported by `ver` or `lsb_release -a` commands.
-    pub const description = os_description;
-    /// Human readable operating system name.
-    pub const name = os_name;
-    /// The version string of the operating system as defined in [Version Attributes](/docs/resource/README.md
-    pub const version = os_version;
-    /// Unique identifier for a particular build or compilation of the operating system.
-    pub const buildId = os_build_id;
-};
-

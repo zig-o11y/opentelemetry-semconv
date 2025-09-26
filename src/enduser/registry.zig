@@ -23,12 +23,3 @@ pub const enduser_pseudo_id = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Describes the end user.
-/// Display name: End User Attributes
-pub const Registry = struct {
-    /// Unique identifier of an end user in the system. It maybe a username, email address, or other identifier.
-    pub const id = enduser_id;
-    /// Pseudonymous identifier of an end user. This identifier should be a random value that is not directly linked or associated with the end user's actual identity.
-    pub const pseudoId = enduser_pseudo_id;
-};
-

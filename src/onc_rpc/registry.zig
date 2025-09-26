@@ -41,16 +41,3 @@ pub const onc_rpc_program_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines attributes for [ONC RPC (Sun RPC)](https://datatracker.ietf.org/doc/html/rfc5531)
-/// Display name: ONC RPC (Sun RPC) attributes
-pub const Registry = struct {
-    /// ONC/Sun RPC program version.
-    pub const version = onc_rpc_version;
-    /// ONC/Sun RPC procedure number.
-    pub const procedureNumber = onc_rpc_procedure_number;
-    /// ONC/Sun RPC procedure name.
-    pub const procedureName = onc_rpc_procedure_name;
-    /// ONC/Sun RPC program name.
-    pub const programName = onc_rpc_program_name;
-};
-

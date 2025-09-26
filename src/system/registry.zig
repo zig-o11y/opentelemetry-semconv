@@ -241,28 +241,3 @@ pub const system_process_status = types.EnumAttribute(processStatusValue){
     .well_known_values = processStatusValue.running,
 };
 
-/// Describes System attributes
-/// Display name: General System Attributes
-pub const Registry = struct {
-    /// The device identifier
-    pub const device = system_device;
-    /// The memory state
-    pub const memoryState = system_memory_state;
-    /// The memory paging state
-    pub const pagingState = system_paging_state;
-    /// The memory paging type
-    pub const pagingType = system_paging_type;
-    /// The paging access direction
-    pub const pagingDirection = system_paging_direction;
-    /// The filesystem state
-    pub const filesystemState = system_filesystem_state;
-    /// The filesystem type
-    pub const filesystemType = system_filesystem_type;
-    /// The filesystem mode
-    pub const filesystemMode = system_filesystem_mode;
-    /// The filesystem mount path
-    pub const filesystemMountpoint = system_filesystem_mountpoint;
-    /// The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html
-    pub const processStatus = system_process_status;
-};
-

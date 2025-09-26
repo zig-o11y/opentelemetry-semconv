@@ -49,14 +49,3 @@ pub const openai_response_system_fingerprint = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This group defines attributes for OpenAI.
-/// Display name: OpenAI Attributes
-pub const Registry = struct {
-    /// The service tier requested. May be a specific tier, default, or auto.
-    pub const requestServiceTier = openai_request_service_tier;
-    /// The service tier used for the response.
-    pub const responseServiceTier = openai_response_service_tier;
-    /// A fingerprint to track any eventual change in the Generative AI environment.
-    pub const responseSystemFingerprint = openai_response_system_fingerprint;
-};
-

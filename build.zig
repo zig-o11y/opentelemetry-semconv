@@ -3,7 +3,7 @@ const std = @import("std");
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
 // runner.
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -96,28 +96,16 @@ pub fn build(b: *std.Build) void {
     // Examples step
     const examples_step = b.step("examples", "Build and run all example executables");
 
-    // List of all example files
-    const example_files = [_]struct {
-        name: []const u8,
-        path: []const u8,
-    }{
-        // Cloud monitoring examples
-        .{ .name = "aws_ec2_example", .path = "examples/cloud_monitoring/aws_ec2.zig" },
-        .{ .name = "gcp_compute_example", .path = "examples/cloud_monitoring/gcp_compute.zig" },
-        .{ .name = "azure_vm_example", .path = "examples/cloud_monitoring/azure_vm.zig" },
-        .{ .name = "multi_cloud_example", .path = "examples/cloud_monitoring/multi_cloud.zig" },
-
-        // Basic usage examples
-        .{ .name = "minimal_example", .path = "examples/basic_usage/minimal_example.zig" },
-        .{ .name = "simple_attributes_example", .path = "examples/basic_usage/simple_attributes.zig" },
-        .{ .name = "attribute_info_example", .path = "examples/basic_usage/attribute_info.zig" },
+    // Basic example showing HTTP and JVM attribute usage
+    const example_files: []const []const u8 = &.{
+        "basic_usage.zig",
     };
 
     // Create executable for each example
     for (example_files) |example| {
         const example_exe = b.addExecutable(.{
-            .name = example.name,
-            .root_source_file = b.path(example.path),
+            .name = std.mem.trim(u8, example, ".zig"),
+            .root_source_file = try b.path("examples").join(b.allocator, example),
             .target = target,
             .optimize = optimize,
         });

@@ -40,10 +40,3 @@ pub const ios_app_state = types.EnumAttribute(appStateValue){
     .well_known_values = appStateValue.active,
 };
 
-/// This group describes iOS-specific attributes.
-/// Display name: iOS Attributes
-pub const Registry = struct {
-    /// This attribute represents the state of the application.
-    pub const appState = ios_app_state;
-};
-

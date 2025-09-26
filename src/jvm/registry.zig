@@ -123,24 +123,3 @@ pub const jvm_buffer_pool_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines Java Virtual machine related attributes.
-/// Display name: Java Virtual Machine (JVM) Attributes
-pub const Registry = struct {
-    /// Name of the garbage collector action.
-    pub const gcAction = jvm_gc_action;
-    /// Name of the garbage collector cause.
-    pub const gcCause = jvm_gc_cause;
-    /// Name of the garbage collector.
-    pub const gcName = jvm_gc_name;
-    /// The type of memory.
-    pub const memoryType = jvm_memory_type;
-    /// Name of the memory pool.
-    pub const memoryPoolName = jvm_memory_pool_name;
-    /// Whether the thread is daemon or not.
-    pub const threadDaemon = jvm_thread_daemon;
-    /// State of the thread.
-    pub const threadState = jvm_thread_state;
-    /// Name of the buffer pool.
-    pub const bufferPoolName = jvm_buffer_pool_name;
-};
-

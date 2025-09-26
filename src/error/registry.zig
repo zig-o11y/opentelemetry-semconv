@@ -37,12 +37,3 @@ pub const error_message = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines the shared attributes used to report an error.
-/// Display name: Error Attributes
-pub const Registry = struct {
-    /// Describes a class of error the operation ended with.
-    pub const @"type" = error_type;
-    /// A message providing more detail about an error in human-readable form.
-    pub const message = error_message;
-};
-

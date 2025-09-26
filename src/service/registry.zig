@@ -41,16 +41,3 @@ pub const service_instance_id = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// A service instance.
-/// Display name: Service Attributes
-pub const Registry = struct {
-    /// Logical name of the service.
-    pub const name = service_name;
-    /// The version string of the service API or implementation. The format is not defined by these conventions.
-    pub const version = service_version;
-    /// A namespace for `service.name`.
-    pub const namespace = service_namespace;
-    /// The string ID of the service instance.
-    pub const instanceId = service_instance_id;
-};
-

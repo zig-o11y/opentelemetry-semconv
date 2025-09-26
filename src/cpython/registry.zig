@@ -34,10 +34,3 @@ pub const cpython_gc_generation = types.EnumAttribute(gcGenerationValue){
     .well_known_values = gcGenerationValue.generation_0,
 };
 
-/// This document defines CPython related attributes.
-/// Display name: CPython attributes
-pub const Registry = struct {
-    /// Value of the garbage collector collection generation.
-    pub const gcGeneration = cpython_gc_generation;
-};
-

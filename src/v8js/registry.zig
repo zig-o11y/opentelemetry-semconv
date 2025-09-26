@@ -72,12 +72,3 @@ pub const v8js_heap_space_name = types.EnumAttribute(heapSpaceNameValue){
     .well_known_values = heapSpaceNameValue.new_space,
 };
 
-/// Describes V8 JS Engine Runtime related attributes.
-/// Display name: V8 JS Attributes
-pub const Registry = struct {
-    /// The type of garbage collection.
-    pub const gcType = v8js_gc_type;
-    /// The name of the space type of heap memory.
-    pub const heapSpaceName = v8js_heap_space_name;
-};
-

@@ -58,12 +58,3 @@ pub const cpu_logical_number = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Attributes specific to a cpu instance.
-/// Display name: CPU Attributes
-pub const Registry = struct {
-    /// The mode of the CPU
-    pub const mode = cpu_mode;
-    /// The logical CPU number [0..n-1]
-    pub const logicalNumber = cpu_logical_number;
-};
-

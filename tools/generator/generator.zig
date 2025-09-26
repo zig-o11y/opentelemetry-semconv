@@ -67,21 +67,20 @@ pub const RegistryCodeGenerator = struct {
 
         const generated_code = try self.joinLines(lines.items);
 
-        // Update root.zig to include this registry
-        try self.updateRootZig(output_file, registry.namespace);
+        // Only generate module file and update root.zig for real file paths under src/
+        if (std.mem.startsWith(u8, output_file, "src/") and std.mem.indexOf(u8, output_file[4..], "/") != null) {
+            // Generate the separate module file (XXX.zig) that exports registry.zig as Registry
+            try self.generateModuleFile(output_file, registry.namespace);
+
+            // Update root.zig to include this registry
+            try self.updateRootZig(output_file, registry.namespace);
+        }
 
         return generated_code;
     }
 
     fn generateRegistry(self: *RegistryCodeGenerator, lines: *ArrayList([]const u8), group: semconv.AttributeGroup) !void {
-        // Group comment - use multi-line comment helper for proper formatting
-        try self.formatMultiLineComment(group.brief, "///", lines);
-        if (group.display_name) |display_name| {
-            try lines.append(try std.fmt.allocPrint(self.allocator, "/// Display name: {s}", .{display_name}));
-        }
-        if (group.note) |note| {
-            try self.formatMultiLineComment(note, "///", lines);
-        }
+        // Note: We no longer add trailing documentation comments after the attribute definitions
 
         // Generate enum types for attributes with enum members
         for (group.attributes.items) |attr| {
@@ -222,46 +221,63 @@ pub const RegistryCodeGenerator = struct {
             try self.generateAttributeConstant(lines, attr);
         }
 
-        // Generate combined group comments from first group
-        if (registry.groups.items.len > 0) {
-            const first_group = registry.groups.items[0];
-            try self.formatMultiLineComment(first_group.brief, "///", lines);
-            if (first_group.display_name) |display_name| {
-                try lines.append(try std.fmt.allocPrint(self.allocator, "/// Display name: {s}", .{display_name}));
+        // Note: We no longer add trailing documentation comments
+
+        // No Registry struct - attributes are exported directly from the module
+    }
+
+    fn generateModuleFile(self: *RegistryCodeGenerator, output_file: []const u8, namespace: []const u8) !void {
+        // Extract directory from output_file (e.g., "src/http/registry.zig" -> "src/http/")
+        const dir_end = std.mem.lastIndexOf(u8, output_file, "/") orelse return;
+        const dir_path = output_file[0..dir_end];
+
+        // Create module file path (e.g., "src/http/http.zig")
+        const module_file = try std.fmt.allocPrint(self.allocator, "{s}/{s}.zig", .{ dir_path, namespace });
+        defer self.allocator.free(module_file);
+
+        // Generate module file content
+        var lines = ArrayList([]const u8).init(self.allocator);
+        defer {
+            for (lines.items) |line| {
+                self.allocator.free(line);
             }
-            if (first_group.note) |note| {
-                try self.formatMultiLineComment(note, "///", lines);
-            }
+            lines.deinit();
         }
 
-        // Generate the Registry namespace struct for organization
-        try lines.append(try self.allocator.dupe(u8, "pub const Registry = struct {"));
-
-        // Generate namespace constants that reference the individual attributes
-        for (all_attributes.items) |attr| {
-            const variant_name = try self.attributeIdToEnumVariant(attr.id);
-            defer self.allocator.free(variant_name);
-
-            const const_name = try self.attributeIdToConstName(attr.id);
-            defer self.allocator.free(const_name);
-
-            // Escape variant_name if it's a reserved keyword
-            const escaped_variant_name = blk: {
-                for (zig_keywords) |keyword| {
-                    if (std.mem.eql(u8, variant_name, keyword)) {
-                        break :blk try std.fmt.allocPrint(self.allocator, "@\"{s}\"", .{variant_name});
-                    }
-                }
-                break :blk try self.allocator.dupe(u8, variant_name);
-            };
-            defer self.allocator.free(escaped_variant_name);
-
-            try self.formatMemberComment(attr.brief, "    ", lines);
-            try lines.append(try std.fmt.allocPrint(self.allocator, "    pub const {s} = {s};", .{ escaped_variant_name, const_name }));
-        }
-
-        try lines.append(try self.allocator.dupe(u8, "};"));
+        try lines.append(try std.fmt.allocPrint(self.allocator, "//! {s} semantic conventions module", .{namespace}));
+        try lines.append(try self.allocator.dupe(u8, "//! This module exports the registry as a clean namespace."));
         try lines.append(try self.allocator.dupe(u8, ""));
+        try lines.append(try self.allocator.dupe(u8, "pub const Registry = @import(\"registry.zig\");"));
+        try lines.append(try self.allocator.dupe(u8, ""));
+
+        const module_content = try self.joinLines(lines.items);
+        defer self.allocator.free(module_content);
+
+        // Write module file
+        const module_file_handle = std.fs.cwd().createFile(module_file, .{}) catch |err| switch (err) {
+            error.FileNotFound => blk: {
+                // Try to create the directory if it doesn't exist
+                std.fs.cwd().makePath(dir_path) catch {};
+                break :blk try std.fs.cwd().createFile(module_file, .{});
+            },
+            else => return err,
+        };
+        defer module_file_handle.close();
+
+        try module_file_handle.writeAll(module_content);
+        std.debug.print("Generated: {s}\n", .{module_file});
+    }
+
+    fn getModuleImportPath(self: *RegistryCodeGenerator, output_file: []const u8, namespace: []const u8) ![]u8 {
+        // Convert output_file like "src/http/registry.zig" to module path like "http/http.zig"
+        if (std.mem.startsWith(u8, output_file, "src/")) {
+            const after_src = output_file[4..]; // Remove "src/"
+            const dir_end = std.mem.lastIndexOf(u8, after_src, "/") orelse return try std.fmt.allocPrint(self.allocator, "{s}.zig", .{namespace});
+            const dir_path = after_src[0..dir_end]; // e.g., "http"
+            return try std.fmt.allocPrint(self.allocator, "{s}/{s}.zig", .{ dir_path, namespace });
+        } else {
+            return try std.fmt.allocPrint(self.allocator, "{s}.zig", .{namespace});
+        }
     }
 
     // generateCombinedGetMethod is no longer needed - attributes contain all their own information
@@ -703,7 +719,10 @@ pub const RegistryCodeGenerator = struct {
                     \\
                 ;
                 try new_file.writeAll(initial_content);
-                const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ escaped_namespace, output_file[4..] }); // Remove "src/" prefix
+                // Import the module file instead of registry.zig (e.g., "http/http.zig" instead of "http/registry.zig")
+                const module_path = try self.getModuleImportPath(output_file, namespace);
+                defer self.allocator.free(module_path);
+                const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ escaped_namespace, module_path });
                 defer self.allocator.free(export_line);
                 try new_file.writeAll(export_line);
                 return;
@@ -715,45 +734,67 @@ pub const RegistryCodeGenerator = struct {
         const content = try file.readToEndAlloc(self.allocator, 1024 * 1024);
         defer self.allocator.free(content);
 
-        // Check if export already exists (check for escaped, unescaped, and identifier versions)
-        const expected_export = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{escaped_namespace});
-        defer self.allocator.free(expected_export);
+        // Create the new module path
+        const module_path = try self.getModuleImportPath(output_file, namespace);
+        defer self.allocator.free(module_path);
 
-        const expected_export_identifier = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{zig_identifier});
-        defer self.allocator.free(expected_export_identifier);
-
-        const expected_export_original = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace});
-        defer self.allocator.free(expected_export_original);
-
-        if (std.mem.indexOf(u8, content, expected_export)) |_| {
-            // Export already exists, don't add it again
-            return;
+        // Check if export already exists and if it needs to be updated
+        const patterns = [_][]const u8{
+            try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{escaped_namespace}),
+            try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{zig_identifier}),
+            try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(", .{namespace}),
+        };
+        defer {
+            for (patterns) |pattern| {
+                self.allocator.free(pattern);
+            }
         }
 
-        if (std.mem.indexOf(u8, content, expected_export_identifier)) |_| {
-            // Export already exists (identifier version), don't add it again
-            return;
+        var updated_content = ArrayList(u8).init(self.allocator);
+        defer updated_content.deinit();
+
+        var lines = std.mem.splitScalar(u8, content, '\n');
+        var found_import = false;
+
+        while (lines.next()) |line| {
+            var line_updated = false;
+
+            // Check if this line contains an import for our namespace
+            for (patterns) |pattern| {
+                if (std.mem.indexOf(u8, line, pattern)) |_| {
+                    // Found existing import, replace it with the new module path
+                    const new_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");", .{ escaped_namespace, module_path });
+                    defer self.allocator.free(new_line);
+                    try updated_content.appendSlice(new_line);
+                    found_import = true;
+                    line_updated = true;
+                    break;
+                }
+            }
+
+            if (!line_updated) {
+                try updated_content.appendSlice(line);
+            }
+
+            // Add newline if not the last line
+            if (lines.rest().len > 0) {
+                try updated_content.append('\n');
+            }
         }
 
-        if (std.mem.indexOf(u8, content, expected_export_original)) |_| {
-            // Export already exists (original namespace version), don't add it again
-            return;
+        // If no existing import was found, add the new one
+        if (!found_import) {
+            if (updated_content.items.len > 0 and updated_content.items[updated_content.items.len - 1] != '\n') {
+                try updated_content.append('\n');
+            }
+            const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ escaped_namespace, module_path });
+            defer self.allocator.free(export_line);
+            try updated_content.appendSlice(export_line);
         }
 
-        // Calculate relative path from src/root.zig to the output file
-        const relative_path = if (std.mem.startsWith(u8, output_file, "src/"))
-            output_file[4..] // Remove "src/" prefix
-        else
-            output_file;
-
-        // Create new export line
-        const export_line = try std.fmt.allocPrint(self.allocator, "pub const {s} = @import(\"{s}\");\n", .{ escaped_namespace, relative_path });
-        defer self.allocator.free(export_line);
-
-        // Append to file
-        const append_file = try std.fs.cwd().openFile(root_path, .{ .mode = .write_only });
-        defer append_file.close();
-        try append_file.seekFromEnd(0);
-        try append_file.writeAll(export_line);
+        // Write the updated content back to the file
+        const write_file = try std.fs.cwd().createFile(root_path, .{});
+        defer write_file.close();
+        try write_file.writeAll(updated_content.items);
     }
 };

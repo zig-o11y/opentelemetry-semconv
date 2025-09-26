@@ -23,12 +23,3 @@ pub const nfs_operation_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// NFS Server replies check a Reply Cache (repcache), which can have one of 3 result states
-/// Display name: NFS Server Reply Cache Attributes
-pub const Registry = struct {
-    /// Linux: one of "hit" (NFSD_STATS_RC_HITS), "miss" (NFSD_STATS_RC_MISSES), or "nocache" (NFSD_STATS_RC_NOCACHE -- uncacheable)
-    pub const serverRepcacheStatus = nfs_server_repcache_status;
-    /// NFSv4+ operation name.
-    pub const operationName = nfs_operation_name;
-};
-

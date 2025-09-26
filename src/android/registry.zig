@@ -43,12 +43,3 @@ pub const android_app_state = types.EnumAttribute(appStateValue){
     .well_known_values = appStateValue.created,
 };
 
-/// The Android platform on which the Android application is running.
-/// Display name: Android Attributes
-pub const Registry = struct {
-    /// Uniquely identifies the framework API revision offered by a version (`os.version`) of the android operating system. More information can be found in the [Android API levels documentation](https://developer.android.com/guide/topics/manifest/uses-sdk-element
-    pub const osApiLevel = android_os_api_level;
-    /// This attribute represents the state of the application.
-    pub const appState = android_app_state;
-};
-

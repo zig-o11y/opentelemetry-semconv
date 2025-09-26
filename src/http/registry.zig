@@ -174,32 +174,3 @@ pub const http_connection_state = types.EnumAttribute(connectionStateValue){
     .well_known_values = connectionStateValue.active,
 };
 
-/// This document defines semantic convention attributes in the HTTP namespace.
-/// Display name: HTTP Attributes
-pub const Registry = struct {
-    /// The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html header. For requests using transport encoding, this should be the compressed size.
-    pub const requestBodySize = http_request_body_size;
-    /// HTTP request headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
-    pub const requestHeader = http_request_header;
-    /// HTTP request method.
-    pub const requestMethod = http_request_method;
-    /// Original HTTP method sent by the client in the request line.
-    pub const requestMethodOriginal = http_request_method_original;
-    /// The ordinal number of request resending attempt (for any reason, including redirects).
-    pub const requestResendCount = http_request_resend_count;
-    /// The total size of the request in bytes. This should be the total number of bytes sent over the wire, including the request line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and request body if any.
-    pub const requestSize = http_request_size;
-    /// The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html header. For requests using transport encoding, this should be the compressed size.
-    pub const responseBodySize = http_response_body_size;
-    /// HTTP response headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
-    pub const responseHeader = http_response_header;
-    /// The total size of the response in bytes. This should be the total number of bytes sent over the wire, including the status line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and response body and trailers if any.
-    pub const responseSize = http_response_size;
-    /// [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
-    pub const responseStatusCode = http_response_status_code;
-    /// The matched route template for the request. This MUST be low-cardinality and include all static path segments, with dynamic path segments represented with placeholders.
-    pub const route = http_route;
-    /// State of the HTTP connection in the HTTP connection pool.
-    pub const connectionState = http_connection_state;
-};
-

@@ -63,12 +63,3 @@ pub const signalr_transport = types.EnumAttribute(transportValue){
     .well_known_values = transportValue.server_sent_events,
 };
 
-/// SignalR attributes
-/// Display name: SignalR Attributes
-pub const Registry = struct {
-    /// SignalR HTTP connection closure status.
-    pub const connectionStatus = signalr_connection_status;
-    /// [SignalR transport type](https://github.com/dotnet/aspnetcore/blob/main/src/SignalR/docs/specs/TransportProtocols.md)
-    pub const transport = signalr_transport;
-};
-

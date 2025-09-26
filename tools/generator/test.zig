@@ -47,9 +47,8 @@ test "Code generation from parsed registry file" {
     const registry_code = try code_generator.generateRegistryFile(http_semconv, "anything.zig");
     defer allocator.free(registry_code);
 
-    // Basic validation - check that generated code contains expected elements
-    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const Registry = struct {") != null);
-    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const requestBodySize = http_request_body_size;") != null);
+    // Basic validation - check that generated code contains expected elements (no more Registry struct)
+    try testing.expect(std.mem.indexOf(u8, registry_code, "pub const Registry = struct {") == null);
     try testing.expect(std.mem.indexOf(u8, registry_code, "pub const http_request_body_size = types.StringAttribute{") != null);
     try testing.expect(std.mem.indexOf(u8, registry_code, "pub const http_request_method = types.EnumAttribute(requestMethodValue){") != null);
     try testing.expect(std.mem.indexOf(u8, registry_code, "pub const requestMethodValue = enum {") != null);

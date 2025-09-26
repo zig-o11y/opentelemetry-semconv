@@ -61,10 +61,3 @@ pub const profile_frame_type = types.EnumAttribute(frameTypeValue){
     .well_known_values = frameTypeValue.dotnet,
 };
 
-/// Describes the origin of a single frame in a Profile.
-/// Display name: Profile Frame Attributes
-pub const Registry = struct {
-    /// Describes the interpreter or compiler of a single frame.
-    pub const frameType = profile_frame_type;
-};
-

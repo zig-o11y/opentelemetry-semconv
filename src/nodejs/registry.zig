@@ -31,10 +31,3 @@ pub const nodejs_eventloop_state = types.EnumAttribute(eventloopStateValue){
     .well_known_values = eventloopStateValue.active,
 };
 
-/// Describes Node.js related attributes.
-/// Display name: Node.js Attributes
-pub const Registry = struct {
-    /// The state of event loop time.
-    pub const eventloopState = nodejs_eventloop_state;
-};
-

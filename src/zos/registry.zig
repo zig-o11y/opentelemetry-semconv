@@ -23,12 +23,3 @@ pub const zos_sysplex_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines attributes of a z/OS resource.
-/// Display name: z/OS attributes
-pub const Registry = struct {
-    /// The System Management Facility (SMF) Identifier uniquely identified a z/OS system within a SYSPLEX or mainframe environment and is used for system and performance analysis.
-    pub const smfId = zos_smf_id;
-    /// The name of the SYSPLEX to which the z/OS system belongs too.
-    pub const sysplexName = zos_sysplex_name;
-};
-

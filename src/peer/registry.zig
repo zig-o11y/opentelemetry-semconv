@@ -14,10 +14,3 @@ pub const peer_service = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Operations that access some remote service.
-/// Display name: Peer Attributes
-pub const Registry = struct {
-    /// The [`service.name`](/docs/resource/README.md of the remote service. SHOULD be equal to the actual `service.name` resource attribute of the remote service if any.
-    pub const service = peer_service;
-};
-

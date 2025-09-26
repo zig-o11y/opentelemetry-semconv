@@ -76,20 +76,3 @@ pub const user_agent_synthetic_type = types.EnumAttribute(syntheticTypeValue){
     .well_known_values = syntheticTypeValue.bot,
 };
 
-/// Describes user-agent attributes.
-/// Display name: User-agent Attributes
-pub const Registry = struct {
-    /// Value of the [HTTP User-Agent](https://www.rfc-editor.org/rfc/rfc9110.html
-    pub const original = user_agent_original;
-    /// Name of the user-agent extracted from original. Usually refers to the browser's name.
-    pub const name = user_agent_name;
-    /// Version of the user-agent extracted from original. Usually refers to the browser's version
-    pub const version = user_agent_version;
-    /// Human readable operating system name.
-    pub const osName = user_agent_os_name;
-    /// The version string of the operating system as defined in [Version Attributes](/docs/resource/README.md
-    pub const osVersion = user_agent_os_version;
-    /// Specifies the category of synthetic traffic, such as tests or bots.
-    pub const syntheticType = user_agent_synthetic_type;
-};
-

@@ -31,10 +31,3 @@ pub const opentracing_ref_type = types.EnumAttribute(refTypeValue){
     .well_known_values = refTypeValue.child_of,
 };
 
-/// Attributes used by the OpenTracing Shim layer.
-/// Display name: OpenTracing Attributes
-pub const Registry = struct {
-    /// Parent-child Reference type
-    pub const refType = opentracing_ref_type;
-};
-

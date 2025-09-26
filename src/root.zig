@@ -71,12 +71,12 @@ test "module integration" {
     const testing = std.testing;
 
     // Test that Registry contains the expected attributes as constants
-    try testing.expect(@hasDecl(http.Registry, "requestBodySize"));
-    try testing.expect(@hasDecl(http.Registry, "requestMethod"));
+    try testing.expect(@hasDecl(http.Registry, "http_request_body_size"));
+    try testing.expect(@hasDecl(http.Registry, "http_request_method"));
 
     // Test that we can access individual attribute constants
-    try testing.expectEqualStrings("http.request.body.size", http.Registry.requestBodySize.name);
-    try testing.expectEqualStrings("http.request.method", http.Registry.requestMethod.base.name);
+    try testing.expectEqualStrings("http.request.body.size", http.Registry.http_request_body_size.name);
+    try testing.expectEqualStrings("http.request.method", http.Registry.http_request_method.base.name);
 
     // Test that types are re-exported correctly
     try testing.expectEqual(@TypeOf(types.StabilityLevel.stable), @TypeOf(StabilityLevel.stable));
@@ -91,11 +91,11 @@ test "attribute validation integration" {
     try testing.expect(http_registry_type_info == .@"struct");
 
     // Test that we can create enum values directly
-    const method_enum_value = http.requestMethodValue.get;
+    const method_enum_value = http.Registry.requestMethodValue.get;
     try testing.expectEqualStrings("GET", method_enum_value.toString());
 
     // Test that we can get type information about enum attributes too
-    try testing.expect(@TypeOf(method_enum_value) == http.requestMethodValue);
+    try testing.expect(@TypeOf(method_enum_value) == http.Registry.requestMethodValue);
 
     // Test with hardcoded examples for attribute name validation
     try testing.expect(isValidAttributeName("http.request.body.size"));
@@ -151,57 +151,57 @@ test "namespace extraction" {
 }
 
 // Semantic convention modules - registry files (main attribute definitions)
-pub const app = @import("app/registry.zig");
-pub const android = @import("android/registry.zig");
-pub const cassandra = @import("cassandra/registry.zig");
-pub const client = @import("client/registry.zig");
-pub const cloud = @import("cloud/registry.zig");
+pub const app = @import("app/app.zig");
+pub const android = @import("android/android.zig");
+pub const cassandra = @import("cassandra/cassandra.zig");
+pub const client = @import("client/client.zig");
+pub const cloud = @import("cloud/cloud.zig");
 pub const container = @import("container/registry.zig");
-pub const log = @import("log/registry.zig");
-pub const cloudevents = @import("cloudevents/registry.zig");
-pub const cloudfoundry = @import("cloudfoundry/registry.zig");
-pub const cpu = @import("cpu/registry.zig");
-pub const cpython = @import("cpython/registry.zig");
-pub const deployment = @import("deployment/registry.zig");
-pub const destination = @import("destination/registry.zig");
-pub const device = @import("device/registry.zig");
-pub const disk = @import("disk/registry.zig");
-pub const dotnet = @import("dotnet/registry.zig");
-pub const elasticsearch = @import("elasticsearch/registry.zig");
-pub const enduser = @import("enduser/registry.zig");
-pub const @"error" = @import("error/registry.zig");
-pub const event = @import("event/registry.zig");
-pub const faas = @import("faas/registry.zig");
-pub const geo = @import("geo/registry.zig");
-pub const go = @import("go/registry.zig");
-pub const graphql = @import("graphql/registry.zig");
-pub const heroku = @import("heroku/registry.zig");
-pub const http = @import("http/registry.zig");
-pub const ios = @import("ios/registry.zig");
-pub const jvm = @import("jvm/registry.zig");
-pub const k8s = @import("k8s/registry.zig");
-pub const linux = @import("linux/registry.zig");
-pub const nfs = @import("nfs/registry.zig");
-pub const nodejs = @import("nodejs/registry.zig");
-pub const oci = @import("oci/registry.zig");
-pub const onc_rpc = @import("onc_rpc/registry.zig");
-pub const openai = @import("openai/registry.zig");
-pub const opentracing = @import("opentracing/registry.zig");
-pub const os = @import("os/registry.zig");
-pub const peer = @import("peer/registry.zig");
-pub const pprof = @import("pprof/registry.zig");
-pub const profile = @import("profile/registry.zig");
-pub const rpc = @import("rpc/registry.zig");
-pub const security_rule = @import("security-rule/registry.zig");
-pub const user_agent = @import("user-agent/registry.zig");
-pub const server = @import("server/registry.zig");
-pub const service = @import("service/registry.zig");
-pub const session = @import("session/registry.zig");
-pub const signalr = @import("signalr/registry.zig");
-pub const source = @import("source/registry.zig");
-pub const system = @import("system/registry.zig");
-pub const telemetry = @import("telemetry/registry.zig");
-pub const thread = @import("thread/registry.zig");
-pub const v8js = @import("v8js/registry.zig");
-pub const zos = @import("zos/registry.zig");
-pub const process = @import("process/registry.zig");
+pub const log = @import("log/log.zig");
+pub const cloudevents = @import("cloudevents/cloudevents.zig");
+pub const cloudfoundry = @import("cloudfoundry/cloudfoundry.zig");
+pub const cpu = @import("cpu/cpu.zig");
+pub const cpython = @import("cpython/cpython.zig");
+pub const deployment = @import("deployment/deployment.zig");
+pub const destination = @import("destination/destination.zig");
+pub const device = @import("device/device.zig");
+pub const disk = @import("disk/disk.zig");
+pub const dotnet = @import("dotnet/dotnet.zig");
+pub const elasticsearch = @import("elasticsearch/elasticsearch.zig");
+pub const enduser = @import("enduser/enduser.zig");
+pub const @"error" = @import("error/error.zig");
+pub const event = @import("event/event.zig");
+pub const faas = @import("faas/faas.zig");
+pub const geo = @import("geo/geo.zig");
+pub const go = @import("go/go.zig");
+pub const graphql = @import("graphql/graphql.zig");
+pub const heroku = @import("heroku/heroku.zig");
+pub const http = @import("http/http.zig");
+pub const ios = @import("ios/ios.zig");
+pub const jvm = @import("jvm/jvm.zig");
+pub const k8s = @import("k8s/k8s.zig");
+pub const linux = @import("linux/linux.zig");
+pub const nfs = @import("nfs/nfs.zig");
+pub const nodejs = @import("nodejs/nodejs.zig");
+pub const oci = @import("oci/oci.zig");
+pub const onc_rpc = @import("onc_rpc/onc_rpc.zig");
+pub const openai = @import("openai/openai.zig");
+pub const opentracing = @import("opentracing/opentracing.zig");
+pub const os = @import("os/os.zig");
+pub const peer = @import("peer/peer.zig");
+pub const pprof = @import("pprof/pprof.zig");
+pub const process = @import("process/process.zig");
+pub const profile = @import("profile/profile.zig");
+pub const rpc = @import("rpc/rpc.zig");
+pub const security_rule = @import("security-rule/security-rule.zig");
+pub const user_agent = @import("user-agent/user-agent.zig");
+pub const server = @import("server/server.zig");
+pub const service = @import("service/service.zig");
+pub const session = @import("session/session.zig");
+pub const signalr = @import("signalr/signalr.zig");
+pub const source = @import("source/source.zig");
+pub const system = @import("system/system.zig");
+pub const telemetry = @import("telemetry/telemetry.zig");
+pub const thread = @import("thread/thread.zig");
+pub const v8js = @import("v8js/v8js.zig");
+pub const zos = @import("zos/zos.zig");

@@ -50,18 +50,3 @@ pub const pprof_location_is_folded = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Attributes specific to pprof that help convert from pprof to Profiling signal.
-/// Display name: Pprof specific attributes for the Profiling signal
-pub const Registry = struct {
-    /// Indicates that there are functions related to this mapping.
-    pub const mappingHasFunctions = pprof_mapping_has_functions;
-    /// Indicates that there are filenames related to this mapping.
-    pub const mappingHasFilenames = pprof_mapping_has_filenames;
-    /// Indicates that there are line numbers related to this mapping.
-    pub const mappingHasLineNumbers = pprof_mapping_has_line_numbers;
-    /// Indicates that there are inline frames related to this mapping.
-    pub const mappingHasInlineFrames = pprof_mapping_has_inline_frames;
-    /// Provides an indication that multiple symbols map to this location's address, for example due to identical code folding by the linker. In that case the line information represents one of the multiple symbols. This field must be recomputed when the symbolization state of the profile changes.
-    pub const locationIsFolded = pprof_location_is_folded;
-};
-

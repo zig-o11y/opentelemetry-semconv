@@ -104,30 +104,3 @@ pub const cloudfoundry_process_type = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// CloudFoundry resource attributes.
-/// Display name: CloudFoundry Attributes
-pub const Registry = struct {
-    /// A guid or another name describing the event source.
-    pub const systemId = cloudfoundry_system_id;
-    /// A guid describing the concrete instance of the event source.
-    pub const systemInstanceId = cloudfoundry_system_instance_id;
-    /// The name of the application.
-    pub const appName = cloudfoundry_app_name;
-    /// The guid of the application.
-    pub const appId = cloudfoundry_app_id;
-    /// The index of the application instance. 0 when just one instance is active.
-    pub const appInstanceId = cloudfoundry_app_instance_id;
-    /// The name of the CloudFoundry space the application is running in.
-    pub const spaceName = cloudfoundry_space_name;
-    /// The guid of the CloudFoundry space the application is running in.
-    pub const spaceId = cloudfoundry_space_id;
-    /// The name of the CloudFoundry organization the app is running in.
-    pub const orgName = cloudfoundry_org_name;
-    /// The guid of the CloudFoundry org the application is running in.
-    pub const orgId = cloudfoundry_org_id;
-    /// The UID identifying the process.
-    pub const processId = cloudfoundry_process_id;
-    /// The type of process.
-    pub const processType = cloudfoundry_process_type;
-};
-

@@ -14,10 +14,3 @@ pub const event_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// Attributes for Events represented using Log Records.
-/// Display name: Event Attributes
-pub const Registry = struct {
-    /// Identifies the class / type of event.
-    pub const name = event_name;
-};
-

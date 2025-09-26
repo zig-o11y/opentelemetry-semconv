@@ -52,14 +52,3 @@ pub const graphql_document = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines attributes for GraphQL.
-/// Display name: GraphQL Attributes
-pub const Registry = struct {
-    /// The name of the operation being executed.
-    pub const operationName = graphql_operation_name;
-    /// The type of the operation being executed.
-    pub const operationType = graphql_operation_type;
-    /// The GraphQL document being executed.
-    pub const document = graphql_document;
-};
-

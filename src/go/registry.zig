@@ -31,10 +31,3 @@ pub const go_memory_type = types.EnumAttribute(memoryTypeValue){
     .well_known_values = memoryTypeValue.stack,
 };
 
-/// This document defines Go related attributes.
-/// Display name: Go Attributes
-pub const Registry = struct {
-    /// The type of memory.
-    pub const memoryType = go_memory_type;
-};
-

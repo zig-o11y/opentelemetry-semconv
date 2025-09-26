@@ -14,10 +14,3 @@ pub const oci_manifest_digest = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// An OCI image manifest.
-/// Display name: Open Container Initiative (OCI) Attributes
-pub const Registry = struct {
-    /// The digest of the OCI image manifest. For container images specifically is the digest by which the container image is known.
-    pub const manifestDigest = oci_manifest_digest;
-};
-

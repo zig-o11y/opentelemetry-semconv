@@ -58,16 +58,3 @@ pub const deployment_environment_name = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines attributes for software deployments.
-/// Display name: Deployment Attributes
-pub const Registry = struct {
-    /// The name of the deployment.
-    pub const name = deployment_name;
-    /// The id of the deployment.
-    pub const id = deployment_id;
-    /// The status of the deployment.
-    pub const status = deployment_status;
-    /// Name of the [deployment environment](https://wikipedia.org/wiki/Deployment_environment) (aka deployment tier).
-    pub const environmentName = deployment_environment_name;
-};
-

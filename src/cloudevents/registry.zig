@@ -50,18 +50,3 @@ pub const cloudevents_event_subject = types.StringAttribute{
     .requirement_level = .recommended,
 };
 
-/// This document defines attributes for CloudEvents.
-/// Display name: CloudEvents Attributes
-pub const Registry = struct {
-    /// The [event_id](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    pub const eventId = cloudevents_event_id;
-    /// The [source](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    pub const eventSource = cloudevents_event_source;
-    /// The [version of the CloudEvents specification](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    pub const eventSpecVersion = cloudevents_event_spec_version;
-    /// The [event_type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    pub const eventType = cloudevents_event_type;
-    /// The [subject](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    pub const eventSubject = cloudevents_event_subject;
-};
-
