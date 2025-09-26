@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Describes the origin of a single frame in a Profile.
-/// Display name: Profile Frame Attributes
 pub const frameTypeValue = enum {
     /// [.NET](https://wikipedia.org/wiki/.NET)
     dotnet,
@@ -51,23 +49,22 @@ pub const frameTypeValue = enum {
     }
 };
 
-pub const RegistryProfileFrame = union(enum) {
-    /// Describes the interpreter or compiler of a single frame.
-    frameType: types.EnumAttribute(frameTypeValue),
+/// Describes the interpreter or compiler of a single frame.
+pub const profile_frame_type = types.EnumAttribute(frameTypeValue){
+    .base = types.StringAttribute{
+        .name = "profile.frame.type",
+        .brief = "Describes the interpreter or compiler of a single frame.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = frameTypeValue.dotnet,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .frameType => types.AttributeInfo{
-                .name = "profile.frame.type",
-                .brief = "Describes the interpreter or compiler of a single frame.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "cpython"
-                },
-            },
-        };
-    }
+/// Describes the origin of a single frame in a Profile.
+/// Display name: Profile Frame Attributes
+pub const Registry = struct {
+    /// Describes the interpreter or compiler of a single frame.
+    pub const frameType = profile_frame_type;
 };
 

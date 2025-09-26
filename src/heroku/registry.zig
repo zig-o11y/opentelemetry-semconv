@@ -5,47 +5,41 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
+/// Time and date the release was created
+pub const heroku_release_creation_timestamp = types.StringAttribute{
+    .name = "heroku.release.creation_timestamp",
+    .brief = "Time and date the release was created",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// Commit hash for the current release
+pub const heroku_release_commit = types.StringAttribute{
+    .name = "heroku.release.commit",
+    .brief = "Commit hash for the current release",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// Unique identifier for the application
+pub const heroku_app_id = types.StringAttribute{
+    .name = "heroku.app.id",
+    .brief = "Unique identifier for the application",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
 /// This document defines attributes for the Heroku platform on which application/s are running.
 /// Display name: Heroku Attributes
-pub const RegistryHeroku = union(enum) {
+pub const Registry = struct {
     /// Time and date the release was created
-    releaseCreationTimestamp: types.StringAttribute,
+    pub const releaseCreationTimestamp = heroku_release_creation_timestamp;
     /// Commit hash for the current release
-    releaseCommit: types.StringAttribute,
+    pub const releaseCommit = heroku_release_commit;
     /// Unique identifier for the application
-    appId: types.StringAttribute,
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .releaseCreationTimestamp => types.AttributeInfo{
-                .name = "heroku.release.creation_timestamp",
-                .brief = "Time and date the release was created",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "2022-10-23T18:00:42Z"
-                },
-            },
-            .releaseCommit => types.AttributeInfo{
-                .name = "heroku.release.commit",
-                .brief = "Commit hash for the current release",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "e6134959463efd8966b20e75b913cafe3f5ec"
-                },
-            },
-            .appId => types.AttributeInfo{
-                .name = "heroku.app.id",
-                .brief = "Unique identifier for the application",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "2daa2797-e42b-4624-9322-ec3f968df4da"
-                },
-            },
-        };
-    }
+    pub const appId = heroku_app_id;
 };
 

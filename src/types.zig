@@ -409,12 +409,4 @@ test "ArrayAttribute union" {
     try std.testing.expectEqual(RequirementLevel.required, array_attr_double.getRequirementLevel());
 }
 
-/// Attribute information structure used by generated semantic convention registries
-/// to provide metadata about attributes including name, description, stability, and examples
-pub const AttributeInfo = struct {
-    name: []const u8,
-    brief: []const u8,
-    note: ?[]const u8,
-    stability: StabilityLevel,
-    examples: ?[]const []const u8,
-};
+// AttributeInfo is no longer needed - all information is contained in Attribute(ValueType) structs

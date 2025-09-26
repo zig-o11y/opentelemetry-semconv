@@ -9,8 +9,8 @@
 //! const semconv = @import("opentelemetry-semconv");
 //!
 //! // Use HTTP semantic conventions
-//! const request_size = semconv.http.RegistryHttp.http_request_size;
-//! const status_code = semconv.http.RegistryHttp.http_response_status_code;
+//! const request_size = semconv.http.Registry.requestBodySize;
+//! const status_code = semconv.http.Registry.responseStatusCode;
 //! ```
 
 const std = @import("std");
@@ -70,12 +70,13 @@ pub fn isValidNamespace(namespace: []const u8) bool {
 test "module integration" {
     const testing = std.testing;
 
-    // Test that all modules are accessible and contain expected data
-    // Test union(enum) type information
-    try testing.expect(@TypeOf(@as(http.RegistryHttp, http.RegistryHttp{ .requestBodySize = undefined })) == http.RegistryHttp);
+    // Test that Registry contains the expected attributes as constants
+    try testing.expect(@hasDecl(http.Registry, "requestBodySize"));
+    try testing.expect(@hasDecl(http.Registry, "requestMethod"));
 
-    // Test that we can access enum variants
-    try testing.expect(@TypeOf(@as(http.RegistryHttp, http.RegistryHttp{ .requestMethod = undefined })) == http.RegistryHttp);
+    // Test that we can access individual attribute constants
+    try testing.expectEqualStrings("http.request.body.size", http.Registry.requestBodySize.name);
+    try testing.expectEqualStrings("http.request.method", http.Registry.requestMethod.base.name);
 
     // Test that types are re-exported correctly
     try testing.expectEqual(@TypeOf(types.StabilityLevel.stable), @TypeOf(StabilityLevel.stable));
@@ -85,11 +86,11 @@ test "module integration" {
 test "attribute validation integration" {
     const testing = std.testing;
 
-    // Test union(enum) field types
-    const http_union_type_info = @typeInfo(http.RegistryHttp);
-    try testing.expect(http_union_type_info == .@"union");
+    // Test that Registry is now a struct with constants
+    const http_registry_type_info = @typeInfo(http.Registry);
+    try testing.expect(http_registry_type_info == .@"struct");
 
-    // Test that we can create enum values
+    // Test that we can create enum values directly
     const method_enum_value = http.requestMethodValue.get;
     try testing.expectEqualStrings("GET", method_enum_value.toString());
 

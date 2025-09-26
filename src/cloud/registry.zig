@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// A cloud environment (e.g. GCP, Azure, AWS).
-/// Display name: Cloud Attributes
 pub const providerValue = enum {
     /// Alibaba Cloud
     alibaba_cloud,
@@ -137,78 +135,80 @@ pub const platformValue = enum {
     }
 };
 
-pub const RegistryCloud = union(enum) {
-    /// Name of the cloud provider.
-    provider: types.EnumAttribute(providerValue),
-    /// The cloud account ID the resource is assigned to.
-    accountId: types.StringAttribute,
-    /// The geographical region within a cloud provider. When associated with a resource, this attribute specifies the region where the resource operates. When calling services or APIs deployed on a cloud, this attribute identifies the region where the called destination is deployed.
-    region: types.StringAttribute,
-    /// Cloud provider-specific native identifier of the monitored cloud resource (e.g. an [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) on AWS, a [fully qualified resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) on Azure, a [full resource name](https://google.aip.dev/122
-    resourceId: types.StringAttribute,
-    /// Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
-    availabilityZone: types.StringAttribute,
-    /// The cloud platform in use.
-    platform: types.EnumAttribute(platformValue),
+/// Name of the cloud provider.
+pub const cloud_provider = types.EnumAttribute(providerValue){
+    .base = types.StringAttribute{
+        .name = "cloud.provider",
+        .brief = "Name of the cloud provider.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = providerValue.alibaba_cloud,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .provider => types.AttributeInfo{
-                .name = "cloud.provider",
-                .brief = "Name of the cloud provider.",
-                .note = null,
-                .stability = .development,
-                .examples = null,
-            },
-            .accountId => types.AttributeInfo{
-                .name = "cloud.account.id",
-                .brief = "The cloud account ID the resource is assigned to.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "111111111111",
-                    "opentelemetry"
-                },
-            },
-            .region => types.AttributeInfo{
-                .name = "cloud.region",
-                .brief = "The geographical region within a cloud provider. When associated with a resource, this attribute specifies the region where the resource operates. When calling services or APIs deployed on a cloud, this attribute identifies the region where the called destination is deployed.",
-                .note = "Refer to your provider's docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/global-infrastructure/geographies/), [Google Cloud regions](https://cloud.google.com/about/locations), or [Tencent Cloud regions](https://www.tencentcloud.com/document/product/213/6091).",
-                .stability = .development,
-                .examples = &.{
-                    "us-central1",
-                    "us-east-1"
-                },
-            },
-            .resourceId => types.AttributeInfo{
-                .name = "cloud.resource_id",
-                .brief = "Cloud provider-specific native identifier of the monitored cloud resource (e.g. an [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) on AWS, a [fully qualified resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) on Azure, a [full resource name](https://google.aip.dev/122",
-                .note = "On some cloud providers, it may not be possible to determine the full ID at startup,\nso it may be necessary to set `cloud.resource_id` as a span attribute instead.\n\nThe exact value to use for `cloud.resource_id` depends on the cloud provider.\nThe following well-known definitions MUST be used if you set this attribute and they apply:\n\n- **AWS Lambda:** The function [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).\nTake care not to use the \"invoked ARN\" directly but replace any\n[alias suffix](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html)\nwith the resolved function version, as the same runtime instance may be invocable with\nmultiple different aliases.\n- **GCP:** The [URI of the resource](https://cloud.google.com/iam/docs/full-resource-names)\n- **Azure:** The [Fully Qualified Resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) of the invoked function,\n*not* the function app, having the form\n`/subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>`.\nThis means that a span attribute MUST be used, as an Azure function app can host multiple functions that would usually share\na TracerProvider.",
-                .stability = .development,
-                .examples = &.{
-                    "arn:aws:lambda:REGION:ACCOUNT_ID:function:my-function",
-                    "//run.googleapis.com/projects/PROJECT_ID/locations/LOCATION_ID/services/SERVICE_ID",
-                    "/subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>"
-                },
-            },
-            .availabilityZone => types.AttributeInfo{
-                .name = "cloud.availability_zone",
-                .brief = "Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.",
-                .note = "Availability zones are called \"zones\" on Alibaba Cloud and Google Cloud.",
-                .stability = .development,
-                .examples = &.{
-                    "us-east-1c"
-                },
-            },
-            .platform => types.AttributeInfo{
-                .name = "cloud.platform",
-                .brief = "The cloud platform in use.",
-                .note = "The prefix of the service SHOULD match the one specified in `cloud.provider`.\n\n",
-                .stability = .development,
-                .examples = null,
-            },
-        };
-    }
+/// The cloud account ID the resource is assigned to.
+pub const cloud_account_id = types.StringAttribute{
+    .name = "cloud.account.id",
+    .brief = "The cloud account ID the resource is assigned to.",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The geographical region within a cloud provider. When associated with a resource, this attribute specifies the region where the resource operates. When calling services or APIs deployed on a cloud, this attribute identifies the region where the called destination is deployed.
+pub const cloud_region = types.StringAttribute{
+    .name = "cloud.region",
+    .brief = "The geographical region within a cloud provider. When associated with a resource, this attribute specifies the region where the resource operates. When calling services or APIs deployed on a cloud, this attribute identifies the region where the called destination is deployed.",
+    .note = "Refer to your provider's docs to see the available regions, for example [Alibaba Cloud regions](https://www.alibabacloud.com/help/doc-detail/40654.htm), [AWS regions](https://aws.amazon.com/about-aws/global-infrastructure/regions_az/), [Azure regions](https://azure.microsoft.com/global-infrastructure/geographies/), [Google Cloud regions](https://cloud.google.com/about/locations), or [Tencent Cloud regions](https://www.tencentcloud.com/document/product/213/6091).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// Cloud provider-specific native identifier of the monitored cloud resource (e.g. an [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) on AWS, a [fully qualified resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) on Azure, a [full resource name](https://google.aip.dev/122
+pub const cloud_resource_id = types.StringAttribute{
+    .name = "cloud.resource_id",
+    .brief = "Cloud provider-specific native identifier of the monitored cloud resource (e.g. an [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) on AWS, a [fully qualified resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) on Azure, a [full resource name](https://google.aip.dev/122",
+    .note = "On some cloud providers, it may not be possible to determine the full ID at startup,\nso it may be necessary to set `cloud.resource_id` as a span attribute instead.\n\nThe exact value to use for `cloud.resource_id` depends on the cloud provider.\nThe following well-known definitions MUST be used if you set this attribute and they apply:\n\n- **AWS Lambda:** The function [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html).\nTake care not to use the \"invoked ARN\" directly but replace any\n[alias suffix](https://docs.aws.amazon.com/lambda/latest/dg/configuration-aliases.html)\nwith the resolved function version, as the same runtime instance may be invocable with\nmultiple different aliases.\n- **GCP:** The [URI of the resource](https://cloud.google.com/iam/docs/full-resource-names)\n- **Azure:** The [Fully Qualified Resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) of the invoked function,\n*not* the function app, having the form\n`/subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>`.\nThis means that a span attribute MUST be used, as an Azure function app can host multiple functions that would usually share\na TracerProvider.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
+pub const cloud_availability_zone = types.StringAttribute{
+    .name = "cloud.availability_zone",
+    .brief = "Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.",
+    .note = "Availability zones are called \"zones\" on Alibaba Cloud and Google Cloud.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The cloud platform in use.
+pub const cloud_platform = types.EnumAttribute(platformValue){
+    .base = types.StringAttribute{
+        .name = "cloud.platform",
+        .brief = "The cloud platform in use.",
+        .note = "The prefix of the service SHOULD match the one specified in `cloud.provider`.\n\n",
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = platformValue.alibaba_cloud_ecs,
+};
+
+/// A cloud environment (e.g. GCP, Azure, AWS).
+/// Display name: Cloud Attributes
+pub const Registry = struct {
+    /// Name of the cloud provider.
+    pub const provider = cloud_provider;
+    /// The cloud account ID the resource is assigned to.
+    pub const accountId = cloud_account_id;
+    /// The geographical region within a cloud provider. When associated with a resource, this attribute specifies the region where the resource operates. When calling services or APIs deployed on a cloud, this attribute identifies the region where the called destination is deployed.
+    pub const region = cloud_region;
+    /// Cloud provider-specific native identifier of the monitored cloud resource (e.g. an [ARN](https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html) on AWS, a [fully qualified resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) on Azure, a [full resource name](https://google.aip.dev/122
+    pub const resourceId = cloud_resource_id;
+    /// Cloud regions often have multiple, isolated locations known as zones to increase availability. Availability zone represents the zone where the resource is running.
+    pub const availabilityZone = cloud_availability_zone;
+    /// The cloud platform in use.
+    pub const platform = cloud_platform;
 };
 

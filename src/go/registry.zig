@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// This document defines Go related attributes.
-/// Display name: Go Attributes
 pub const memoryTypeValue = enum {
     /// Memory allocated from the heap that is reserved for stack space, whether or not it is currently in-use.
     stack,
@@ -21,24 +19,22 @@ pub const memoryTypeValue = enum {
     }
 };
 
-pub const RegistryGo = union(enum) {
-    /// The type of memory.
-    memoryType: types.EnumAttribute(memoryTypeValue),
+/// The type of memory.
+pub const go_memory_type = types.EnumAttribute(memoryTypeValue){
+    .base = types.StringAttribute{
+        .name = "go.memory.type",
+        .brief = "The type of memory.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = memoryTypeValue.stack,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .memoryType => types.AttributeInfo{
-                .name = "go.memory.type",
-                .brief = "The type of memory.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "other",
-                    "stack"
-                },
-            },
-        };
-    }
+/// This document defines Go related attributes.
+/// Display name: Go Attributes
+pub const Registry = struct {
+    /// The type of memory.
+    pub const memoryType = go_memory_type;
 };
 

@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// These attributes may be used for any disk related operation.
-/// Display name: Disk Attributes
 pub const ioDirectionValue = enum {
     ///
     read,
@@ -21,23 +19,22 @@ pub const ioDirectionValue = enum {
     }
 };
 
-pub const RegistryDisk = union(enum) {
-    /// The disk IO operation direction.
-    ioDirection: types.EnumAttribute(ioDirectionValue),
+/// The disk IO operation direction.
+pub const disk_io_direction = types.EnumAttribute(ioDirectionValue){
+    .base = types.StringAttribute{
+        .name = "disk.io.direction",
+        .brief = "The disk IO operation direction.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = ioDirectionValue.read,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .ioDirection => types.AttributeInfo{
-                .name = "disk.io.direction",
-                .brief = "The disk IO operation direction.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "read"
-                },
-            },
-        };
-    }
+/// These attributes may be used for any disk related operation.
+/// Display name: Disk Attributes
+pub const Registry = struct {
+    /// The disk IO operation direction.
+    pub const ioDirection = disk_io_direction;
 };
 

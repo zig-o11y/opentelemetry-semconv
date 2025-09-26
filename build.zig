@@ -92,4 +92,44 @@ pub fn build(b: *std.Build) void {
 
     const run_unit_tests = b.addRunArtifact(tool_unit_tests);
     test_step.dependOn(&run_unit_tests.step);
+
+    // Examples step
+    const examples_step = b.step("examples", "Build and run all example executables");
+
+    // List of all example files
+    const example_files = [_]struct {
+        name: []const u8,
+        path: []const u8,
+    }{
+        // Cloud monitoring examples
+        .{ .name = "aws_ec2_example", .path = "examples/cloud_monitoring/aws_ec2.zig" },
+        .{ .name = "gcp_compute_example", .path = "examples/cloud_monitoring/gcp_compute.zig" },
+        .{ .name = "azure_vm_example", .path = "examples/cloud_monitoring/azure_vm.zig" },
+        .{ .name = "multi_cloud_example", .path = "examples/cloud_monitoring/multi_cloud.zig" },
+
+        // Basic usage examples
+        .{ .name = "minimal_example", .path = "examples/basic_usage/minimal_example.zig" },
+        .{ .name = "simple_attributes_example", .path = "examples/basic_usage/simple_attributes.zig" },
+        .{ .name = "attribute_info_example", .path = "examples/basic_usage/attribute_info.zig" },
+    };
+
+    // Create executable for each example
+    for (example_files) |example| {
+        const example_exe = b.addExecutable(.{
+            .name = example.name,
+            .root_source_file = b.path(example.path),
+            .target = target,
+            .optimize = optimize,
+        });
+
+        // Add the semconv module to each example
+        example_exe.root_module.addImport("opentelemetry-semconv", lib_mod);
+
+        // Install the example executable
+        const run_examples = b.addRunArtifact(example_exe);
+
+        // Add to examples step
+        examples_step.dependOn(&example_exe.step);
+        examples_step.dependOn(&run_examples.step);
+    }
 }

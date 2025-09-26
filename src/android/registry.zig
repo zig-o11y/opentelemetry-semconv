@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// The Android platform on which the Android application is running.
-/// Display name: Android Attributes
 pub const appStateValue = enum {
     /// Any time before Activity.onResume() or, if the app has no Activity, Context.startService() has been called in the app for the first time.
     created,
@@ -24,35 +22,33 @@ pub const appStateValue = enum {
     }
 };
 
-pub const RegistryAndroid = union(enum) {
-    /// Uniquely identifies the framework API revision offered by a version (`os.version`) of the android operating system. More information can be found in the [Android API levels documentation](https://developer.android.com/guide/topics/manifest/uses-sdk-element
-    osApiLevel: types.StringAttribute,
-    /// This attribute represents the state of the application.
-    appState: types.EnumAttribute(appStateValue),
+/// Uniquely identifies the framework API revision offered by a version (`os.version`) of the android operating system. More information can be found in the [Android API levels documentation](https://developer.android.com/guide/topics/manifest/uses-sdk-element
+pub const android_os_api_level = types.StringAttribute{
+    .name = "android.os.api_level",
+    .brief = "Uniquely identifies the framework API revision offered by a version (`os.version`) of the android operating system. More information can be found in the [Android API levels documentation](https://developer.android.com/guide/topics/manifest/uses-sdk-element",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .osApiLevel => types.AttributeInfo{
-                .name = "android.os.api_level",
-                .brief = "Uniquely identifies the framework API revision offered by a version (`os.version`) of the android operating system. More information can be found in the [Android API levels documentation](https://developer.android.com/guide/topics/manifest/uses-sdk-element",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "33",
-                    "32"
-                },
-            },
-            .appState => types.AttributeInfo{
-                .name = "android.app.state",
-                .brief = "This attribute represents the state of the application.",
-                .note = "The Android lifecycle states are defined in [Activity lifecycle callbacks](https://developer.android.com/guide/components/activities/activity-lifecycle and from which the `OS identifiers` are derived.",
-                .stability = .development,
-                .examples = &.{
-                    "created"
-                },
-            },
-        };
-    }
+/// This attribute represents the state of the application.
+pub const android_app_state = types.EnumAttribute(appStateValue){
+    .base = types.StringAttribute{
+        .name = "android.app.state",
+        .brief = "This attribute represents the state of the application.",
+        .note = "The Android lifecycle states are defined in [Activity lifecycle callbacks](https://developer.android.com/guide/components/activities/activity-lifecycle and from which the `OS identifiers` are derived.",
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = appStateValue.created,
+};
+
+/// The Android platform on which the Android application is running.
+/// Display name: Android Attributes
+pub const Registry = struct {
+    /// Uniquely identifies the framework API revision offered by a version (`os.version`) of the android operating system. More information can be found in the [Android API levels documentation](https://developer.android.com/guide/topics/manifest/uses-sdk-element
+    pub const osApiLevel = android_os_api_level;
+    /// This attribute represents the state of the application.
+    pub const appState = android_app_state;
 };
 

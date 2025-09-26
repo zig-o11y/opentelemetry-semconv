@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Describes V8 JS Engine Runtime related attributes.
-/// Display name: V8 JS Attributes
 pub const gcTypeValue = enum {
     /// Major (Mark Sweep Compact).
     major,
@@ -50,30 +48,36 @@ pub const heapSpaceNameValue = enum {
     }
 };
 
-pub const RegistryV8js = union(enum) {
-    /// The type of garbage collection.
-    gcType: types.EnumAttribute(gcTypeValue),
-    /// The name of the space type of heap memory.
-    heapSpaceName: types.EnumAttribute(heapSpaceNameValue),
+/// The type of garbage collection.
+pub const v8js_gc_type = types.EnumAttribute(gcTypeValue){
+    .base = types.StringAttribute{
+        .name = "v8js.gc.type",
+        .brief = "The type of garbage collection.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = gcTypeValue.major,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .gcType => types.AttributeInfo{
-                .name = "v8js.gc.type",
-                .brief = "The type of garbage collection.",
-                .note = null,
-                .stability = .development,
-                .examples = null,
-            },
-            .heapSpaceName => types.AttributeInfo{
-                .name = "v8js.heap.space.name",
-                .brief = "The name of the space type of heap memory.",
-                .note = "Value can be retrieved from value `space_name` of [`v8.getHeapSpaceStatistics()`](https://nodejs.org/api/v8.html",
-                .stability = .development,
-                .examples = null,
-            },
-        };
-    }
+/// The name of the space type of heap memory.
+pub const v8js_heap_space_name = types.EnumAttribute(heapSpaceNameValue){
+    .base = types.StringAttribute{
+        .name = "v8js.heap.space.name",
+        .brief = "The name of the space type of heap memory.",
+        .note = "Value can be retrieved from value `space_name` of [`v8.getHeapSpaceStatistics()`](https://nodejs.org/api/v8.html",
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = heapSpaceNameValue.new_space,
+};
+
+/// Describes V8 JS Engine Runtime related attributes.
+/// Display name: V8 JS Attributes
+pub const Registry = struct {
+    /// The type of garbage collection.
+    pub const gcType = v8js_gc_type;
+    /// The name of the space type of heap memory.
+    pub const heapSpaceName = v8js_heap_space_name;
 };
 

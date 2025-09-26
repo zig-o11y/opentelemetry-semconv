@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// This group defines attributes for OpenAI.
-/// Display name: OpenAI Attributes
 pub const requestServiceTierValue = enum {
     /// The system will utilize scale tier credits until they are exhausted.
     auto,
@@ -21,47 +19,44 @@ pub const requestServiceTierValue = enum {
     }
 };
 
-pub const RegistryOpenai = union(enum) {
-    /// The service tier requested. May be a specific tier, default, or auto.
-    requestServiceTier: types.EnumAttribute(requestServiceTierValue),
-    /// The service tier used for the response.
-    responseServiceTier: types.StringAttribute,
-    /// A fingerprint to track any eventual change in the Generative AI environment.
-    responseSystemFingerprint: types.StringAttribute,
+/// The service tier requested. May be a specific tier, default, or auto.
+pub const openai_request_service_tier = types.EnumAttribute(requestServiceTierValue){
+    .base = types.StringAttribute{
+        .name = "openai.request.service_tier",
+        .brief = "The service tier requested. May be a specific tier, default, or auto.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = requestServiceTierValue.auto,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .requestServiceTier => types.AttributeInfo{
-                .name = "openai.request.service_tier",
-                .brief = "The service tier requested. May be a specific tier, default, or auto.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "auto",
-                    "default"
-                },
-            },
-            .responseServiceTier => types.AttributeInfo{
-                .name = "openai.response.service_tier",
-                .brief = "The service tier used for the response.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "scale",
-                    "default"
-                },
-            },
-            .responseSystemFingerprint => types.AttributeInfo{
-                .name = "openai.response.system_fingerprint",
-                .brief = "A fingerprint to track any eventual change in the Generative AI environment.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "fp_44709d6fcb"
-                },
-            },
-        };
-    }
+/// The service tier used for the response.
+pub const openai_response_service_tier = types.StringAttribute{
+    .name = "openai.response.service_tier",
+    .brief = "The service tier used for the response.",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// A fingerprint to track any eventual change in the Generative AI environment.
+pub const openai_response_system_fingerprint = types.StringAttribute{
+    .name = "openai.response.system_fingerprint",
+    .brief = "A fingerprint to track any eventual change in the Generative AI environment.",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// This group defines attributes for OpenAI.
+/// Display name: OpenAI Attributes
+pub const Registry = struct {
+    /// The service tier requested. May be a specific tier, default, or auto.
+    pub const requestServiceTier = openai_request_service_tier;
+    /// The service tier used for the response.
+    pub const responseServiceTier = openai_response_service_tier;
+    /// A fingerprint to track any eventual change in the Generative AI environment.
+    pub const responseSystemFingerprint = openai_response_system_fingerprint;
 };
 

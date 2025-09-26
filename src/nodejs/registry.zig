@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Describes Node.js related attributes.
-/// Display name: Node.js Attributes
 pub const eventloopStateValue = enum {
     /// Active time.
     active,
@@ -21,21 +19,22 @@ pub const eventloopStateValue = enum {
     }
 };
 
-pub const RegistryNodejs = union(enum) {
-    /// The state of event loop time.
-    eventloopState: types.EnumAttribute(eventloopStateValue),
+/// The state of event loop time.
+pub const nodejs_eventloop_state = types.EnumAttribute(eventloopStateValue){
+    .base = types.StringAttribute{
+        .name = "nodejs.eventloop.state",
+        .brief = "The state of event loop time.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = eventloopStateValue.active,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .eventloopState => types.AttributeInfo{
-                .name = "nodejs.eventloop.state",
-                .brief = "The state of event loop time.",
-                .note = null,
-                .stability = .development,
-                .examples = null,
-            },
-        };
-    }
+/// Describes Node.js related attributes.
+/// Display name: Node.js Attributes
+pub const Registry = struct {
+    /// The state of event loop time.
+    pub const eventloopState = nodejs_eventloop_state;
 };
 

@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// SignalR attributes
-/// Display name: SignalR Attributes
 pub const connectionStatusValue = enum {
     /// The connection was closed normally.
     normal_closure,
@@ -41,36 +39,36 @@ pub const transportValue = enum {
     }
 };
 
-pub const RegistrySignalr = union(enum) {
-    /// SignalR HTTP connection closure status.
-    connectionStatus: types.EnumAttribute(connectionStatusValue),
-    /// [SignalR transport type](https://github.com/dotnet/aspnetcore/blob/main/src/SignalR/docs/specs/TransportProtocols.md)
-    transport: types.EnumAttribute(transportValue),
+/// SignalR HTTP connection closure status.
+pub const signalr_connection_status = types.EnumAttribute(connectionStatusValue){
+    .base = types.StringAttribute{
+        .name = "signalr.connection.status",
+        .brief = "SignalR HTTP connection closure status.",
+        .note = null,
+        .stability = .stable,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = connectionStatusValue.normal_closure,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .connectionStatus => types.AttributeInfo{
-                .name = "signalr.connection.status",
-                .brief = "SignalR HTTP connection closure status.",
-                .note = null,
-                .stability = .stable,
-                .examples = &.{
-                    "app_shutdown",
-                    "timeout"
-                },
-            },
-            .transport => types.AttributeInfo{
-                .name = "signalr.transport",
-                .brief = "[SignalR transport type](https://github.com/dotnet/aspnetcore/blob/main/src/SignalR/docs/specs/TransportProtocols.md)",
-                .note = null,
-                .stability = .stable,
-                .examples = &.{
-                    "web_sockets",
-                    "long_polling"
-                },
-            },
-        };
-    }
+/// [SignalR transport type](https://github.com/dotnet/aspnetcore/blob/main/src/SignalR/docs/specs/TransportProtocols.md)
+pub const signalr_transport = types.EnumAttribute(transportValue){
+    .base = types.StringAttribute{
+        .name = "signalr.transport",
+        .brief = "[SignalR transport type](https://github.com/dotnet/aspnetcore/blob/main/src/SignalR/docs/specs/TransportProtocols.md)",
+        .note = null,
+        .stability = .stable,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = transportValue.server_sent_events,
+};
+
+/// SignalR attributes
+/// Display name: SignalR Attributes
+pub const Registry = struct {
+    /// SignalR HTTP connection closure status.
+    pub const connectionStatus = signalr_connection_status;
+    /// [SignalR transport type](https://github.com/dotnet/aspnetcore/blob/main/src/SignalR/docs/specs/TransportProtocols.md)
+    pub const transport = signalr_transport;
 };
 

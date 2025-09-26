@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// This group describes iOS-specific attributes.
-/// Display name: iOS Attributes
 pub const appStateValue = enum {
     /// The app has become `active`. Associated with UIKit notification `applicationDidBecomeActive`.
     active,
@@ -30,21 +28,22 @@ pub const appStateValue = enum {
     }
 };
 
-pub const RegistryIos = union(enum) {
-    /// This attribute represents the state of the application.
-    appState: types.EnumAttribute(appStateValue),
+/// This attribute represents the state of the application.
+pub const ios_app_state = types.EnumAttribute(appStateValue){
+    .base = types.StringAttribute{
+        .name = "ios.app.state",
+        .brief = "This attribute represents the state of the application.",
+        .note = "The iOS lifecycle states are defined in the [UIApplicationDelegate documentation](https://developer.apple.com/documentation/uikit/uiapplicationdelegate), and from which the `OS terminology` column values are derived.",
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = appStateValue.active,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .appState => types.AttributeInfo{
-                .name = "ios.app.state",
-                .brief = "This attribute represents the state of the application.",
-                .note = "The iOS lifecycle states are defined in the [UIApplicationDelegate documentation](https://developer.apple.com/documentation/uikit/uiapplicationdelegate), and from which the `OS terminology` column values are derived.",
-                .stability = .development,
-                .examples = null,
-            },
-        };
-    }
+/// This group describes iOS-specific attributes.
+/// Display name: iOS Attributes
+pub const Registry = struct {
+    /// This attribute represents the state of the application.
+    pub const appState = ios_app_state;
 };
 

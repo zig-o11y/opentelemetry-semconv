@@ -5,71 +5,63 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
+/// The [event_id](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
+pub const cloudevents_event_id = types.StringAttribute{
+    .name = "cloudevents.event_id",
+    .brief = "The [event_id](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The [source](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
+pub const cloudevents_event_source = types.StringAttribute{
+    .name = "cloudevents.event_source",
+    .brief = "The [source](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The [version of the CloudEvents specification](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
+pub const cloudevents_event_spec_version = types.StringAttribute{
+    .name = "cloudevents.event_spec_version",
+    .brief = "The [version of the CloudEvents specification](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The [event_type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
+pub const cloudevents_event_type = types.StringAttribute{
+    .name = "cloudevents.event_type",
+    .brief = "The [event_type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The [subject](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
+pub const cloudevents_event_subject = types.StringAttribute{
+    .name = "cloudevents.event_subject",
+    .brief = "The [subject](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
 /// This document defines attributes for CloudEvents.
 /// Display name: CloudEvents Attributes
-pub const RegistryCloudevents = union(enum) {
+pub const Registry = struct {
     /// The [event_id](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    eventId: types.StringAttribute,
+    pub const eventId = cloudevents_event_id;
     /// The [source](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    eventSource: types.StringAttribute,
+    pub const eventSource = cloudevents_event_source;
     /// The [version of the CloudEvents specification](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    eventSpecVersion: types.StringAttribute,
+    pub const eventSpecVersion = cloudevents_event_spec_version;
     /// The [event_type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    eventType: types.StringAttribute,
+    pub const eventType = cloudevents_event_type;
     /// The [subject](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md
-    eventSubject: types.StringAttribute,
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .eventId => types.AttributeInfo{
-                .name = "cloudevents.event_id",
-                .brief = "The [event_id](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "123e4567-e89b-12d3-a456-426614174000",
-                    "1"
-                },
-            },
-            .eventSource => types.AttributeInfo{
-                .name = "cloudevents.event_source",
-                .brief = "The [source](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "https://github.com/cloudevents",
-                    "/cloudevents/spec/pull/123",
-                    "my-service"
-                },
-            },
-            .eventSpecVersion => types.AttributeInfo{
-                .name = "cloudevents.event_spec_version",
-                .brief = "The [version of the CloudEvents specification](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
-                .note = null,
-                .stability = .development,
-                .examples = null,
-            },
-            .eventType => types.AttributeInfo{
-                .name = "cloudevents.event_type",
-                .brief = "The [event_type](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "com.github.pull_request.opened",
-                    "com.example.object.deleted.v2"
-                },
-            },
-            .eventSubject => types.AttributeInfo{
-                .name = "cloudevents.event_subject",
-                .brief = "The [subject](https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/spec.md",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "mynewfile.jpg"
-                },
-            },
-        };
-    }
+    pub const eventSubject = cloudevents_event_subject;
 };
 

@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// This document defines CPython related attributes.
-/// Display name: CPython attributes
 pub const gcGenerationValue = enum {
     /// Generation 0
     generation_0,
@@ -24,25 +22,22 @@ pub const gcGenerationValue = enum {
     }
 };
 
-pub const RegistryCpython = union(enum) {
-    /// Value of the garbage collector collection generation.
-    gcGeneration: types.EnumAttribute(gcGenerationValue),
+/// Value of the garbage collector collection generation.
+pub const cpython_gc_generation = types.EnumAttribute(gcGenerationValue){
+    .base = types.StringAttribute{
+        .name = "cpython.gc.generation",
+        .brief = "Value of the garbage collector collection generation.",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = gcGenerationValue.generation_0,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .gcGeneration => types.AttributeInfo{
-                .name = "cpython.gc.generation",
-                .brief = "Value of the garbage collector collection generation.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "0",
-                    "1",
-                    "2"
-                },
-            },
-        };
-    }
+/// This document defines CPython related attributes.
+/// Display name: CPython attributes
+pub const Registry = struct {
+    /// Value of the garbage collector collection generation.
+    pub const gcGeneration = cpython_gc_generation;
 };
 

@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// This document defines .NET related attributes.
-/// Display name: .NET Attributes
 pub const gcHeapGenerationValue = enum {
     /// Generation 0
     gen0,
@@ -30,25 +28,22 @@ pub const gcHeapGenerationValue = enum {
     }
 };
 
-pub const RegistryDotnet = union(enum) {
-    /// Name of the garbage collector managed heap generation.
-    gcHeapGeneration: types.EnumAttribute(gcHeapGenerationValue),
+/// Name of the garbage collector managed heap generation.
+pub const dotnet_gc_heap_generation = types.EnumAttribute(gcHeapGenerationValue){
+    .base = types.StringAttribute{
+        .name = "dotnet.gc.heap.generation",
+        .brief = "Name of the garbage collector managed heap generation.",
+        .note = null,
+        .stability = .stable,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = gcHeapGenerationValue.gen0,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .gcHeapGeneration => types.AttributeInfo{
-                .name = "dotnet.gc.heap.generation",
-                .brief = "Name of the garbage collector managed heap generation.",
-                .note = null,
-                .stability = .stable,
-                .examples = &.{
-                    "gen0",
-                    "gen1",
-                    "gen2"
-                },
-            },
-        };
-    }
+/// This document defines .NET related attributes.
+/// Display name: .NET Attributes
+pub const Registry = struct {
+    /// Name of the garbage collector managed heap generation.
+    pub const gcHeapGeneration = dotnet_gc_heap_generation;
 };
 

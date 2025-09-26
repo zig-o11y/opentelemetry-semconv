@@ -5,30 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Describes System attributes
-/// Display name: General System Attributes
-pub const RegistrySystem = union(enum) {
-    /// The device identifier
-    device: types.StringAttribute,
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .device => types.AttributeInfo{
-                .name = "system.device",
-                .brief = "The device identifier",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "(identifier)"
-                },
-            },
-        };
-    }
-};
-
-/// Describes System Memory attributes
-/// Display name: System Memory Attributes
 pub const memoryStateValue = enum {
     /// Actual used virtual memory in bytes.
     used,
@@ -49,29 +25,6 @@ pub const memoryStateValue = enum {
     }
 };
 
-pub const RegistrySystemMemory = union(enum) {
-    /// The memory state
-    memoryState: types.EnumAttribute(memoryStateValue),
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .memoryState => types.AttributeInfo{
-                .name = "system.memory.state",
-                .brief = "The memory state",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "free",
-                    "cached"
-                },
-            },
-        };
-    }
-};
-
-/// Describes System Memory Paging attributes
-/// Display name: System Paging Attributes
 pub const pagingStateValue = enum {
     ///
     used,
@@ -114,50 +67,6 @@ pub const pagingDirectionValue = enum {
     }
 };
 
-pub const RegistrySystemPaging = union(enum) {
-    /// The memory paging state
-    pagingState: types.EnumAttribute(pagingStateValue),
-    /// The memory paging type
-    pagingType: types.EnumAttribute(pagingTypeValue),
-    /// The paging access direction
-    pagingDirection: types.EnumAttribute(pagingDirectionValue),
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .pagingState => types.AttributeInfo{
-                .name = "system.paging.state",
-                .brief = "The memory paging state",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "free"
-                },
-            },
-            .pagingType => types.AttributeInfo{
-                .name = "system.paging.type",
-                .brief = "The memory paging type",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "minor"
-                },
-            },
-            .pagingDirection => types.AttributeInfo{
-                .name = "system.paging.direction",
-                .brief = "The paging access direction",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "in"
-                },
-            },
-        };
-    }
-};
-
-/// Describes Filesystem attributes
-/// Display name: Filesystem Attributes
 pub const filesystemStateValue = enum {
     ///
     used,
@@ -201,61 +110,6 @@ pub const filesystemTypeValue = enum {
     }
 };
 
-pub const RegistrySystemFilesystem = union(enum) {
-    /// The filesystem state
-    filesystemState: types.EnumAttribute(filesystemStateValue),
-    /// The filesystem type
-    filesystemType: types.EnumAttribute(filesystemTypeValue),
-    /// The filesystem mode
-    filesystemMode: types.StringAttribute,
-    /// The filesystem mount path
-    filesystemMountpoint: types.StringAttribute,
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .filesystemState => types.AttributeInfo{
-                .name = "system.filesystem.state",
-                .brief = "The filesystem state",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "used"
-                },
-            },
-            .filesystemType => types.AttributeInfo{
-                .name = "system.filesystem.type",
-                .brief = "The filesystem type",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "ext4"
-                },
-            },
-            .filesystemMode => types.AttributeInfo{
-                .name = "system.filesystem.mode",
-                .brief = "The filesystem mode",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "rw, ro"
-                },
-            },
-            .filesystemMountpoint => types.AttributeInfo{
-                .name = "system.filesystem.mountpoint",
-                .brief = "The filesystem mount path",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "/mnt/data"
-                },
-            },
-        };
-    }
-};
-
-/// Describes System Process attributes
-/// Display name: System Process Attributes
 pub const processStatusValue = enum {
     ///
     running,
@@ -276,23 +130,139 @@ pub const processStatusValue = enum {
     }
 };
 
-pub const RegistrySystemProcess = union(enum) {
-    /// The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html
-    processStatus: types.EnumAttribute(processStatusValue),
+/// The device identifier
+pub const system_device = types.StringAttribute{
+    .name = "system.device",
+    .brief = "The device identifier",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .processStatus => types.AttributeInfo{
-                .name = "system.process.status",
-                .brief = "The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "running"
-                },
-            },
-        };
-    }
+/// The memory state
+pub const system_memory_state = types.EnumAttribute(memoryStateValue){
+    .base = types.StringAttribute{
+        .name = "system.memory.state",
+        .brief = "The memory state",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = memoryStateValue.used,
+};
+
+/// The memory paging state
+pub const system_paging_state = types.EnumAttribute(pagingStateValue){
+    .base = types.StringAttribute{
+        .name = "system.paging.state",
+        .brief = "The memory paging state",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = pagingStateValue.used,
+};
+
+/// The memory paging type
+pub const system_paging_type = types.EnumAttribute(pagingTypeValue){
+    .base = types.StringAttribute{
+        .name = "system.paging.type",
+        .brief = "The memory paging type",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = pagingTypeValue.major,
+};
+
+/// The paging access direction
+pub const system_paging_direction = types.EnumAttribute(pagingDirectionValue){
+    .base = types.StringAttribute{
+        .name = "system.paging.direction",
+        .brief = "The paging access direction",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = pagingDirectionValue.in,
+};
+
+/// The filesystem state
+pub const system_filesystem_state = types.EnumAttribute(filesystemStateValue){
+    .base = types.StringAttribute{
+        .name = "system.filesystem.state",
+        .brief = "The filesystem state",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = filesystemStateValue.used,
+};
+
+/// The filesystem type
+pub const system_filesystem_type = types.EnumAttribute(filesystemTypeValue){
+    .base = types.StringAttribute{
+        .name = "system.filesystem.type",
+        .brief = "The filesystem type",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = filesystemTypeValue.fat32,
+};
+
+/// The filesystem mode
+pub const system_filesystem_mode = types.StringAttribute{
+    .name = "system.filesystem.mode",
+    .brief = "The filesystem mode",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The filesystem mount path
+pub const system_filesystem_mountpoint = types.StringAttribute{
+    .name = "system.filesystem.mountpoint",
+    .brief = "The filesystem mount path",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html
+pub const system_process_status = types.EnumAttribute(processStatusValue){
+    .base = types.StringAttribute{
+        .name = "system.process.status",
+        .brief = "The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = processStatusValue.running,
+};
+
+/// Describes System attributes
+/// Display name: General System Attributes
+pub const Registry = struct {
+    /// The device identifier
+    pub const device = system_device;
+    /// The memory state
+    pub const memoryState = system_memory_state;
+    /// The memory paging state
+    pub const pagingState = system_paging_state;
+    /// The memory paging type
+    pub const pagingType = system_paging_type;
+    /// The paging access direction
+    pub const pagingDirection = system_paging_direction;
+    /// The filesystem state
+    pub const filesystemState = system_filesystem_state;
+    /// The filesystem type
+    pub const filesystemType = system_filesystem_type;
+    /// The filesystem mode
+    pub const filesystemMode = system_filesystem_mode;
+    /// The filesystem mount path
+    pub const filesystemMountpoint = system_filesystem_mountpoint;
+    /// The process state, e.g., [Linux Process State Codes](https://man7.org/linux/man-pages/man1/ps.1.html
+    pub const processStatus = system_process_status;
 };
 

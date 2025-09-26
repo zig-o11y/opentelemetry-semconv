@@ -5,25 +5,19 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
+/// Represents the human-readable identifier of the node/instance to which a request was routed.
+pub const elasticsearch_node_name = types.StringAttribute{
+    .name = "elasticsearch.node.name",
+    .brief = "Represents the human-readable identifier of the node/instance to which a request was routed.",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
 /// This section defines attributes for Elasticsearch.
 /// Display name: Elasticsearch Attributes
-pub const RegistryElasticsearch = union(enum) {
+pub const Registry = struct {
     /// Represents the human-readable identifier of the node/instance to which a request was routed.
-    nodeName: types.StringAttribute,
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .nodeName => types.AttributeInfo{
-                .name = "elasticsearch.node.name",
-                .brief = "Represents the human-readable identifier of the node/instance to which a request was routed.",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "instance-0000000001"
-                },
-            },
-        };
-    }
+    pub const nodeName = elasticsearch_node_name;
 };
 

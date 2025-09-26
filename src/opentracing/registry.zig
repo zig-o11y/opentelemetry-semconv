@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Attributes used by the OpenTracing Shim layer.
-/// Display name: OpenTracing Attributes
 pub const refTypeValue = enum {
     /// The parent Span depends on the child Span in some capacity
     child_of,
@@ -21,21 +19,22 @@ pub const refTypeValue = enum {
     }
 };
 
-pub const RegistryOpentracing = union(enum) {
-    /// Parent-child Reference type
-    refType: types.EnumAttribute(refTypeValue),
+/// Parent-child Reference type
+pub const opentracing_ref_type = types.EnumAttribute(refTypeValue){
+    .base = types.StringAttribute{
+        .name = "opentracing.ref_type",
+        .brief = "Parent-child Reference type",
+        .note = "The causal relationship between a child Span and a parent Span.",
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = refTypeValue.child_of,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .refType => types.AttributeInfo{
-                .name = "opentracing.ref_type",
-                .brief = "Parent-child Reference type",
-                .note = "The causal relationship between a child Span and a parent Span.",
-                .stability = .development,
-                .examples = null,
-            },
-        };
-    }
+/// Attributes used by the OpenTracing Shim layer.
+/// Display name: OpenTracing Attributes
+pub const Registry = struct {
+    /// Parent-child Reference type
+    pub const refType = opentracing_ref_type;
 };
 

@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// An operating system process.
-/// Display name: Process Attributes
 pub const contextSwitchTypeValue = enum {
     ///
     voluntary,
@@ -35,7 +33,9 @@ pub const pagingFaultTypeValue = enum {
     }
 };
 
-pub const RegistryProcess = union(enum) {
+/// An operating system process.
+/// Display name: Process Attributes
+pub const Registry = union(enum) {
     /// Process identifier (PID).
     pid: types.StringAttribute,
     /// Parent Process identifier (PPID).
@@ -102,6 +102,8 @@ pub const RegistryProcess = union(enum) {
     pagingFaultType: types.EnumAttribute(pagingFaultTypeValue),
     /// Process environment variables, `<key>` being the environment variable name, the value being the environment variable value.
     environmentVariable: types.StringAttribute,
+    /// The control group associated with the process.
+    linuxCgroup: types.StringAttribute,
 
     /// Extract attribute information from this union variant
     pub fn get(self: @This()) types.AttributeInfo {
@@ -211,7 +213,7 @@ pub const RegistryProcess = union(enum) {
                 .note = null,
                 .stability = .development,
                 .examples = &.{
-                    "C:\\cmd\\otecol --config=\"my directory\\config.yaml\""
+                    "C:\\cmd\\otecol --config=\\\"my directory\\config.yaml\\\""
                 },
             },
             .commandArgs => types.AttributeInfo{
@@ -398,18 +400,6 @@ pub const RegistryProcess = union(enum) {
                     "/usr/local/bin:/usr/bin"
                 },
             },
-        };
-    }
-};
-
-/// Describes Linux Process attributes
-pub const RegistryProcessLinux = union(enum) {
-    /// The control group associated with the process.
-    linuxCgroup: types.StringAttribute,
-
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
             .linuxCgroup => types.AttributeInfo{
                 .name = "process.linux.cgroup",
                 .brief = "The control group associated with the process.",

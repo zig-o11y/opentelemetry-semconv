@@ -23,18 +23,13 @@ const std = @import("std");
 const semconv = @import("opentelemetry-semconv");
 
 pub fn main() !void {
-    // Use HTTP semantic conventions
-    const method_attr = semconv.http.Attributes.request_method;
-    const status_attr = semconv.http.Attributes.response_status_code;
-    
-    // Use network semantic conventions  
-    const transport_attr = semconv.network.Attributes.transport;
-    
-    // Use error semantic conventions
-    const error_type_attr = semconv.err.Attributes.error_type;
-    
-    std.debug.print("HTTP method attribute: {s}\n", .{method_attr.name});
-    std.debug.print("Status: {}\n", .{method_attr.stability});
+    // Use Deployment semantic conventions
+    const deploy_attr = semconv.deployment.deployment_environment_name;
+    const deploy_key = deploy_attr.name;
+    const deploy_status = .succeeded;
+
+    // Here you would actually set the attribute on metrics data point, log/event or trace attributes
+    std.debug.print("Setting event with attribute: {s} = {s}\n", .{deploy_key, deploy_status.toString()});
 }
 ```
 

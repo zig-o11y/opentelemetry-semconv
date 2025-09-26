@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Describes Linux Memory attributes
-/// Display name: Linux Memory Attributes
 pub const memorySlabStateValue = enum {
     ///
     reclaimable,
@@ -21,24 +19,22 @@ pub const memorySlabStateValue = enum {
     }
 };
 
-pub const RegistryLinuxMemory = union(enum) {
-    /// The Linux Slab memory state
-    memorySlabState: types.EnumAttribute(memorySlabStateValue),
+/// The Linux Slab memory state
+pub const linux_memory_slab_state = types.EnumAttribute(memorySlabStateValue){
+    .base = types.StringAttribute{
+        .name = "linux.memory.slab.state",
+        .brief = "The Linux Slab memory state",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = memorySlabStateValue.reclaimable,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .memorySlabState => types.AttributeInfo{
-                .name = "linux.memory.slab.state",
-                .brief = "The Linux Slab memory state",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "reclaimable",
-                    "unreclaimable"
-                },
-            },
-        };
-    }
+/// Describes Linux Memory attributes
+/// Display name: Linux Memory Attributes
+pub const Registry = struct {
+    /// The Linux Slab memory state
+    pub const memorySlabState = linux_memory_slab_state;
 };
 

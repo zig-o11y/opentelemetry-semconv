@@ -5,8 +5,6 @@
 const std = @import("std");
 const types = @import("../types.zig");
 
-/// Attributes specific to a cpu instance.
-/// Display name: CPU Attributes
 pub const modeValue = enum {
     /// User
     user,
@@ -39,35 +37,33 @@ pub const modeValue = enum {
     }
 };
 
-pub const RegistryCpu = union(enum) {
-    /// The mode of the CPU
-    mode: types.EnumAttribute(modeValue),
-    /// The logical CPU number [0..n-1]
-    logicalNumber: types.StringAttribute,
+/// The mode of the CPU
+pub const cpu_mode = types.EnumAttribute(modeValue){
+    .base = types.StringAttribute{
+        .name = "cpu.mode",
+        .brief = "The mode of the CPU",
+        .note = null,
+        .stability = .development,
+        .requirement_level = .recommended,
+    },
+    .well_known_values = modeValue.user,
+};
 
-    /// Extract attribute information from this union variant
-    pub fn get(self: @This()) types.AttributeInfo {
-        return switch (self) {
-            .mode => types.AttributeInfo{
-                .name = "cpu.mode",
-                .brief = "The mode of the CPU",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "user",
-                    "system"
-                },
-            },
-            .logicalNumber => types.AttributeInfo{
-                .name = "cpu.logical_number",
-                .brief = "The logical CPU number [0..n-1]",
-                .note = null,
-                .stability = .development,
-                .examples = &.{
-                    "1"
-                },
-            },
-        };
-    }
+/// The logical CPU number [0..n-1]
+pub const cpu_logical_number = types.StringAttribute{
+    .name = "cpu.logical_number",
+    .brief = "The logical CPU number [0..n-1]",
+    .note = null,
+    .stability = .development,
+    .requirement_level = .recommended,
+};
+
+/// Attributes specific to a cpu instance.
+/// Display name: CPU Attributes
+pub const Registry = struct {
+    /// The mode of the CPU
+    pub const mode = cpu_mode;
+    /// The logical CPU number [0..n-1]
+    pub const logicalNumber = cpu_logical_number;
 };
 
