@@ -1,46 +1,70 @@
-// DO NOT EDIT, this is an auto-generated file
-//
-// If you want to update the file:
-// - Edit the template at scripts/templates/registry/zig/attribute.zig.j2
-// - Run the script at scripts/generate-consts-from-spec.sh
+//! Generated from OpenTelemetry semantic conventions specification v{{ params.schema_url | replace('https://opentelemetry.io/schemas/', '') }}
+//! This file contains semantic convention attribute definitions.
 
-//! # Semantic Attributes
-//!
-//! The entire set of semantic attributes (or [conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/)) defined by the project. The resource, metric, and trace modules reference these attributes.
+const std = @import("std");
+const types = @import("types.zig");
 
-{% for root_ns in ctx %}
-    {% for attr in root_ns.attributes | rejectattr("name", "in", params.excluded_attributes) %}
-{# Escape any `<...>` tags to `[...]` to avoid documentation parsing issues. #}
-{% set safe_note = attr.note | replace('<', '[') | replace('>', ']') %}
+{% for root_ns in ctx -%}
+{%- for attr in root_ns.attributes | rejectattr("name", "in", params.excluded_attributes) %}
+{%- set attr_name = attr.name | replace('.', '_') | replace('-', '_') %}
+
+{%- if attr.type is mapping and attr.type.members is defined %}
+pub const {{ attr_name }}Value = enum {
+{%- for member in attr.type.members %}
+    {%- set member_id = member.id | replace('-', '_') | replace('.', '_') %}
+    {%- if member_id in ['type', 'align', 'async', 'await', 'break', 'const', 'continue', 'defer', 'else', 'enum', 'error', 'export', 'extern', 'fn', 'for', 'if', 'inline', 'noalias', 'null', 'or', 'orelse', 'packed', 'pub', 'resume', 'return', 'struct', 'suspend', 'switch', 'test', 'threadlocal', 'try', 'union', 'unreachable', 'usingnamespace', 'var', 'volatile', 'while'] or '.' in member.id %}
+    @"{{ member_id }}",
+    {%- else %}
+    {{ member_id }},
+    {%- endif %}
+{%- endfor %}
+
+    pub fn toString(self: @This()) []const u8 {
+        return switch (self) {
+{%- for member in attr.type.members %}
+    {%- set member_id = member.id | replace('-', '_') | replace('.', '_') %}
+    {%- if member_id in ['type', 'align', 'async', 'await', 'break', 'const', 'continue', 'defer', 'else', 'enum', 'error', 'export', 'extern', 'fn', 'for', 'if', 'inline', 'noalias', 'null', 'or', 'orelse', 'packed', 'pub', 'resume', 'return', 'struct', 'suspend', 'switch', 'test', 'threadlocal', 'try', 'union', 'unreachable', 'usingnamespace', 'var', 'volatile', 'while'] or '.' in member.id %}
+            .@"{{ member_id }}" => "{{ member.value }}",
+    {%- else %}
+            .{{ member_id }} => "{{ member.value }}",
+    {%- endif %}
+{%- endfor %}
+        };
+    }
+};
+
 /// {{ attr.brief }}
-{% if safe_note %}
-/// 
-/// Notes: {{ safe_note | replace('\n', ' ') | replace('  ', ' ') | trim }}
-{% endif %}
-{% if attr.examples %}
-/// 
-/// Examples:
-{% if attr.examples is sequence %}
-    {% for example in attr.examples %}
-///     {{ example | replace('\n', '\\n') | replace('"', '\\"') }}
-    {% endfor %}
-{% else %}
-///     {{ attr.examples | replace('\n', '\\n') | replace('"', '\\"') }}
-{% endif %}
-{% endif %}
-{% if attr.stability == 'experimental' or attr.requirement_level == 'opt_in' %}
-/// 
-/// Note: This attribute is experimental and may change in the future.
-{% endif %}
-{% if attr.deprecated %}
-/// 
-/// Note: This attribute is deprecated. {{ attr.deprecated.note | default(attr.deprecated) }}
-{% endif %}
-pub const {{ attr.name | screaming_snake_case }}: []const u8 = "{{ attr.name }}";
+pub const {{ attr_name }} = types.EnumAttribute({{ attr_name }}Value){
+    .base = types.StringAttribute{
+        .name = "{{ attr.name }}",
+        .brief = "{{ attr.brief | replace('"', '\\"') | replace('\n', ' ') | trim }}",
+        {%- if attr.note %}
+        .note = {{ '"' + attr.note | replace('\\', '\\\\') | replace('<', '[') | replace('>', ']') | replace('"', '\\"') | replace('\n', ' ') | trim + '"' }},
+        {%- endif %}
+        .stability = {{ '.stable' if attr.stability == 'stable' else '.development' }},
+        .requirement_level = {{ '.required' if attr.requirement_level == 'required' else '.recommended' if attr.requirement_level == 'recommended' else '.opt_in' if attr.requirement_level == 'opt_in' else '.conditionally_required' if attr.requirement_level == 'conditionally_required' else '.recommended' }},
+    },
+    .well_known_values = {{ attr_name }}Value.{% set first_member = attr.type.members[0].id | replace('-', '_') | replace('.', '_') %}{% if first_member in ['type', 'align', 'async', 'await', 'break', 'const', 'continue', 'defer', 'else', 'enum', 'error', 'export', 'extern', 'fn', 'for', 'if', 'inline', 'noalias', 'null', 'or', 'orelse', 'packed', 'pub', 'resume', 'return', 'struct', 'suspend', 'switch', 'test', 'threadlocal', 'try', 'union', 'unreachable', 'usingnamespace', 'var', 'volatile', 'while'] or '.' in attr.type.members[0].id %}@"{{ first_member }}"{% else %}{{ first_member }}{% endif %},
+};
 
-    {% endfor %}
-{% endfor %}
+{%- else %}
+
+/// {{ attr.brief }}
+pub const {{ attr_name }} = types.StringAttribute{
+    .name = "{{ attr.name }}",
+    .brief = "{{ attr.brief | replace('"', '\\"') | replace('\n', ' ') | trim }}",
+    {%- if attr.note %}
+    .note = {{ '"' + attr.note | replace('\\', '\\\\') | replace('<', '[') | replace('>', ']') | replace('"', '\\"') | replace('\n', ' ') | trim + '"' }},
+    {%- endif %}
+    .stability = {{ '.stable' if attr.stability == 'stable' else '.development' }},
+    .requirement_level = {{ '.required' if attr.requirement_level == 'required' else '.recommended' if attr.requirement_level == 'recommended' else '.opt_in' if attr.requirement_level == 'opt_in' else '.conditionally_required' if attr.requirement_level == 'conditionally_required' else '.recommended' }},
+};
+
+{%- endif %}
+
+{%- endfor %}
+{%- endfor %}
 
 test "semantic attributes" {
-    @import("std").testing.refAllDecls(@This());
+    std.testing.refAllDecls(@This());
 }
