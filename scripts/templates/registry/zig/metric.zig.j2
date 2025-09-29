@@ -8,6 +8,9 @@
 //!
 //! The entire set of semantic metrics (or [conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/)) defined by the project.
 
+const std = @import("std");
+const types = @import("types.zig");
+
 {% for root_ns in ctx %}
     {% for metric in root_ns.metrics %}
 {# Escape any `<...>` tags to `[...]` to avoid documentation parsing issues. #}
@@ -21,16 +24,16 @@
 /// {{ metric.brief | default('') }}
 {% endif %}
 {% if safe_note %}
-/// 
+///
 /// Notes: {{ safe_note | replace('\n', ' ') | replace('  ', ' ') | trim }}
 {% endif %}
-/// 
+///
 /// ## Metadata
 /// | Instrument | Unit | Status |
 /// |:-|:-|:-|
 /// | `{{ metric.instrument }}` | `{{ metric.unit }}` | `{{ metric.stability | capitalize }}` |
 {% if metric.attributes %}
-/// 
+///
 /// ## Attributes
 /// | Name | Requirement |
 /// |:-|:- |
@@ -51,21 +54,30 @@
     {% endfor %}
 {% endif %}
 {% if metric.examples %}
-/// 
+///
 /// ## Examples
     {% for example in metric.examples %}
 /// - {{ example | replace('\n', '\\n') | replace('"', '\\"') }}
     {% endfor %}
 {% endif %}
 {% if metric.stability == 'experimental' or metric.requirement_level == 'opt_in' %}
-/// 
+///
 /// Note: This metric is experimental and may change in the future.
 {% endif %}
 {% if metric.deprecated %}
-/// 
+///
 /// Note: This metric is deprecated. {{ metric.deprecated.note | default(metric.deprecated) }}
 {% endif %}
-pub const {{ metric.metric_name | screaming_snake_case }}: []const u8 = "{{ metric.metric_name }}";
+pub const {{ metric.metric_name | snake_case }} = types.Metric{
+    .name = "{{ metric.metric_name }}",
+    .brief = "{{ metric.brief | replace('\\', '\\\\') | replace('"', '\\"') | replace('\n', ' ') | trim }}",
+    .stability = {{ '.stable' if metric.stability == 'stable' else '.development' if metric.stability == 'development' else '.experimental' if metric.stability == 'experimental' else '.deprecated' if metric.deprecated else '.development' }},
+    .instrument = {{ '.counter' if metric.instrument == 'counter' else '.gauge' if metric.instrument == 'gauge' else '.updowncounter' if metric.instrument == 'updowncounter' else '.histogram' if metric.instrument == 'histogram' else '.gauge' }},
+    .unit = "{{ metric.unit | default('') }}",
+    .value_type = {{ '.int' if metric.value_type == 'int' else '.double' }},
+{% if metric.deprecated %}    .deprecated_reason = "{{ metric.deprecated.note | default(metric.deprecated) | replace('"', '\\"') }}",
+{% endif %}
+};
 
     {% endfor %}
 {% endfor %}

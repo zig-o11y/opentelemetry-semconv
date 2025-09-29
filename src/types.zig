@@ -408,5 +408,3 @@ test "ArrayAttribute union" {
     try std.testing.expectEqual(StabilityLevel.stable, array_attr_double.getStability());
     try std.testing.expectEqual(RequirementLevel.required, array_attr_double.getRequirementLevel());
 }
-
-// AttributeInfo is no longer needed - all information is contained in Attribute(ValueType) structs
