@@ -11,19 +11,19 @@ pub fn main() !void {
     std.debug.print("--------------------------\n", .{});
 
     // Access HTTP request method attribute
-    const http_method = semconv.http.Registry.http_request_method;
+    const http_method = semconv.attribute.http_request_method;
     std.debug.print("HTTP method attribute: {s}\n", .{http_method.base.name});
     std.debug.print("  Brief: {s}\n", .{http_method.base.brief});
     std.debug.print("  Stability: {s}\n", .{@tagName(http_method.base.stability)});
 
     // Show available HTTP method values
     std.debug.print("  Available method values:\n", .{});
-    std.debug.print("    GET: {s}\n", .{semconv.http.Registry.requestMethodValue.get.toString()});
-    std.debug.print("    POST: {s}\n", .{semconv.http.Registry.requestMethodValue.post.toString()});
-    std.debug.print("    PUT: {s}\n", .{semconv.http.Registry.requestMethodValue.put.toString()});
+    std.debug.print("    GET: {s}\n", .{semconv.attribute.http_request_methodValue.get.toString()});
+    std.debug.print("    POST: {s}\n", .{semconv.attribute.http_request_methodValue.post.toString()});
+    std.debug.print("    PUT: {s}\n", .{semconv.attribute.http_request_methodValue.put.toString()});
 
     // Access HTTP status code attribute
-    const http_status = semconv.http.Registry.http_response_status_code;
+    const http_status = semconv.attribute.http_response_status_code;
     std.debug.print("\nHTTP status code attribute: {s}\n", .{http_status.name});
     std.debug.print("  Brief: {s}\n", .{http_status.brief});
     std.debug.print("  Stability: {s}\n", .{@tagName(http_status.stability)});
@@ -35,16 +35,16 @@ pub fn main() !void {
     std.debug.print("-------------------------\n", .{});
 
     // Access JVM memory type attribute
-    const jvm_memory_type = semconv.jvm.Registry.jvm_memory_type;
+    const jvm_memory_type = semconv.attribute.jvm_memory_type;
     std.debug.print("JVM memory type attribute: {s}\n", .{jvm_memory_type.base.name});
     std.debug.print("  Brief: {s}\n", .{jvm_memory_type.base.brief});
     std.debug.print("  Stability: {s}\n", .{@tagName(jvm_memory_type.base.stability)});
     std.debug.print("  Available values:\n", .{});
-    std.debug.print("    Heap: {s}\n", .{semconv.jvm.Registry.memoryTypeValue.heap.toString()});
-    std.debug.print("    Non-heap: {s}\n", .{semconv.jvm.Registry.memoryTypeValue.non_heap.toString()});
+    std.debug.print("    Heap: {s}\n", .{semconv.attribute.jvm_memory_typeValue.heap.toString()});
+    std.debug.print("    Non-heap: {s}\n", .{semconv.attribute.jvm_memory_typeValue.non_heap.toString()});
 
     // Access JVM GC name attribute
-    const jvm_gc_name = semconv.jvm.Registry.jvm_gc_name;
+    const jvm_gc_name = semconv.attribute.jvm_gc_name;
     std.debug.print("\nJVM GC name attribute: {s}\n", .{jvm_gc_name.name});
     std.debug.print("  Brief: {s}\n", .{jvm_gc_name.brief});
     std.debug.print("  Stability: {s}\n", .{@tagName(jvm_gc_name.stability)});

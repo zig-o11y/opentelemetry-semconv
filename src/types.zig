@@ -302,6 +302,101 @@ pub const EntityGroup = struct {
     note: ?[]const u8 = null,
 };
 
+/// Metric instrument type
+pub const InstrumentType = enum {
+    /// Counter - monotonic, increasing values
+    counter,
+    /// Up/Down Counter - can increase and decrease
+    updowncounter,
+    /// Histogram - distribution of values
+    histogram,
+    /// Gauge - current value at a point in time
+    gauge,
+
+    pub fn toString(self: InstrumentType) []const u8 {
+        return switch (self) {
+            .counter => "counter",
+            .updowncounter => "updowncounter",
+            .histogram => "histogram",
+            .gauge => "gauge",
+        };
+    }
+};
+
+/// Metric value type
+pub const MetricValueType = enum {
+    /// Double precision floating point
+    double,
+    /// 64-bit integer
+    int,
+
+    pub fn toString(self: MetricValueType) []const u8 {
+        return switch (self) {
+            .double => "double",
+            .int => "int",
+        };
+    }
+};
+
+/// A semantic convention metric definition
+pub const Metric = struct {
+    /// The metric name
+    name: []const u8,
+    /// Human-readable description
+    brief: []const u8,
+    /// Additional notes or documentation
+    note: ?[]const u8 = null,
+    /// Stability level
+    stability: StabilityLevel,
+    /// Instrument type
+    instrument: InstrumentType,
+    /// Unit of measurement
+    unit: []const u8,
+    /// Value type
+    value_type: MetricValueType,
+    /// Example values
+    examples: ?[]const []const u8 = null,
+    /// Deprecated reason if applicable
+    deprecated_reason: ?[]const u8 = null,
+
+    pub fn init(
+        name: []const u8,
+        brief: []const u8,
+        stability: StabilityLevel,
+        instrument: InstrumentType,
+        unit: []const u8,
+        value_type: MetricValueType,
+    ) Metric {
+        return Metric{
+            .name = name,
+            .brief = brief,
+            .stability = stability,
+            .instrument = instrument,
+            .unit = unit,
+            .value_type = value_type,
+        };
+    }
+
+    pub fn withNote(self: Metric, note: []const u8) Metric {
+        var result = self;
+        result.note = note;
+        return result;
+    }
+
+    pub fn withExamples(self: Metric, examples: []const []const u8) Metric {
+        var result = self;
+        result.examples = examples;
+        return result;
+    }
+
+    pub fn withDeprecation(self: Metric, reason: []const u8) Metric {
+        var result = self;
+        result.deprecated_reason = reason;
+        result.stability = .deprecated;
+        return result;
+    }
+};
+
 /// Test helper to verify attribute definitions
 pub fn expectValidAttribute(comptime attr: anytype) void {
     // Compile-time validation
@@ -310,6 +405,20 @@ pub fn expectValidAttribute(comptime attr: anytype) void {
     }
     if (attr.brief.len == 0) {
         @compileError("Attribute brief cannot be empty");
+    }
+}
+
+/// Test helper to verify metric definitions
+pub fn expectValidMetric(comptime metric: Metric) void {
+    // Compile-time validation
+    if (metric.name.len == 0) {
+        @compileError("Metric name cannot be empty");
+    }
+    if (metric.brief.len == 0) {
+        @compileError("Metric brief cannot be empty");
+    }
+    if (metric.unit.len == 0) {
+        @compileError("Metric unit cannot be empty");
     }
 }
 
@@ -409,4 +518,33 @@ test "ArrayAttribute union" {
     try std.testing.expectEqual(RequirementLevel.required, array_attr_double.getRequirementLevel());
 }
 
-// AttributeInfo is no longer needed - all information is contained in Attribute(ValueType) structs
+test "Metric creation" {
+    const metric = Metric.init(
+        "test.metric",
+        "A test metric",
+        .stable,
+        .counter,
+        "{count}",
+        .double,
+    );
+
+    try std.testing.expectEqualStrings("test.metric", metric.name);
+    try std.testing.expectEqualStrings("A test metric", metric.brief);
+    try std.testing.expectEqual(StabilityLevel.stable, metric.stability);
+    try std.testing.expectEqual(InstrumentType.counter, metric.instrument);
+    try std.testing.expectEqualStrings("{count}", metric.unit);
+    try std.testing.expectEqual(MetricValueType.double, metric.value_type);
+    try std.testing.expectEqual(@as(?[]const u8, null), metric.note);
+}
+
+test "InstrumentType string conversion" {
+    try std.testing.expectEqualStrings("counter", InstrumentType.counter.toString());
+    try std.testing.expectEqualStrings("updowncounter", InstrumentType.updowncounter.toString());
+    try std.testing.expectEqualStrings("histogram", InstrumentType.histogram.toString());
+    try std.testing.expectEqualStrings("gauge", InstrumentType.gauge.toString());
+}
+
+test "MetricValueType string conversion" {
+    try std.testing.expectEqualStrings("double", MetricValueType.double.toString());
+    try std.testing.expectEqualStrings("int", MetricValueType.int.toString());
+}
