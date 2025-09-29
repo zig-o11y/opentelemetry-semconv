@@ -8,6 +8,9 @@
 //!
 //! The entire set of semantic trace attributes (or [conventions](https://opentelemetry.io/docs/concepts/semantic-conventions/)) defined by the project.
 
+const std = @import("std");
+const types = @import("types.zig");
+
 /// This attribute represents the state of the application.
 
 /// 
@@ -15,7 +18,12 @@
 /// 
 /// - created
 /// Note: This attribute is experimental and may change in the future.
-pub const ANDROID_APP_STATE: []const u8 = "android.app.state";
+pub const android_app_state = types.StringAttribute{
+    .name = "android.app.state",
+    .brief = "This attribute represents the state of the application.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The x (horizontal) coordinate of a screen coordinate, in screen pixels.
 /// 
@@ -24,7 +32,12 @@ pub const ANDROID_APP_STATE: []const u8 = "android.app.state";
 /// - 0
 /// - 131
 /// Note: This attribute is experimental and may change in the future.
-pub const APP_SCREEN_COORDINATE_X: []const u8 = "app.screen.coordinate.x";
+pub const app_screen_coordinate_x = types.IntAttribute{
+    .name = "app.screen.coordinate.x",
+    .brief = "The x (horizontal) coordinate of a screen coordinate, in screen pixels.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The y (vertical) component of a screen coordinate, in screen pixels.
 
@@ -34,7 +47,12 @@ pub const APP_SCREEN_COORDINATE_X: []const u8 = "app.screen.coordinate.x";
 /// - 12
 /// - 99
 /// Note: This attribute is experimental and may change in the future.
-pub const APP_SCREEN_COORDINATE_Y: []const u8 = "app.screen.coordinate.y";
+pub const app_screen_coordinate_y = types.IntAttribute{
+    .name = "app.screen.coordinate.y",
+    .brief = "The y (vertical) component of a screen coordinate, in screen pixels.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// An identifier that uniquely differentiates this widget from other widgets in the same application.
 
@@ -44,7 +62,12 @@ pub const APP_SCREEN_COORDINATE_Y: []const u8 = "app.screen.coordinate.y";
 /// - f9bc787d-ff05-48ad-90e1-fca1d46130b3
 /// - submit_order_1829
 /// Note: This attribute is experimental and may change in the future.
-pub const APP_WIDGET_ID: []const u8 = "app.widget.id";
+pub const app_widget_id = types.StringAttribute{
+    .name = "app.widget.id",
+    .brief = "An identifier that uniquely differentiates this widget from other widgets in the same application.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The name of an application widget.
 /// 
@@ -54,7 +77,12 @@ pub const APP_WIDGET_ID: []const u8 = "app.widget.id";
 /// - attack
 /// - Clear Cart
 /// Note: This attribute is experimental and may change in the future.
-pub const APP_WIDGET_NAME: []const u8 = "app.widget.name";
+pub const app_widget_name = types.StringAttribute{
+    .name = "app.widget.name",
+    .brief = "The name of an application widget.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The unique identifier of the AWS Bedrock Guardrail. A [guardrail](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html) helps safeguard and prevent unwanted behavior from model responses or user messages.
 
@@ -63,7 +91,12 @@ pub const APP_WIDGET_NAME: []const u8 = "app.widget.name";
 /// 
 /// - sgi5gkybzqak
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_BEDROCK_GUARDRAIL_ID: []const u8 = "aws.bedrock.guardrail.id";
+pub const aws_bedrock_guardrail_id = types.StringAttribute{
+    .name = "aws.bedrock.guardrail.id",
+    .brief = "The unique identifier of the AWS Bedrock Guardrail. A [guardrail](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html) helps safeguard and prevent unwanted behavior from model responses or user messages.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The unique identifier of the AWS Bedrock Knowledge base. A [knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) is a bank of information that can be queried by models to generate more relevant responses and augment prompts.
 
@@ -72,7 +105,12 @@ pub const AWS_BEDROCK_GUARDRAIL_ID: []const u8 = "aws.bedrock.guardrail.id";
 /// 
 /// - XFWUPB9PAW
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_BEDROCK_KNOWLEDGE_BASE_ID: []const u8 = "aws.bedrock.knowledge_base.id";
+pub const aws_bedrock_knowledge_base_id = types.StringAttribute{
+    .name = "aws.bedrock.knowledge_base.id",
+    .brief = "The unique identifier of the AWS Bedrock Knowledge base. A [knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) is a bank of information that can be queried by models to generate more relevant responses and augment prompts.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The JSON-serialized value of each item in the `AttributeDefinitions` request field.
 /// 
@@ -80,7 +118,12 @@ pub const AWS_BEDROCK_KNOWLEDGE_BASE_ID: []const u8 = "aws.bedrock.knowledge_bas
 /// 
 /// - [\"{ \\"AttributeName\\": \\"string\\", \\"AttributeType\\": \\"string\\" }\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_ATTRIBUTE_DEFINITIONS: []const u8 = "aws.dynamodb.attribute_definitions";
+pub const aws_dynamodb_attribute_definitions = types.StringAttribute{
+    .name = "aws.dynamodb.attribute_definitions",
+    .brief = "The JSON-serialized value of each item in the `AttributeDefinitions` request field.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `AttributesToGet` request parameter.
 /// 
@@ -88,11 +131,21 @@ pub const AWS_DYNAMODB_ATTRIBUTE_DEFINITIONS: []const u8 = "aws.dynamodb.attribu
 /// 
 /// - [\"lives\", \"id\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_ATTRIBUTES_TO_GET: []const u8 = "aws.dynamodb.attributes_to_get";
+pub const aws_dynamodb_attributes_to_get = types.StringAttribute{
+    .name = "aws.dynamodb.attributes_to_get",
+    .brief = "The value of the `AttributesToGet` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ConsistentRead` request parameter.
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_CONSISTENT_READ: []const u8 = "aws.dynamodb.consistent_read";
+pub const aws_dynamodb_consistent_read = types.BooleanAttribute{
+    .name = "aws.dynamodb.consistent_read",
+    .brief = "The value of the `ConsistentRead` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The JSON-serialized value of each item in the `ConsumedCapacity` response field.
 /// 
@@ -100,7 +153,12 @@ pub const AWS_DYNAMODB_CONSISTENT_READ: []const u8 = "aws.dynamodb.consistent_re
 /// 
 /// - [\"{ \\"CapacityUnits\\": number, \\"GlobalSecondaryIndexes\\": { \\"string\\" : { \\"CapacityUnits\\": number, \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }, \\"LocalSecondaryIndexes\\": { \\"string\\" : { \\"CapacityUnits\\": number, \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }, \\"ReadCapacityUnits\\": number, \\"Table\\": { \\"CapacityUnits\\": number, \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number }, \\"TableName\\": \\"string\\", \\"WriteCapacityUnits\\": number }\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_CONSUMED_CAPACITY: []const u8 = "aws.dynamodb.consumed_capacity";
+pub const aws_dynamodb_consumed_capacity = types.StringAttribute{
+    .name = "aws.dynamodb.consumed_capacity",
+    .brief = "The JSON-serialized value of each item in the `ConsumedCapacity` response field.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `Count` response parameter.
 /// 
@@ -108,7 +166,12 @@ pub const AWS_DYNAMODB_CONSUMED_CAPACITY: []const u8 = "aws.dynamodb.consumed_ca
 /// 
 /// - 10
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_COUNT: []const u8 = "aws.dynamodb.count";
+pub const aws_dynamodb_count = types.IntAttribute{
+    .name = "aws.dynamodb.count",
+    .brief = "The value of the `Count` response parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ExclusiveStartTableName` request parameter.
 /// 
@@ -117,7 +180,12 @@ pub const AWS_DYNAMODB_COUNT: []const u8 = "aws.dynamodb.count";
 /// - Users
 /// - CatsTable
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_EXCLUSIVE_START_TABLE: []const u8 = "aws.dynamodb.exclusive_start_table";
+pub const aws_dynamodb_exclusive_start_table = types.StringAttribute{
+    .name = "aws.dynamodb.exclusive_start_table",
+    .brief = "The value of the `ExclusiveStartTableName` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The JSON-serialized value of each item in the `GlobalSecondaryIndexUpdates` request field.
 /// 
@@ -125,7 +193,12 @@ pub const AWS_DYNAMODB_EXCLUSIVE_START_TABLE: []const u8 = "aws.dynamodb.exclusi
 /// 
 /// - [\"{ \\"Create\\": { \\"IndexName\\": \\"string\\", \\"KeySchema\\": [ { \\"AttributeName\\": \\"string\\", \\"KeyType\\": \\"string\\" } ], \\"Projection\\": { \\"NonKeyAttributes\\": [ \\"string\\" ], \\"ProjectionType\\": \\"string\\" }, \\"ProvisionedThroughput\\": { \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_GLOBAL_SECONDARY_INDEX_UPDATES: []const u8 = "aws.dynamodb.global_secondary_index_updates";
+pub const aws_dynamodb_global_secondary_index_updates = types.StringAttribute{
+    .name = "aws.dynamodb.global_secondary_index_updates",
+    .brief = "The JSON-serialized value of each item in the `GlobalSecondaryIndexUpdates` request field.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field
 /// 
@@ -133,7 +206,12 @@ pub const AWS_DYNAMODB_GLOBAL_SECONDARY_INDEX_UPDATES: []const u8 = "aws.dynamod
 /// 
 /// - [\"{ \\"IndexName\\": \\"string\\", \\"KeySchema\\": [ { \\"AttributeName\\": \\"string\\", \\"KeyType\\": \\"string\\" } ], \\"Projection\\": { \\"NonKeyAttributes\\": [ \\"string\\" ], \\"ProjectionType\\": \\"string\\" }, \\"ProvisionedThroughput\\": { \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_GLOBAL_SECONDARY_INDEXES: []const u8 = "aws.dynamodb.global_secondary_indexes";
+pub const aws_dynamodb_global_secondary_indexes = types.StringAttribute{
+    .name = "aws.dynamodb.global_secondary_indexes",
+    .brief = "The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `IndexName` request parameter.
 /// 
@@ -141,7 +219,12 @@ pub const AWS_DYNAMODB_GLOBAL_SECONDARY_INDEXES: []const u8 = "aws.dynamodb.glob
 /// 
 /// - name_to_group
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_INDEX_NAME: []const u8 = "aws.dynamodb.index_name";
+pub const aws_dynamodb_index_name = types.StringAttribute{
+    .name = "aws.dynamodb.index_name",
+    .brief = "The value of the `IndexName` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The JSON-serialized value of the `ItemCollectionMetrics` response field.
 /// 
@@ -149,7 +232,12 @@ pub const AWS_DYNAMODB_INDEX_NAME: []const u8 = "aws.dynamodb.index_name";
 /// 
 /// - { \"string\" : [ { \"ItemCollectionKey\": { \"string\" : { \"B\": blob, \"BOOL\": boolean, \"BS\": [ blob ], \"L\": [ \"AttributeValue\" ], \"M\": { \"string\" : \"AttributeValue\" }, \"N\": \"string\", \"NS\": [ \"string\" ], \"NULL\": boolean, \"S\": \"string\", \"SS\": [ \"string\" ] } }, \"SizeEstimateRangeGB\": [ number ] } ] }
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_ITEM_COLLECTION_METRICS: []const u8 = "aws.dynamodb.item_collection_metrics";
+pub const aws_dynamodb_item_collection_metrics = types.StringAttribute{
+    .name = "aws.dynamodb.item_collection_metrics",
+    .brief = "The JSON-serialized value of the `ItemCollectionMetrics` response field.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `Limit` request parameter.
 /// 
@@ -157,7 +245,12 @@ pub const AWS_DYNAMODB_ITEM_COLLECTION_METRICS: []const u8 = "aws.dynamodb.item_
 /// 
 /// - 10
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_LIMIT: []const u8 = "aws.dynamodb.limit";
+pub const aws_dynamodb_limit = types.IntAttribute{
+    .name = "aws.dynamodb.limit",
+    .brief = "The value of the `Limit` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
 /// 
@@ -165,7 +258,12 @@ pub const AWS_DYNAMODB_LIMIT: []const u8 = "aws.dynamodb.limit";
 /// 
 /// - [\"{ \\"IndexArn\\": \\"string\\", \\"IndexName\\": \\"string\\", \\"IndexSizeBytes\\": number, \\"ItemCount\\": number, \\"KeySchema\\": [ { \\"AttributeName\\": \\"string\\", \\"KeyType\\": \\"string\\" } ], \\"Projection\\": { \\"NonKeyAttributes\\": [ \\"string\\" ], \\"ProjectionType\\": \\"string\\" } }\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_LOCAL_SECONDARY_INDEXES: []const u8 = "aws.dynamodb.local_secondary_indexes";
+pub const aws_dynamodb_local_secondary_indexes = types.StringAttribute{
+    .name = "aws.dynamodb.local_secondary_indexes",
+    .brief = "The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ProjectionExpression` request parameter.
 /// 
@@ -175,7 +273,12 @@ pub const AWS_DYNAMODB_LOCAL_SECONDARY_INDEXES: []const u8 = "aws.dynamodb.local
 /// - Title, Price, Color
 /// - Title, Description, RelatedItems, ProductReviews
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_PROJECTION: []const u8 = "aws.dynamodb.projection";
+pub const aws_dynamodb_projection = types.StringAttribute{
+    .name = "aws.dynamodb.projection",
+    .brief = "The value of the `ProjectionExpression` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
 /// 
@@ -184,7 +287,12 @@ pub const AWS_DYNAMODB_PROJECTION: []const u8 = "aws.dynamodb.projection";
 /// - 1.0
 /// - 2.0
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_PROVISIONED_READ_CAPACITY: []const u8 = "aws.dynamodb.provisioned_read_capacity";
+pub const aws_dynamodb_provisioned_read_capacity = types.DoubleAttribute{
+    .name = "aws.dynamodb.provisioned_read_capacity",
+    .brief = "The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
 /// 
@@ -193,11 +301,21 @@ pub const AWS_DYNAMODB_PROVISIONED_READ_CAPACITY: []const u8 = "aws.dynamodb.pro
 /// - 1.0
 /// - 2.0
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_PROVISIONED_WRITE_CAPACITY: []const u8 = "aws.dynamodb.provisioned_write_capacity";
+pub const aws_dynamodb_provisioned_write_capacity = types.DoubleAttribute{
+    .name = "aws.dynamodb.provisioned_write_capacity",
+    .brief = "The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ScanIndexForward` request parameter.
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_SCAN_FORWARD: []const u8 = "aws.dynamodb.scan_forward";
+pub const aws_dynamodb_scan_forward = types.BooleanAttribute{
+    .name = "aws.dynamodb.scan_forward",
+    .brief = "The value of the `ScanIndexForward` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `ScannedCount` response parameter.
 /// 
@@ -205,7 +323,12 @@ pub const AWS_DYNAMODB_SCAN_FORWARD: []const u8 = "aws.dynamodb.scan_forward";
 /// 
 /// - 50
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_SCANNED_COUNT: []const u8 = "aws.dynamodb.scanned_count";
+pub const aws_dynamodb_scanned_count = types.IntAttribute{
+    .name = "aws.dynamodb.scanned_count",
+    .brief = "The value of the `ScannedCount` response parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `Segment` request parameter.
 /// 
@@ -213,7 +336,12 @@ pub const AWS_DYNAMODB_SCANNED_COUNT: []const u8 = "aws.dynamodb.scanned_count";
 /// 
 /// - 10
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_SEGMENT: []const u8 = "aws.dynamodb.segment";
+pub const aws_dynamodb_segment = types.IntAttribute{
+    .name = "aws.dynamodb.segment",
+    .brief = "The value of the `Segment` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `Select` request parameter.
 /// 
@@ -222,7 +350,12 @@ pub const AWS_DYNAMODB_SEGMENT: []const u8 = "aws.dynamodb.segment";
 /// - ALL_ATTRIBUTES
 /// - COUNT
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_SELECT: []const u8 = "aws.dynamodb.select";
+pub const aws_dynamodb_select = types.StringAttribute{
+    .name = "aws.dynamodb.select",
+    .brief = "The value of the `Select` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The number of items in the `TableNames` response parameter.
 /// 
@@ -230,7 +363,12 @@ pub const AWS_DYNAMODB_SELECT: []const u8 = "aws.dynamodb.select";
 /// 
 /// - 20
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_TABLE_COUNT: []const u8 = "aws.dynamodb.table_count";
+pub const aws_dynamodb_table_count = types.IntAttribute{
+    .name = "aws.dynamodb.table_count",
+    .brief = "The number of items in the `TableNames` response parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The keys in the `RequestItems` object field.
 /// 
@@ -238,7 +376,12 @@ pub const AWS_DYNAMODB_TABLE_COUNT: []const u8 = "aws.dynamodb.table_count";
 /// 
 /// - [\"Users\", \"Cats\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_TABLE_NAMES: []const u8 = "aws.dynamodb.table_names";
+pub const aws_dynamodb_table_names = types.StringAttribute{
+    .name = "aws.dynamodb.table_names",
+    .brief = "The keys in the `RequestItems` object field.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value of the `TotalSegments` request parameter.
 /// 
@@ -246,7 +389,12 @@ pub const AWS_DYNAMODB_TABLE_NAMES: []const u8 = "aws.dynamodb.table_names";
 /// 
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_DYNAMODB_TOTAL_SEGMENTS: []const u8 = "aws.dynamodb.total_segments";
+pub const aws_dynamodb_total_segments = types.IntAttribute{
+    .name = "aws.dynamodb.total_segments",
+    .brief = "The value of the `TotalSegments` request parameter.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The AWS extended request ID as returned in the response header `x-amz-id-2`.
 /// 
@@ -254,7 +402,12 @@ pub const AWS_DYNAMODB_TOTAL_SEGMENTS: []const u8 = "aws.dynamodb.total_segments
 /// 
 /// - wzHcyEWfmOGDIE5QOhTAqFDoDWP3y8IUvpNINCwL9N4TEHbUw0/gZJ+VZTmCNCWR7fezEN3eCiQ=
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_EXTENDED_REQUEST_ID: []const u8 = "aws.extended_request_id";
+pub const aws_extended_request_id = types.StringAttribute{
+    .name = "aws.extended_request_id",
+    .brief = "The AWS extended request ID as returned in the response header `x-amz-id-2`.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
 
@@ -263,7 +416,12 @@ pub const AWS_EXTENDED_REQUEST_ID: []const u8 = "aws.extended_request_id";
 /// 
 /// - arn:aws:lambda:us-east-1:123456:function:myfunction:myalias
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_LAMBDA_INVOKED_ARN: []const u8 = "aws.lambda.invoked_arn";
+pub const aws_lambda_invoked_arn = types.StringAttribute{
+    .name = "aws.lambda.invoked_arn",
+    .brief = "The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The UUID of the [AWS Lambda EvenSource Mapping](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html). An event source is mapped to a lambda function. It's contents are read by Lambda and used to trigger a function. This isn't available in the lambda execution context or the lambda runtime environtment. This is going to be populated by the AWS SDK for each language when that UUID is present. Some of these operations are Create/Delete/Get/List/Update EventSourceMapping.
 
@@ -272,7 +430,12 @@ pub const AWS_LAMBDA_INVOKED_ARN: []const u8 = "aws.lambda.invoked_arn";
 /// 
 /// - 587ad24b-03b9-4413-8202-bbd56b36e5b7
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_LAMBDA_RESOURCE_MAPPING_ID: []const u8 = "aws.lambda.resource_mapping.id";
+pub const aws_lambda_resource_mapping_id = types.StringAttribute{
+    .name = "aws.lambda.resource_mapping.id",
+    .brief = "The UUID of the [AWS Lambda EvenSource Mapping](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html). An event source is mapped to a lambda function. It's contents are read by Lambda and used to trigger a function. This isn't available in the lambda execution context or the lambda runtime environtment. This is going to be populated by the AWS SDK for each language when that UUID is present. Some of these operations are Create/Delete/Get/List/Update EventSourceMapping.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The AWS request ID as returned in the response headers `x-amzn-requestid`, `x-amzn-request-id` or `x-amz-request-id`.
 /// 
@@ -281,7 +444,12 @@ pub const AWS_LAMBDA_RESOURCE_MAPPING_ID: []const u8 = "aws.lambda.resource_mapp
 /// - 79b9da39-b7ae-508a-a6bc-864b2829c622
 /// - C9ER4AJX75574TDJ
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_REQUEST_ID: []const u8 = "aws.request_id";
+pub const aws_request_id = types.StringAttribute{
+    .name = "aws.request_id",
+    .brief = "The AWS request ID as returned in the response headers `x-amzn-requestid`, `x-amzn-request-id` or `x-amz-request-id`.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The S3 bucket name the request refers to. Corresponds to the `--bucket` parameter of the [S3 API](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html) operations.
 /// 
@@ -289,7 +457,12 @@ pub const AWS_REQUEST_ID: []const u8 = "aws.request_id";
 /// 
 /// - some-bucket-name
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_S3_BUCKET: []const u8 = "aws.s3.bucket";
+pub const aws_s3_bucket = types.StringAttribute{
+    .name = "aws.s3.bucket",
+    .brief = "The S3 bucket name the request refers to. Corresponds to the `--bucket` parameter of the [S3 API](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html) operations.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The source object (in the form `bucket`/`key`) for the copy operation.
 /// 
@@ -297,7 +470,12 @@ pub const AWS_S3_BUCKET: []const u8 = "aws.s3.bucket";
 /// 
 /// - someFile.yml
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_S3_COPY_SOURCE: []const u8 = "aws.s3.copy_source";
+pub const aws_s3_copy_source = types.StringAttribute{
+    .name = "aws.s3.copy_source",
+    .brief = "The source object (in the form `bucket`/`key`) for the copy operation.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The delete request container that specifies the objects to be deleted.
 /// 
@@ -305,7 +483,12 @@ pub const AWS_S3_COPY_SOURCE: []const u8 = "aws.s3.copy_source";
 /// 
 /// - Objects=[{Key=string,VersionId=string},{Key=string,VersionId=string}],Quiet=boolean
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_S3_DELETE: []const u8 = "aws.s3.delete";
+pub const aws_s3_delete = types.StringAttribute{
+    .name = "aws.s3.delete",
+    .brief = "The delete request container that specifies the objects to be deleted.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The S3 object key the request refers to. Corresponds to the `--key` parameter of the [S3 API](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html) operations.
 /// 
@@ -313,7 +496,12 @@ pub const AWS_S3_DELETE: []const u8 = "aws.s3.delete";
 /// 
 /// - someFile.yml
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_S3_KEY: []const u8 = "aws.s3.key";
+pub const aws_s3_key = types.StringAttribute{
+    .name = "aws.s3.key",
+    .brief = "The S3 object key the request refers to. Corresponds to the `--key` parameter of the [S3 API](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html) operations.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The part number of the part being uploaded in a multipart-upload operation. This is a positive integer between 1 and 10,000.
 /// 
@@ -321,7 +509,12 @@ pub const AWS_S3_KEY: []const u8 = "aws.s3.key";
 /// 
 /// - 3456
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_S3_PART_NUMBER: []const u8 = "aws.s3.part_number";
+pub const aws_s3_part_number = types.IntAttribute{
+    .name = "aws.s3.part_number",
+    .brief = "The part number of the part being uploaded in a multipart-upload operation. This is a positive integer between 1 and 10,000.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Upload ID that identifies the multipart upload.
 /// 
@@ -329,7 +522,12 @@ pub const AWS_S3_PART_NUMBER: []const u8 = "aws.s3.part_number";
 /// 
 /// - dfRtDYWFbkRONycy.Yxwh66Yjlx.cph0gtNBtJ
 /// Note: This attribute is experimental and may change in the future.
-pub const AWS_S3_UPLOAD_ID: []const u8 = "aws.s3.upload_id";
+pub const aws_s3_upload_id = types.StringAttribute{
+    .name = "aws.s3.upload_id",
+    .brief = "Upload ID that identifies the multipart upload.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Deprecated, use `azure.service.request.id` instead.
 /// 
@@ -338,7 +536,12 @@ pub const AWS_S3_UPLOAD_ID: []const u8 = "aws.s3.upload_id";
 /// - 00000000-0000-0000-0000-000000000000
 /// Note: This attribute is experimental and may change in the future.
 /// Note: This attribute is deprecated. {"note": "Replaced by `azure.service.request.id`.", "reason": "renamed", "renamed_to": "azure.service.request.id"}
-pub const AZ_SERVICE_REQUEST_ID: []const u8 = "az.service_request_id";
+pub const az_service_request_id = types.StringAttribute{
+    .name = "az.service_request_id",
+    .brief = "Deprecated, use `azure.service.request.id` instead.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The unique identifier of the client instance.
 /// 
@@ -347,11 +550,21 @@ pub const AZ_SERVICE_REQUEST_ID: []const u8 = "az.service_request_id";
 /// - 3ba4827d-4422-483f-b59f-85b74211c11d
 /// - storage-client-1
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_CLIENT_ID: []const u8 = "azure.client.id";
+pub const azure_client_id = types.StringAttribute{
+    .name = "azure.client.id",
+    .brief = "The unique identifier of the client instance.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Cosmos client connection mode.
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_COSMOSDB_CONNECTION_MODE: []const u8 = "azure.cosmosdb.connection.mode";
+pub const azure_cosmosdb_connection_mode = types.StringAttribute{
+    .name = "azure.cosmosdb.connection.mode",
+    .brief = "Cosmos client connection mode.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Account or request [consistency level](https://learn.microsoft.com/azure/cosmos-db/consistency-levels).
 /// 
@@ -363,7 +576,12 @@ pub const AZURE_COSMOSDB_CONNECTION_MODE: []const u8 = "azure.cosmosdb.connectio
 /// - Strong
 /// - Session
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_COSMOSDB_CONSISTENCY_LEVEL: []const u8 = "azure.cosmosdb.consistency.level";
+pub const azure_cosmosdb_consistency_level = types.StringAttribute{
+    .name = "azure.cosmosdb.consistency.level",
+    .brief = "Account or request [consistency level](https://learn.microsoft.com/azure/cosmos-db/consistency-levels).",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// List of regions contacted during operation in the order that they were contacted. If there is more than one region listed, it indicates that the operation was performed on multiple regions i.e. cross-regional call.
 
@@ -372,7 +590,12 @@ pub const AZURE_COSMOSDB_CONSISTENCY_LEVEL: []const u8 = "azure.cosmosdb.consist
 /// 
 /// - [\"North Central US\", \"Australia East\", \"Australia Southeast\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_COSMOSDB_OPERATION_CONTACTED_REGIONS: []const u8 = "azure.cosmosdb.operation.contacted_regions";
+pub const azure_cosmosdb_operation_contacted_regions = types.StringAttribute{
+    .name = "azure.cosmosdb.operation.contacted_regions",
+    .brief = "List of regions contacted during operation in the order that they were contacted. If there is more than one region listed, it indicates that the operation was performed on multiple regions i.e. cross-regional call.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The number of request units consumed by the operation.
 
@@ -382,11 +605,21 @@ pub const AZURE_COSMOSDB_OPERATION_CONTACTED_REGIONS: []const u8 = "azure.cosmos
 /// - 46.18
 /// - 1.0
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_COSMOSDB_OPERATION_REQUEST_CHARGE: []const u8 = "azure.cosmosdb.operation.request_charge";
+pub const azure_cosmosdb_operation_request_charge = types.DoubleAttribute{
+    .name = "azure.cosmosdb.operation.request_charge",
+    .brief = "The number of request units consumed by the operation.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Request payload size in bytes.
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_COSMOSDB_REQUEST_BODY_SIZE: []const u8 = "azure.cosmosdb.request.body.size";
+pub const azure_cosmosdb_request_body_size = types.IntAttribute{
+    .name = "azure.cosmosdb.request.body.size",
+    .brief = "Request payload size in bytes.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Cosmos DB sub status code.
 /// 
@@ -395,7 +628,12 @@ pub const AZURE_COSMOSDB_REQUEST_BODY_SIZE: []const u8 = "azure.cosmosdb.request
 /// - 1000
 /// - 1002
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_COSMOSDB_RESPONSE_SUB_STATUS_CODE: []const u8 = "azure.cosmosdb.response.sub_status_code";
+pub const azure_cosmosdb_response_sub_status_code = types.IntAttribute{
+    .name = "azure.cosmosdb.response.sub_status_code",
+    .brief = "Cosmos DB sub status code.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// [Azure Resource Provider Namespace](https://learn.microsoft.com/azure/azure-resource-manager/management/azure-services-resource-providers) as recognized by the client.
 
@@ -404,7 +642,12 @@ pub const AZURE_COSMOSDB_RESPONSE_SUB_STATUS_CODE: []const u8 = "azure.cosmosdb.
 /// 
 /// - Microsoft.DocumentDB
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_RESOURCE_PROVIDER_NAMESPACE: []const u8 = "azure.resource_provider.namespace";
+pub const azure_resource_provider_namespace = types.StringAttribute{
+    .name = "azure.resource_provider.namespace",
+    .brief = "[Azure Resource Provider Namespace](https://learn.microsoft.com/azure/azure-resource-manager/management/azure-services-resource-providers) as recognized by the client.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The unique identifier of the service request. It's generated by the Azure service and returned with the response.
 /// 
@@ -412,12 +655,22 @@ pub const AZURE_RESOURCE_PROVIDER_NAMESPACE: []const u8 = "azure.resource_provid
 /// 
 /// - 00000000-0000-0000-0000-000000000000
 /// Note: This attribute is experimental and may change in the future.
-pub const AZURE_SERVICE_REQUEST_ID: []const u8 = "azure.service.request.id";
+pub const azure_service_request_id = types.StringAttribute{
+    .name = "azure.service.request.id",
+    .brief = "The unique identifier of the service request. It's generated by the Azure service and returned with the response.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
 
 /// Note: This attribute is experimental and may change in the future.
-pub const CASSANDRA_CONSISTENCY_LEVEL: []const u8 = "cassandra.consistency.level";
+pub const cassandra_consistency_level = types.StringAttribute{
+    .name = "cassandra.consistency.level",
+    .brief = "The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The data center of the coordinating node for a query.
 
@@ -426,7 +679,12 @@ pub const CASSANDRA_CONSISTENCY_LEVEL: []const u8 = "cassandra.consistency.level
 /// 
 /// - us-west-2
 /// Note: This attribute is experimental and may change in the future.
-pub const CASSANDRA_COORDINATOR_DC: []const u8 = "cassandra.coordinator.dc";
+pub const cassandra_coordinator_dc = types.StringAttribute{
+    .name = "cassandra.coordinator.dc",
+    .brief = "The data center of the coordinating node for a query.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The ID of the coordinating node for a query.
 
@@ -435,7 +693,12 @@ pub const CASSANDRA_COORDINATOR_DC: []const u8 = "cassandra.coordinator.dc";
 /// 
 /// - be13faa2-8574-4d71-926d-27f16cf8a7af
 /// Note: This attribute is experimental and may change in the future.
-pub const CASSANDRA_COORDINATOR_ID: []const u8 = "cassandra.coordinator.id";
+pub const cassandra_coordinator_id = types.StringAttribute{
+    .name = "cassandra.coordinator.id",
+    .brief = "The ID of the coordinating node for a query.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The fetch size used for paging, i.e. how many rows will be returned at once.
 
@@ -444,12 +707,22 @@ pub const CASSANDRA_COORDINATOR_ID: []const u8 = "cassandra.coordinator.id";
 /// 
 /// - 5000
 /// Note: This attribute is experimental and may change in the future.
-pub const CASSANDRA_PAGE_SIZE: []const u8 = "cassandra.page.size";
+pub const cassandra_page_size = types.IntAttribute{
+    .name = "cassandra.page.size",
+    .brief = "The fetch size used for paging, i.e. how many rows will be returned at once.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Whether or not the query is idempotent.
 
 /// Note: This attribute is experimental and may change in the future.
-pub const CASSANDRA_QUERY_IDEMPOTENT: []const u8 = "cassandra.query.idempotent";
+pub const cassandra_query_idempotent = types.BooleanAttribute{
+    .name = "cassandra.query.idempotent",
+    .brief = "Whether or not the query is idempotent.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
 
@@ -459,7 +732,12 @@ pub const CASSANDRA_QUERY_IDEMPOTENT: []const u8 = "cassandra.query.idempotent";
 /// - 0
 /// - 2
 /// Note: This attribute is experimental and may change in the future.
-pub const CASSANDRA_SPECULATIVE_EXECUTION_COUNT: []const u8 = "cassandra.speculative_execution.count";
+pub const cassandra_speculative_execution_count = types.IntAttribute{
+    .name = "cassandra.speculative_execution.count",
+    .brief = "The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The kind of action a pipeline run is performing.
 
@@ -470,7 +748,12 @@ pub const CASSANDRA_SPECULATIVE_EXECUTION_COUNT: []const u8 = "cassandra.specula
 /// - RUN
 /// - SYNC
 /// Note: This attribute is experimental and may change in the future.
-pub const CICD_PIPELINE_ACTION_NAME: []const u8 = "cicd.pipeline.action.name";
+pub const cicd_pipeline_action_name = types.StringAttribute{
+    .name = "cicd.pipeline.action.name",
+    .brief = "The kind of action a pipeline run is performing.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The result of a pipeline run.
 
@@ -482,7 +765,12 @@ pub const CICD_PIPELINE_ACTION_NAME: []const u8 = "cicd.pipeline.action.name";
 /// - timeout
 /// - skipped
 /// Note: This attribute is experimental and may change in the future.
-pub const CICD_PIPELINE_RESULT: []const u8 = "cicd.pipeline.result";
+pub const cicd_pipeline_result = types.StringAttribute{
+    .name = "cicd.pipeline.result",
+    .brief = "The result of a pipeline run.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The human readable name of a task within a pipeline. Task here most closely aligns with a [computing process](https://wikipedia.org/wiki/Pipeline_(computing)) in a pipeline. Other terms for tasks include commands, steps, and procedures.
 
@@ -494,7 +782,12 @@ pub const CICD_PIPELINE_RESULT: []const u8 = "cicd.pipeline.result";
 /// - go-test
 /// - deploy_binary
 /// Note: This attribute is experimental and may change in the future.
-pub const CICD_PIPELINE_TASK_NAME: []const u8 = "cicd.pipeline.task.name";
+pub const cicd_pipeline_task_name = types.StringAttribute{
+    .name = "cicd.pipeline.task.name",
+    .brief = "The human readable name of a task within a pipeline. Task here most closely aligns with a [computing process](https://wikipedia.org/wiki/Pipeline_(computing)) in a pipeline. Other terms for tasks include commands, steps, and procedures.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The unique identifier of a task run within a pipeline.
 
@@ -503,7 +796,12 @@ pub const CICD_PIPELINE_TASK_NAME: []const u8 = "cicd.pipeline.task.name";
 /// 
 /// - 12097
 /// Note: This attribute is experimental and may change in the future.
-pub const CICD_PIPELINE_TASK_RUN_ID: []const u8 = "cicd.pipeline.task.run.id";
+pub const cicd_pipeline_task_run_id = types.StringAttribute{
+    .name = "cicd.pipeline.task.run.id",
+    .brief = "The unique identifier of a task run within a pipeline.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The result of a task run.
 
@@ -515,7 +813,12 @@ pub const CICD_PIPELINE_TASK_RUN_ID: []const u8 = "cicd.pipeline.task.run.id";
 /// - timeout
 /// - skipped
 /// Note: This attribute is experimental and may change in the future.
-pub const CICD_PIPELINE_TASK_RUN_RESULT: []const u8 = "cicd.pipeline.task.run.result";
+pub const cicd_pipeline_task_run_result = types.StringAttribute{
+    .name = "cicd.pipeline.task.run.result",
+    .brief = "The result of a task run.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The [URL](https://wikipedia.org/wiki/URL) of the pipeline task run, providing the complete address in order to locate and identify the pipeline task run.
 
@@ -524,21 +827,36 @@ pub const CICD_PIPELINE_TASK_RUN_RESULT: []const u8 = "cicd.pipeline.task.run.re
 /// 
 /// - https://github.com/open-telemetry/semantic-conventions/actions/runs/9753949763/job/26920038674?pr=1075
 /// Note: This attribute is experimental and may change in the future.
-pub const CICD_PIPELINE_TASK_RUN_URL_FULL: []const u8 = "cicd.pipeline.task.run.url.full";
+pub const cicd_pipeline_task_run_url_full = types.StringAttribute{
+    .name = "cicd.pipeline.task.run.url.full",
+    .brief = "The [URL](https://wikipedia.org/wiki/URL) of the pipeline task run, providing the complete address in order to locate and identify the pipeline task run.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// Client address - domain name if available without reverse DNS lookup; otherwise, IP address or Unix domain socket name.
 /// 
 /// # Examples
 /// 
 /// - 83.164.160.102
-pub const CLIENT_ADDRESS: []const u8 = "client.address";
+pub const client_address = types.StringAttribute{
+    .name = "client.address",
+    .brief = "Client address - domain name if available without reverse DNS lookup; otherwise, IP address or Unix domain socket name.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// The port of whichever client was captured in `client.address`.
 /// 
 /// # Examples
 /// 
 /// - 65123
-pub const CLIENT_PORT: []const u8 = "client.port";
+pub const client_port = types.IntAttribute{
+    .name = "client.port",
+    .brief = "The port of whichever client was captured in `client.address`.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The AWS Region where the requested service is being accessed.
 
@@ -548,7 +866,12 @@ pub const CLIENT_PORT: []const u8 = "client.port";
 /// - us-east-1
 /// - us-west-2
 /// Note: This attribute is experimental and may change in the future.
-pub const CLOUD_REGION: []const u8 = "cloud.region";
+pub const cloud_region = types.StringAttribute{
+    .name = "cloud.region",
+    .brief = "The AWS Region where the requested service is being accessed.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The [Fully Qualified Azure Resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) the log is emitted for.
 /// 
@@ -558,7 +881,12 @@ pub const CLOUD_REGION: []const u8 = "cloud.region";
 /// - //run.googleapis.com/projects/PROJECT_ID/locations/LOCATION_ID/services/SERVICE_ID
 /// - /subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>
 /// Note: This attribute is experimental and may change in the future.
-pub const CLOUD_RESOURCE_ID: []const u8 = "cloud.resource_id";
+pub const cloud_resource_id = types.StringAttribute{
+    .name = "cloud.resource_id",
+    .brief = "The [Fully Qualified Azure Resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) the log is emitted for.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Cosmos DB container name.
 
@@ -567,7 +895,12 @@ pub const CLOUD_RESOURCE_ID: []const u8 = "cloud.resource_id";
 /// 
 /// - public.users
 /// - customers
-pub const DB_COLLECTION_NAME: []const u8 = "db.collection.name";
+pub const db_collection_name = types.StringAttribute{
+    .name = "db.collection.name",
+    .brief = "Cosmos DB container name.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The name of the database, fully qualified within the server address and port.
 
@@ -576,7 +909,12 @@ pub const DB_COLLECTION_NAME: []const u8 = "db.collection.name";
 /// 
 /// - customers
 /// - test.users
-pub const DB_NAMESPACE: []const u8 = "db.namespace";
+pub const db_namespace = types.StringAttribute{
+    .name = "db.namespace",
+    .brief = "The name of the database, fully qualified within the server address and port.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The number of queries included in a batch operation.
 /// 
@@ -585,7 +923,12 @@ pub const DB_NAMESPACE: []const u8 = "db.namespace";
 /// - 2
 /// - 3
 /// - 4
-pub const DB_OPERATION_BATCH_SIZE: []const u8 = "db.operation.batch.size";
+pub const db_operation_batch_size = types.IntAttribute{
+    .name = "db.operation.batch.size",
+    .brief = "The number of queries included in a batch operation.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// The name of the operation or command being executed.
 
@@ -595,7 +938,12 @@ pub const DB_OPERATION_BATCH_SIZE: []const u8 = "db.operation.batch.size";
 /// - create_item
 /// - query_items
 /// - read_item
-pub const DB_OPERATION_NAME: []const u8 = "db.operation.name";
+pub const db_operation_name = types.StringAttribute{
+    .name = "db.operation.name",
+    .brief = "The name of the operation or command being executed.",
+    .stability = .stable,
+    .requirement_level = .required,
+};
 
 /// A dynamic value in the url path.
 
@@ -605,7 +953,12 @@ pub const DB_OPERATION_NAME: []const u8 = "db.operation.name";
 /// - db.operation.parameter.index=\"test-index\"
 /// - db.operation.parameter=\"123\"
 /// Note: This attribute is experimental and may change in the future.
-pub const DB_OPERATION_PARAMETER: []const u8 = "db.operation.parameter";
+pub const db_operation_parameter = types.StringAttribute{
+    .name = "db.operation.parameter",
+    .brief = "A dynamic value in the url path.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// A database query parameter, with `<key>` being the parameter name, and the attribute value being a string representation of the parameter value.
 
@@ -615,7 +968,12 @@ pub const DB_OPERATION_PARAMETER: []const u8 = "db.operation.parameter";
 /// - someval
 /// - 55
 /// Note: This attribute is experimental and may change in the future.
-pub const DB_QUERY_PARAMETER: []const u8 = "db.query.parameter";
+pub const db_query_parameter = types.StringAttribute{
+    .name = "db.query.parameter",
+    .brief = "A database query parameter, with `<key>` being the parameter name, and the attribute value being a string representation of the parameter value.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Low cardinality summary of a database query.
 
@@ -625,7 +983,12 @@ pub const DB_QUERY_PARAMETER: []const u8 = "db.query.parameter";
 /// - SELECT wuser_table
 /// - INSERT shipping_details SELECT orders
 /// - get user by id
-pub const DB_QUERY_SUMMARY: []const u8 = "db.query.summary";
+pub const db_query_summary = types.StringAttribute{
+    .name = "db.query.summary",
+    .brief = "Low cardinality summary of a database query.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The database query being executed.
 
@@ -634,7 +997,12 @@ pub const DB_QUERY_SUMMARY: []const u8 = "db.query.summary";
 /// 
 /// - SELECT * FROM wuser_table where username = ?
 /// - SET mykey ?
-pub const DB_QUERY_TEXT: []const u8 = "db.query.text";
+pub const db_query_text = types.StringAttribute{
+    .name = "db.query.text",
+    .brief = "The database query being executed.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// Cosmos DB row count in result set.
 
@@ -644,7 +1012,12 @@ pub const DB_QUERY_TEXT: []const u8 = "db.query.text";
 /// - 10
 /// - 20
 /// Note: This attribute is experimental and may change in the future.
-pub const DB_RESPONSE_RETURNED_ROWS: []const u8 = "db.response.returned_rows";
+pub const db_response_returned_rows = types.IntAttribute{
+    .name = "db.response.returned_rows",
+    .brief = "Cosmos DB row count in result set.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Cosmos DB status code.
 
@@ -653,17 +1026,32 @@ pub const DB_RESPONSE_RETURNED_ROWS: []const u8 = "db.response.returned_rows";
 /// 
 /// - 200
 /// - 201
-pub const DB_RESPONSE_STATUS_CODE: []const u8 = "db.response.status_code";
+pub const db_response_status_code = types.StringAttribute{
+    .name = "db.response.status_code",
+    .brief = "Cosmos DB status code.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The name of a stored procedure within the database.
 /// 
 /// # Examples
 /// 
 /// - GetCustomer
-pub const DB_STORED_PROCEDURE_NAME: []const u8 = "db.stored_procedure.name";
+pub const db_stored_procedure_name = types.StringAttribute{
+    .name = "db.stored_procedure.name",
+    .brief = "The name of a stored procedure within the database.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The database management system (DBMS) product as identified by the client instrumentation.
-pub const DB_SYSTEM_NAME: []const u8 = "db.system.name";
+pub const db_system_name = types.StringAttribute{
+    .name = "db.system.name",
+    .brief = "The database management system (DBMS) product as identified by the client instrumentation.",
+    .stability = .stable,
+    .requirement_level = .required,
+};
 
 /// List of resolved IP addresses (for DNS lookup) or a single element containing domain name (for reverse lookup).
 /// 
@@ -671,7 +1059,12 @@ pub const DB_SYSTEM_NAME: []const u8 = "db.system.name";
 /// 
 /// - [\"10.0.0.1\", \"2001:0db8:85a3:0000:0000:8a2e:0370:7334\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const DNS_ANSWERS: []const u8 = "dns.answers";
+pub const dns_answers = types.StringAttribute{
+    .name = "dns.answers",
+    .brief = "List of resolved IP addresses (for DNS lookup) or a single element containing domain name (for reverse lookup).",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The domain name or an IP address being queried.
 /// 
@@ -680,7 +1073,12 @@ pub const DNS_ANSWERS: []const u8 = "dns.answers";
 /// - www.example.com
 /// - opentelemetry.io
 /// Note: This attribute is experimental and may change in the future.
-pub const DNS_QUESTION_NAME: []const u8 = "dns.question.name";
+pub const dns_question_name = types.StringAttribute{
+    .name = "dns.question.name",
+    .brief = "The domain name or an IP address being queried.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Represents the human-readable identifier of the node/instance to which a request was routed.
 
@@ -689,7 +1087,12 @@ pub const DNS_QUESTION_NAME: []const u8 = "dns.question.name";
 /// 
 /// - instance-0000000001
 /// Note: This attribute is experimental and may change in the future.
-pub const ELASTICSEARCH_NODE_NAME: []const u8 = "elasticsearch.node.name";
+pub const elasticsearch_node_name = types.StringAttribute{
+    .name = "elasticsearch.node.name",
+    .brief = "Represents the human-readable identifier of the node/instance to which a request was routed.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// A message providing more detail about an error in human-readable form.
 /// 
@@ -698,7 +1101,12 @@ pub const ELASTICSEARCH_NODE_NAME: []const u8 = "elasticsearch.node.name";
 /// - Unexpected input type: string
 /// - The user has exceeded their storage quota
 /// Note: This attribute is experimental and may change in the future.
-pub const ERROR_MESSAGE: []const u8 = "error.message";
+pub const error_message = types.StringAttribute{
+    .name = "error.message",
+    .brief = "A message providing more detail about an error in human-readable form.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Describes a class of error the operation ended with.
 
@@ -709,12 +1117,22 @@ pub const ERROR_MESSAGE: []const u8 = "error.message";
 /// - java.net.UnknownHostException
 /// - server_certificate_invalid
 /// - 500
-pub const ERROR_TYPE: []const u8 = "error.type";
+pub const error_type = types.StringAttribute{
+    .name = "error.type",
+    .brief = "Describes a class of error the operation ended with.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// Indicates that the exception is escaping the scope of the span.
 
 /// Note: This attribute is deprecated. {"note": "It's no longer recommended to record exceptions that are handled and do not escape the scope of a span.\n", "reason": "obsoleted"}
-pub const EXCEPTION_ESCAPED: []const u8 = "exception.escaped";
+pub const exception_escaped = types.BooleanAttribute{
+    .name = "exception.escaped",
+    .brief = "Indicates that the exception is escaping the scope of the span.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// The exception message.
 /// 
@@ -722,7 +1140,12 @@ pub const EXCEPTION_ESCAPED: []const u8 = "exception.escaped";
 /// 
 /// - Division by zero
 /// - Can't convert 'int' object to str implicitly
-pub const EXCEPTION_MESSAGE: []const u8 = "exception.message";
+pub const exception_message = types.StringAttribute{
+    .name = "exception.message",
+    .brief = "The exception message.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
 
@@ -730,7 +1153,12 @@ pub const EXCEPTION_MESSAGE: []const u8 = "exception.message";
 /// # Examples
 /// 
 /// - Exception in thread \"main\" java.lang.RuntimeException: Test exception\n at com.example.GenerateTrace.methodB(GenerateTrace.java:13)\n at com.example.GenerateTrace.methodA(GenerateTrace.java:9)\n at com.example.GenerateTrace.main(GenerateTrace.java:5)\n
-pub const EXCEPTION_STACKTRACE: []const u8 = "exception.stacktrace";
+pub const exception_stacktrace = types.StringAttribute{
+    .name = "exception.stacktrace",
+    .brief = "A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
 
@@ -739,12 +1167,22 @@ pub const EXCEPTION_STACKTRACE: []const u8 = "exception.stacktrace";
 /// 
 /// - java.net.ConnectException
 /// - OSError
-pub const EXCEPTION_TYPE: []const u8 = "exception.type";
+pub const exception_type = types.StringAttribute{
+    .name = "exception.type",
+    .brief = "The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// A boolean that is true if the serverless function is executed for the first time (aka cold-start).
 
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_COLDSTART: []const u8 = "faas.coldstart";
+pub const faas_coldstart = types.BooleanAttribute{
+    .name = "faas.coldstart",
+    .brief = "A boolean that is true if the serverless function is executed for the first time (aka cold-start).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
 
@@ -753,7 +1191,12 @@ pub const FAAS_COLDSTART: []const u8 = "faas.coldstart";
 /// 
 /// - 0/5 * * * ? *
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_CRON: []const u8 = "faas.cron";
+pub const faas_cron = types.StringAttribute{
+    .name = "faas.cron",
+    .brief = "A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
 
@@ -763,7 +1206,12 @@ pub const FAAS_CRON: []const u8 = "faas.cron";
 /// - myBucketName
 /// - myDbName
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_DOCUMENT_COLLECTION: []const u8 = "faas.document.collection";
+pub const faas_document_collection = types.StringAttribute{
+    .name = "faas.document.collection",
+    .brief = "The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
 
@@ -773,11 +1221,21 @@ pub const FAAS_DOCUMENT_COLLECTION: []const u8 = "faas.document.collection";
 /// - myFile.txt
 /// - myTableName
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_DOCUMENT_NAME: []const u8 = "faas.document.name";
+pub const faas_document_name = types.StringAttribute{
+    .name = "faas.document.name",
+    .brief = "The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Describes the type of the operation that was performed on the data.
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_DOCUMENT_OPERATION: []const u8 = "faas.document.operation";
+pub const faas_document_operation = types.StringAttribute{
+    .name = "faas.document.operation",
+    .brief = "Describes the type of the operation that was performed on the data.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
 
@@ -786,7 +1244,12 @@ pub const FAAS_DOCUMENT_OPERATION: []const u8 = "faas.document.operation";
 /// 
 /// - 2020-01-23T13:47:06Z
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_DOCUMENT_TIME: []const u8 = "faas.document.time";
+pub const faas_document_time = types.StringAttribute{
+    .name = "faas.document.time",
+    .brief = "A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the invoked function.
 
@@ -795,12 +1258,22 @@ pub const FAAS_DOCUMENT_TIME: []const u8 = "faas.document.time";
 /// 
 /// - my-function
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_INVOKED_NAME: []const u8 = "faas.invoked_name";
+pub const faas_invoked_name = types.StringAttribute{
+    .name = "faas.invoked_name",
+    .brief = "The name of the invoked function.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The cloud provider of the invoked function.
 
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_INVOKED_PROVIDER: []const u8 = "faas.invoked_provider";
+pub const faas_invoked_provider = types.StringAttribute{
+    .name = "faas.invoked_provider",
+    .brief = "The cloud provider of the invoked function.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The cloud region of the invoked function.
 
@@ -809,7 +1282,12 @@ pub const FAAS_INVOKED_PROVIDER: []const u8 = "faas.invoked_provider";
 /// 
 /// - eu-central-1
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_INVOKED_REGION: []const u8 = "faas.invoked_region";
+pub const faas_invoked_region = types.StringAttribute{
+    .name = "faas.invoked_region",
+    .brief = "The cloud region of the invoked function.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
 
@@ -818,12 +1296,22 @@ pub const FAAS_INVOKED_REGION: []const u8 = "faas.invoked_region";
 /// 
 /// - 2020-01-23T13:47:06Z
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_TIME: []const u8 = "faas.time";
+pub const faas_time = types.StringAttribute{
+    .name = "faas.time",
+    .brief = "A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Type of the trigger which caused this function invocation.
 
 /// Note: This attribute is experimental and may change in the future.
-pub const FAAS_TRIGGER: []const u8 = "faas.trigger";
+pub const faas_trigger = types.StringAttribute{
+    .name = "faas.trigger",
+    .brief = "Type of the trigger which caused this function invocation.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The unique identifier for the flag evaluation context. For example, the targeting key.
 
@@ -832,7 +1320,12 @@ pub const FAAS_TRIGGER: []const u8 = "faas.trigger";
 /// 
 /// - 5157782b-2203-4c80-a857-dbbd5e7761db
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_CONTEXT_ID: []const u8 = "feature_flag.context.id";
+pub const feature_flag_context_id = types.StringAttribute{
+    .name = "feature_flag.context.id",
+    .brief = "The unique identifier for the flag evaluation context. For example, the targeting key.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The lookup key of the feature flag.
 /// 
@@ -840,7 +1333,12 @@ pub const FEATURE_FLAG_CONTEXT_ID: []const u8 = "feature_flag.context.id";
 /// 
 /// - logo-color
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_KEY: []const u8 = "feature_flag.key";
+pub const feature_flag_key = types.StringAttribute{
+    .name = "feature_flag.key",
+    .brief = "The lookup key of the feature flag.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// Identifies the feature flag provider.
 /// 
@@ -848,7 +1346,12 @@ pub const FEATURE_FLAG_KEY: []const u8 = "feature_flag.key";
 /// 
 /// - Flag Manager
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_PROVIDER_NAME: []const u8 = "feature_flag.provider.name";
+pub const feature_flag_provider_name = types.StringAttribute{
+    .name = "feature_flag.provider.name",
+    .brief = "Identifies the feature flag provider.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The reason code which shows how a feature flag value was determined.
 
@@ -860,7 +1363,12 @@ pub const FEATURE_FLAG_PROVIDER_NAME: []const u8 = "feature_flag.provider.name";
 /// - error
 /// - default
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_RESULT_REASON: []const u8 = "feature_flag.result.reason";
+pub const feature_flag_result_reason = types.StringAttribute{
+    .name = "feature_flag.result.reason",
+    .brief = "The reason code which shows how a feature flag value was determined.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The evaluated value of the feature flag.
 /// 
@@ -870,7 +1378,12 @@ pub const FEATURE_FLAG_RESULT_REASON: []const u8 = "feature_flag.result.reason";
 /// - true
 /// - 3
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_RESULT_VALUE: []const u8 = "feature_flag.result.value";
+pub const feature_flag_result_value = types.StringAttribute{
+    .name = "feature_flag.result.value",
+    .brief = "The evaluated value of the feature flag.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// A semantic identifier for an evaluated flag value.
 
@@ -881,7 +1394,12 @@ pub const FEATURE_FLAG_RESULT_VALUE: []const u8 = "feature_flag.result.value";
 /// - true
 /// - on
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_RESULT_VARIANT: []const u8 = "feature_flag.result.variant";
+pub const feature_flag_result_variant = types.StringAttribute{
+    .name = "feature_flag.result.variant",
+    .brief = "A semantic identifier for an evaluated flag value.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The identifier of the [flag set](https://openfeature.dev/specification/glossary/#flag-set) to which the feature flag belongs.
 
@@ -892,7 +1410,12 @@ pub const FEATURE_FLAG_RESULT_VARIANT: []const u8 = "feature_flag.result.variant
 /// - ab98sgs
 /// - service1/dev
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_SET_ID: []const u8 = "feature_flag.set.id";
+pub const feature_flag_set_id = types.StringAttribute{
+    .name = "feature_flag.set.id",
+    .brief = "The identifier of the [flag set](https://openfeature.dev/specification/glossary/#flag-set) to which the feature flag belongs.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The version of the ruleset used during the evaluation. This may be any stable value which uniquely identifies the ruleset.
 
@@ -902,7 +1425,12 @@ pub const FEATURE_FLAG_SET_ID: []const u8 = "feature_flag.set.id";
 /// - 1
 /// - 01ABCDEF
 /// Note: This attribute is experimental and may change in the future.
-pub const FEATURE_FLAG_VERSION: []const u8 = "feature_flag.version";
+pub const feature_flag_version = types.StringAttribute{
+    .name = "feature_flag.version",
+    .brief = "The version of the ruleset used during the evaluation. This may be any stable value which uniquely identifies the ruleset.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Free-form description of the GenAI agent provided by the application.
 /// 
@@ -911,7 +1439,12 @@ pub const FEATURE_FLAG_VERSION: []const u8 = "feature_flag.version";
 /// - Helps with math problems
 /// - Generates fiction stories
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_AGENT_DESCRIPTION: []const u8 = "gen_ai.agent.description";
+pub const gen_ai_agent_description = types.StringAttribute{
+    .name = "gen_ai.agent.description",
+    .brief = "Free-form description of the GenAI agent provided by the application.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The unique identifier of the GenAI agent.
 /// 
@@ -919,7 +1452,12 @@ pub const GEN_AI_AGENT_DESCRIPTION: []const u8 = "gen_ai.agent.description";
 /// 
 /// - asst_5j66UpCpwteGg4YSxUnt7lPY
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_AGENT_ID: []const u8 = "gen_ai.agent.id";
+pub const gen_ai_agent_id = types.StringAttribute{
+    .name = "gen_ai.agent.id",
+    .brief = "The unique identifier of the GenAI agent.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Human-readable name of the GenAI agent provided by the application.
 /// 
@@ -928,7 +1466,12 @@ pub const GEN_AI_AGENT_ID: []const u8 = "gen_ai.agent.id";
 /// - Math Tutor
 /// - Fiction Writer
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_AGENT_NAME: []const u8 = "gen_ai.agent.name";
+pub const gen_ai_agent_name = types.StringAttribute{
+    .name = "gen_ai.agent.name",
+    .brief = "Human-readable name of the GenAI agent provided by the application.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The unique identifier for a conversation (session, thread), used to store and correlate messages within this conversation.
 /// 
@@ -936,7 +1479,12 @@ pub const GEN_AI_AGENT_NAME: []const u8 = "gen_ai.agent.name";
 /// 
 /// - conv_5j66UpCpwteGg4YSxUnt7lPY
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_CONVERSATION_ID: []const u8 = "gen_ai.conversation.id";
+pub const gen_ai_conversation_id = types.StringAttribute{
+    .name = "gen_ai.conversation.id",
+    .brief = "The unique identifier for a conversation (session, thread), used to store and correlate messages within this conversation.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The data source identifier.
 /// 
@@ -944,7 +1492,12 @@ pub const GEN_AI_CONVERSATION_ID: []const u8 = "gen_ai.conversation.id";
 /// 
 /// - H7STPQYOND
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_DATA_SOURCE_ID: []const u8 = "gen_ai.data_source.id";
+pub const gen_ai_data_source_id = types.StringAttribute{
+    .name = "gen_ai.data_source.id",
+    .brief = "The data source identifier.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The service tier requested. May be a specific tier, default, or auto.
 /// 
@@ -953,7 +1506,12 @@ pub const GEN_AI_DATA_SOURCE_ID: []const u8 = "gen_ai.data_source.id";
 /// - auto
 /// - default
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_OPENAI_REQUEST_SERVICE_TIER: []const u8 = "gen_ai.openai.request.service_tier";
+pub const gen_ai_openai_request_service_tier = types.StringAttribute{
+    .name = "gen_ai.openai.request.service_tier",
+    .brief = "The service tier requested. May be a specific tier, default, or auto.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The service tier used for the response.
 /// 
@@ -962,7 +1520,12 @@ pub const GEN_AI_OPENAI_REQUEST_SERVICE_TIER: []const u8 = "gen_ai.openai.reques
 /// - scale
 /// - default
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_OPENAI_RESPONSE_SERVICE_TIER: []const u8 = "gen_ai.openai.response.service_tier";
+pub const gen_ai_openai_response_service_tier = types.StringAttribute{
+    .name = "gen_ai.openai.response.service_tier",
+    .brief = "The service tier used for the response.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// A fingerprint to track any eventual change in the Generative AI environment.
 /// 
@@ -970,15 +1533,30 @@ pub const GEN_AI_OPENAI_RESPONSE_SERVICE_TIER: []const u8 = "gen_ai.openai.respo
 /// 
 /// - fp_44709d6fcb
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_OPENAI_RESPONSE_SYSTEM_FINGERPRINT: []const u8 = "gen_ai.openai.response.system_fingerprint";
+pub const gen_ai_openai_response_system_fingerprint = types.StringAttribute{
+    .name = "gen_ai.openai.response.system_fingerprint",
+    .brief = "A fingerprint to track any eventual change in the Generative AI environment.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the operation being performed.
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_OPERATION_NAME: []const u8 = "gen_ai.operation.name";
+pub const gen_ai_operation_name = types.StringAttribute{
+    .name = "gen_ai.operation.name",
+    .brief = "The name of the operation being performed.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// Represents the content type requested by the client.
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_OUTPUT_TYPE: []const u8 = "gen_ai.output.type";
+pub const gen_ai_output_type = types.StringAttribute{
+    .name = "gen_ai.output.type",
+    .brief = "Represents the content type requested by the client.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The target number of candidate completions to return.
 /// 
@@ -986,7 +1564,12 @@ pub const GEN_AI_OUTPUT_TYPE: []const u8 = "gen_ai.output.type";
 /// 
 /// - 3
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_CHOICE_COUNT: []const u8 = "gen_ai.request.choice.count";
+pub const gen_ai_request_choice_count = types.IntAttribute{
+    .name = "gen_ai.request.choice.count",
+    .brief = "The target number of candidate completions to return.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The encoding formats requested in an embeddings operation, if specified.
 /// 
@@ -995,7 +1578,12 @@ pub const GEN_AI_REQUEST_CHOICE_COUNT: []const u8 = "gen_ai.request.choice.count
 /// - [\"base64\"]
 /// - [\"float\", \"binary\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_ENCODING_FORMATS: []const u8 = "gen_ai.request.encoding_formats";
+pub const gen_ai_request_encoding_formats = types.StringAttribute{
+    .name = "gen_ai.request.encoding_formats",
+    .brief = "The encoding formats requested in an embeddings operation, if specified.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The frequency penalty setting for the GenAI request.
 /// 
@@ -1003,7 +1591,12 @@ pub const GEN_AI_REQUEST_ENCODING_FORMATS: []const u8 = "gen_ai.request.encoding
 /// 
 /// - 0.1
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_FREQUENCY_PENALTY: []const u8 = "gen_ai.request.frequency_penalty";
+pub const gen_ai_request_frequency_penalty = types.DoubleAttribute{
+    .name = "gen_ai.request.frequency_penalty",
+    .brief = "The frequency penalty setting for the GenAI request.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The maximum number of tokens the model generates for a request.
 /// 
@@ -1011,7 +1604,12 @@ pub const GEN_AI_REQUEST_FREQUENCY_PENALTY: []const u8 = "gen_ai.request.frequen
 /// 
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_MAX_TOKENS: []const u8 = "gen_ai.request.max_tokens";
+pub const gen_ai_request_max_tokens = types.IntAttribute{
+    .name = "gen_ai.request.max_tokens",
+    .brief = "The maximum number of tokens the model generates for a request.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the GenAI model a request is being made to.
 /// 
@@ -1019,7 +1617,12 @@ pub const GEN_AI_REQUEST_MAX_TOKENS: []const u8 = "gen_ai.request.max_tokens";
 /// 
 /// - gpt-4
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_MODEL: []const u8 = "gen_ai.request.model";
+pub const gen_ai_request_model = types.StringAttribute{
+    .name = "gen_ai.request.model",
+    .brief = "The name of the GenAI model a request is being made to.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The presence penalty setting for the GenAI request.
 /// 
@@ -1027,7 +1630,12 @@ pub const GEN_AI_REQUEST_MODEL: []const u8 = "gen_ai.request.model";
 /// 
 /// - 0.1
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_PRESENCE_PENALTY: []const u8 = "gen_ai.request.presence_penalty";
+pub const gen_ai_request_presence_penalty = types.DoubleAttribute{
+    .name = "gen_ai.request.presence_penalty",
+    .brief = "The presence penalty setting for the GenAI request.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Requests with same seed value more likely to return same result.
 /// 
@@ -1035,7 +1643,12 @@ pub const GEN_AI_REQUEST_PRESENCE_PENALTY: []const u8 = "gen_ai.request.presence
 /// 
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_SEED: []const u8 = "gen_ai.request.seed";
+pub const gen_ai_request_seed = types.IntAttribute{
+    .name = "gen_ai.request.seed",
+    .brief = "Requests with same seed value more likely to return same result.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// List of sequences that the model will use to stop generating further tokens.
 /// 
@@ -1043,7 +1656,12 @@ pub const GEN_AI_REQUEST_SEED: []const u8 = "gen_ai.request.seed";
 /// 
 /// - [\"forest\", \"lived\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_STOP_SEQUENCES: []const u8 = "gen_ai.request.stop_sequences";
+pub const gen_ai_request_stop_sequences = types.StringAttribute{
+    .name = "gen_ai.request.stop_sequences",
+    .brief = "List of sequences that the model will use to stop generating further tokens.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The temperature setting for the GenAI request.
 /// 
@@ -1051,7 +1669,12 @@ pub const GEN_AI_REQUEST_STOP_SEQUENCES: []const u8 = "gen_ai.request.stop_seque
 /// 
 /// - 0.0
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_TEMPERATURE: []const u8 = "gen_ai.request.temperature";
+pub const gen_ai_request_temperature = types.DoubleAttribute{
+    .name = "gen_ai.request.temperature",
+    .brief = "The temperature setting for the GenAI request.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The top_k sampling setting for the GenAI request.
 /// 
@@ -1059,7 +1682,12 @@ pub const GEN_AI_REQUEST_TEMPERATURE: []const u8 = "gen_ai.request.temperature";
 /// 
 /// - 1.0
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_TOP_K: []const u8 = "gen_ai.request.top_k";
+pub const gen_ai_request_top_k = types.DoubleAttribute{
+    .name = "gen_ai.request.top_k",
+    .brief = "The top_k sampling setting for the GenAI request.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The top_p sampling setting for the GenAI request.
 /// 
@@ -1067,7 +1695,12 @@ pub const GEN_AI_REQUEST_TOP_K: []const u8 = "gen_ai.request.top_k";
 /// 
 /// - 1.0
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_REQUEST_TOP_P: []const u8 = "gen_ai.request.top_p";
+pub const gen_ai_request_top_p = types.DoubleAttribute{
+    .name = "gen_ai.request.top_p",
+    .brief = "The top_p sampling setting for the GenAI request.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Array of reasons the model stopped generating tokens, corresponding to each generation received.
 /// 
@@ -1076,7 +1709,12 @@ pub const GEN_AI_REQUEST_TOP_P: []const u8 = "gen_ai.request.top_p";
 /// - [\"stop\"]
 /// - [\"stop\", \"length\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_RESPONSE_FINISH_REASONS: []const u8 = "gen_ai.response.finish_reasons";
+pub const gen_ai_response_finish_reasons = types.StringAttribute{
+    .name = "gen_ai.response.finish_reasons",
+    .brief = "Array of reasons the model stopped generating tokens, corresponding to each generation received.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The unique identifier for the completion.
 /// 
@@ -1084,7 +1722,12 @@ pub const GEN_AI_RESPONSE_FINISH_REASONS: []const u8 = "gen_ai.response.finish_r
 /// 
 /// - chatcmpl-123
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_RESPONSE_ID: []const u8 = "gen_ai.response.id";
+pub const gen_ai_response_id = types.StringAttribute{
+    .name = "gen_ai.response.id",
+    .brief = "The unique identifier for the completion.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the model that generated the response.
 /// 
@@ -1092,7 +1735,12 @@ pub const GEN_AI_RESPONSE_ID: []const u8 = "gen_ai.response.id";
 /// 
 /// - gpt-4-0613
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_RESPONSE_MODEL: []const u8 = "gen_ai.response.model";
+pub const gen_ai_response_model = types.StringAttribute{
+    .name = "gen_ai.response.model",
+    .brief = "The name of the model that generated the response.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The Generative AI product as identified by the client or server instrumentation.
 /// 
@@ -1100,7 +1748,12 @@ pub const GEN_AI_RESPONSE_MODEL: []const u8 = "gen_ai.response.model";
 /// 
 /// - openai
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_SYSTEM: []const u8 = "gen_ai.system";
+pub const gen_ai_system = types.StringAttribute{
+    .name = "gen_ai.system",
+    .brief = "The Generative AI product as identified by the client or server instrumentation.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The tool call identifier.
 /// 
@@ -1108,7 +1761,12 @@ pub const GEN_AI_SYSTEM: []const u8 = "gen_ai.system";
 /// 
 /// - call_mszuSIzqtI65i1wAUOE8w5H4
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_TOOL_CALL_ID: []const u8 = "gen_ai.tool.call.id";
+pub const gen_ai_tool_call_id = types.StringAttribute{
+    .name = "gen_ai.tool.call.id",
+    .brief = "The tool call identifier.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The tool description.
 /// 
@@ -1116,7 +1774,12 @@ pub const GEN_AI_TOOL_CALL_ID: []const u8 = "gen_ai.tool.call.id";
 /// 
 /// - Multiply two numbers
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_TOOL_DESCRIPTION: []const u8 = "gen_ai.tool.description";
+pub const gen_ai_tool_description = types.StringAttribute{
+    .name = "gen_ai.tool.description",
+    .brief = "The tool description.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Name of the tool utilized by the agent.
 /// 
@@ -1124,7 +1787,12 @@ pub const GEN_AI_TOOL_DESCRIPTION: []const u8 = "gen_ai.tool.description";
 /// 
 /// - Flights
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_TOOL_NAME: []const u8 = "gen_ai.tool.name";
+pub const gen_ai_tool_name = types.StringAttribute{
+    .name = "gen_ai.tool.name",
+    .brief = "Name of the tool utilized by the agent.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The number of tokens used in the GenAI input (prompt).
 /// 
@@ -1132,7 +1800,12 @@ pub const GEN_AI_TOOL_NAME: []const u8 = "gen_ai.tool.name";
 /// 
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_USAGE_INPUT_TOKENS: []const u8 = "gen_ai.usage.input_tokens";
+pub const gen_ai_usage_input_tokens = types.IntAttribute{
+    .name = "gen_ai.usage.input_tokens",
+    .brief = "The number of tokens used in the GenAI input (prompt).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The number of tokens used in the GenAI response (completion).
 /// 
@@ -1140,7 +1813,12 @@ pub const GEN_AI_USAGE_INPUT_TOKENS: []const u8 = "gen_ai.usage.input_tokens";
 /// 
 /// - 180
 /// Note: This attribute is experimental and may change in the future.
-pub const GEN_AI_USAGE_OUTPUT_TOKENS: []const u8 = "gen_ai.usage.output_tokens";
+pub const gen_ai_usage_output_tokens = types.IntAttribute{
+    .name = "gen_ai.usage.output_tokens",
+    .brief = "The number of tokens used in the GenAI response (completion).",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The GraphQL document being executed.
 /// 
@@ -1148,7 +1826,12 @@ pub const GEN_AI_USAGE_OUTPUT_TOKENS: []const u8 = "gen_ai.usage.output_tokens";
 /// 
 /// - query findBookById { bookById(id: ?) { name } }
 /// Note: This attribute is experimental and may change in the future.
-pub const GRAPHQL_DOCUMENT: []const u8 = "graphql.document";
+pub const graphql_document = types.StringAttribute{
+    .name = "graphql.document",
+    .brief = "The GraphQL document being executed.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the operation being executed.
 /// 
@@ -1156,7 +1839,12 @@ pub const GRAPHQL_DOCUMENT: []const u8 = "graphql.document";
 /// 
 /// - findBookById
 /// Note: This attribute is experimental and may change in the future.
-pub const GRAPHQL_OPERATION_NAME: []const u8 = "graphql.operation.name";
+pub const graphql_operation_name = types.StringAttribute{
+    .name = "graphql.operation.name",
+    .brief = "The name of the operation being executed.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The type of the operation being executed.
 /// 
@@ -1166,7 +1854,12 @@ pub const GRAPHQL_OPERATION_NAME: []const u8 = "graphql.operation.name";
 /// - mutation
 /// - subscription
 /// Note: This attribute is experimental and may change in the future.
-pub const GRAPHQL_OPERATION_TYPE: []const u8 = "graphql.operation.type";
+pub const graphql_operation_type = types.StringAttribute{
+    .name = "graphql.operation.type",
+    .brief = "The type of the operation being executed.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
 
@@ -1175,7 +1868,12 @@ pub const GRAPHQL_OPERATION_TYPE: []const u8 = "graphql.operation.type";
 /// 
 /// - 3495
 /// Note: This attribute is experimental and may change in the future.
-pub const HTTP_REQUEST_BODY_SIZE: []const u8 = "http.request.body.size";
+pub const http_request_body_size = types.IntAttribute{
+    .name = "http.request.body.size",
+    .brief = "The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// HTTP request headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
 
@@ -1184,7 +1882,12 @@ pub const HTTP_REQUEST_BODY_SIZE: []const u8 = "http.request.body.size";
 /// 
 /// - [\"application/json\"]
 /// - [\"1.2.3.4\", \"1.2.3.5\"]
-pub const HTTP_REQUEST_HEADER: []const u8 = "http.request.header";
+pub const http_request_header = types.StringAttribute{
+    .name = "http.request.header",
+    .brief = "HTTP request headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// HTTP request method.
 /// 
@@ -1193,7 +1896,12 @@ pub const HTTP_REQUEST_HEADER: []const u8 = "http.request.header";
 /// - GET
 /// - POST
 /// - HEAD
-pub const HTTP_REQUEST_METHOD: []const u8 = "http.request.method";
+pub const http_request_method = types.StringAttribute{
+    .name = "http.request.method",
+    .brief = "HTTP request method.",
+    .stability = .stable,
+    .requirement_level = .required,
+};
 
 /// Original HTTP method sent by the client in the request line.
 /// 
@@ -1202,7 +1910,12 @@ pub const HTTP_REQUEST_METHOD: []const u8 = "http.request.method";
 /// - GeT
 /// - ACL
 /// - foo
-pub const HTTP_REQUEST_METHOD_ORIGINAL: []const u8 = "http.request.method_original";
+pub const http_request_method_original = types.StringAttribute{
+    .name = "http.request.method_original",
+    .brief = "Original HTTP method sent by the client in the request line.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The ordinal number of request resending attempt (for any reason, including redirects).
 
@@ -1210,7 +1923,12 @@ pub const HTTP_REQUEST_METHOD_ORIGINAL: []const u8 = "http.request.method_origin
 /// # Examples
 /// 
 /// - 3
-pub const HTTP_REQUEST_RESEND_COUNT: []const u8 = "http.request.resend_count";
+pub const http_request_resend_count = types.IntAttribute{
+    .name = "http.request.resend_count",
+    .brief = "The ordinal number of request resending attempt (for any reason, including redirects).",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The total size of the request in bytes. This should be the total number of bytes sent over the wire, including the request line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and request body if any.
 
@@ -1219,7 +1937,12 @@ pub const HTTP_REQUEST_RESEND_COUNT: []const u8 = "http.request.resend_count";
 /// 
 /// - 1437
 /// Note: This attribute is experimental and may change in the future.
-pub const HTTP_REQUEST_SIZE: []const u8 = "http.request.size";
+pub const http_request_size = types.IntAttribute{
+    .name = "http.request.size",
+    .brief = "The total size of the request in bytes. This should be the total number of bytes sent over the wire, including the request line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and request body if any.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
 
@@ -1228,7 +1951,12 @@ pub const HTTP_REQUEST_SIZE: []const u8 = "http.request.size";
 /// 
 /// - 3495
 /// Note: This attribute is experimental and may change in the future.
-pub const HTTP_RESPONSE_BODY_SIZE: []const u8 = "http.response.body.size";
+pub const http_response_body_size = types.IntAttribute{
+    .name = "http.response.body.size",
+    .brief = "The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// HTTP response headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
 
@@ -1237,7 +1965,12 @@ pub const HTTP_RESPONSE_BODY_SIZE: []const u8 = "http.response.body.size";
 /// 
 /// - [\"application/json\"]
 /// - [\"abc\", \"def\"]
-pub const HTTP_RESPONSE_HEADER: []const u8 = "http.response.header";
+pub const http_response_header = types.StringAttribute{
+    .name = "http.response.header",
+    .brief = "HTTP response headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The total size of the response in bytes. This should be the total number of bytes sent over the wire, including the status line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and response body and trailers if any.
 
@@ -1246,14 +1979,24 @@ pub const HTTP_RESPONSE_HEADER: []const u8 = "http.response.header";
 /// 
 /// - 1437
 /// Note: This attribute is experimental and may change in the future.
-pub const HTTP_RESPONSE_SIZE: []const u8 = "http.response.size";
+pub const http_response_size = types.IntAttribute{
+    .name = "http.response.size",
+    .brief = "The total size of the response in bytes. This should be the total number of bytes sent over the wire, including the status line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and response body and trailers if any.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
 /// 
 /// # Examples
 /// 
 /// - 200
-pub const HTTP_RESPONSE_STATUS_CODE: []const u8 = "http.response.status_code";
+pub const http_response_status_code = types.IntAttribute{
+    .name = "http.response.status_code",
+    .brief = "[HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The matched route, that is, the path template in the format used by the respective server framework.
 
@@ -1262,12 +2005,22 @@ pub const HTTP_RESPONSE_STATUS_CODE: []const u8 = "http.response.status_code";
 /// 
 /// - /users/:userID?
 /// - {controller}/{action}/{id?}
-pub const HTTP_ROUTE: []const u8 = "http.route";
+pub const http_route = types.StringAttribute{
+    .name = "http.route",
+    .brief = "The matched route, that is, the path template in the format used by the respective server framework.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// This attribute represents the state of the application.
 
 /// Note: This attribute is experimental and may change in the future.
-pub const IOS_APP_STATE: []const u8 = "ios.app.state";
+pub const ios_app_state = types.StringAttribute{
+    .name = "ios.app.state",
+    .brief = "This attribute represents the state of the application.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Local socket address. Useful in case of a multi-IP host.
 /// 
@@ -1275,14 +2028,24 @@ pub const IOS_APP_STATE: []const u8 = "ios.app.state";
 /// 
 /// - 10.1.2.80
 /// - /tmp/my.sock
-pub const NETWORK_LOCAL_ADDRESS: []const u8 = "network.local.address";
+pub const network_local_address = types.StringAttribute{
+    .name = "network.local.address",
+    .brief = "Local socket address. Useful in case of a multi-IP host.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// Local socket port. Useful in case of a multi-port host.
 /// 
 /// # Examples
 /// 
 /// - 65123
-pub const NETWORK_LOCAL_PORT: []const u8 = "network.local.port";
+pub const network_local_port = types.IntAttribute{
+    .name = "network.local.port",
+    .brief = "Local socket port. Useful in case of a multi-port host.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// Peer address of the database node where the operation was performed.
 /// 
@@ -1290,14 +2053,24 @@ pub const NETWORK_LOCAL_PORT: []const u8 = "network.local.port";
 /// 
 /// - 10.1.2.80
 /// - /tmp/my.sock
-pub const NETWORK_PEER_ADDRESS: []const u8 = "network.peer.address";
+pub const network_peer_address = types.StringAttribute{
+    .name = "network.peer.address",
+    .brief = "Peer address of the database node where the operation was performed.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// Peer port number of the network connection.
 /// 
 /// # Examples
 /// 
 /// - 65123
-pub const NETWORK_PEER_PORT: []const u8 = "network.peer.port";
+pub const network_peer_port = types.IntAttribute{
+    .name = "network.peer.port",
+    .brief = "Peer port number of the network connection.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// [OSI application layer](https://wikipedia.org/wiki/Application_layer) or non-OSI equivalent.
 /// 
@@ -1305,7 +2078,12 @@ pub const NETWORK_PEER_PORT: []const u8 = "network.peer.port";
 /// 
 /// - http
 /// - spdy
-pub const NETWORK_PROTOCOL_NAME: []const u8 = "network.protocol.name";
+pub const network_protocol_name = types.StringAttribute{
+    .name = "network.protocol.name",
+    .brief = "[OSI application layer](https://wikipedia.org/wiki/Application_layer) or non-OSI equivalent.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The actual version of the protocol used for network communication.
 /// 
@@ -1315,7 +2093,12 @@ pub const NETWORK_PROTOCOL_NAME: []const u8 = "network.protocol.name";
 /// - 1.1
 /// - 2
 /// - 3
-pub const NETWORK_PROTOCOL_VERSION: []const u8 = "network.protocol.version";
+pub const network_protocol_version = types.StringAttribute{
+    .name = "network.protocol.version",
+    .brief = "The actual version of the protocol used for network communication.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// [OSI transport layer](https://wikipedia.org/wiki/Transport_layer) or [inter-process communication method](https://wikipedia.org/wiki/Inter-process_communication).
 
@@ -1325,7 +2108,12 @@ pub const NETWORK_PROTOCOL_VERSION: []const u8 = "network.protocol.version";
 /// - tcp
 /// - udp
 /// - unix
-pub const NETWORK_TRANSPORT: []const u8 = "network.transport";
+pub const network_transport = types.StringAttribute{
+    .name = "network.transport",
+    .brief = "[OSI transport layer](https://wikipedia.org/wiki/Transport_layer) or [inter-process communication method](https://wikipedia.org/wiki/Inter-process_communication).",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// [OSI network layer](https://wikipedia.org/wiki/Network_layer) or non-OSI equivalent.
 /// 
@@ -1333,7 +2121,12 @@ pub const NETWORK_TRANSPORT: []const u8 = "network.transport";
 /// 
 /// - ipv4
 /// - ipv6
-pub const NETWORK_TYPE: []const u8 = "network.type";
+pub const network_type = types.StringAttribute{
+    .name = "network.type",
+    .brief = "[OSI network layer](https://wikipedia.org/wiki/Network_layer) or non-OSI equivalent.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`. SHOULD NOT be collected by default unless there is sanitization that excludes sensitive data.
 
@@ -1342,7 +2135,12 @@ pub const NETWORK_TYPE: []const u8 = "network.type";
 /// 
 /// - [\"cmd/otecol\", \"--config=config.yaml\"]
 /// Note: This attribute is experimental and may change in the future.
-pub const PROCESS_COMMAND_ARGS: []const u8 = "process.command_args";
+pub const process_command_args = types.StringAttribute{
+    .name = "process.command_args",
+    .brief = "All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`. SHOULD NOT be collected by default unless there is sanitization that excludes sensitive data.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the process executable. On Linux based systems, this SHOULD be set to the base name of the target of `/proc/[pid]/exe`. On Windows, this SHOULD be set to the base name of `GetProcessImageFileNameW`.
 
@@ -1351,7 +2149,12 @@ pub const PROCESS_COMMAND_ARGS: []const u8 = "process.command_args";
 /// 
 /// - otelcol
 /// Note: This attribute is experimental and may change in the future.
-pub const PROCESS_EXECUTABLE_NAME: []const u8 = "process.executable.name";
+pub const process_executable_name = types.StringAttribute{
+    .name = "process.executable.name",
+    .brief = "The name of the process executable. On Linux based systems, this SHOULD be set to the base name of the target of `/proc/[pid]/exe`. On Windows, this SHOULD be set to the base name of `GetProcessImageFileNameW`.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
 
@@ -1360,7 +2163,12 @@ pub const PROCESS_EXECUTABLE_NAME: []const u8 = "process.executable.name";
 /// 
 /// - /usr/bin/cmd/otelcol
 /// Note: This attribute is experimental and may change in the future.
-pub const PROCESS_EXECUTABLE_PATH: []const u8 = "process.executable.path";
+pub const process_executable_path = types.StringAttribute{
+    .name = "process.executable.path",
+    .brief = "The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The exit code of the process.
 
@@ -1369,7 +2177,12 @@ pub const PROCESS_EXECUTABLE_PATH: []const u8 = "process.executable.path";
 /// 
 /// - 127
 /// Note: This attribute is experimental and may change in the future.
-pub const PROCESS_EXIT_CODE: []const u8 = "process.exit.code";
+pub const process_exit_code = types.IntAttribute{
+    .name = "process.exit.code",
+    .brief = "The exit code of the process.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// Process identifier (PID).
 
@@ -1378,23 +2191,48 @@ pub const PROCESS_EXIT_CODE: []const u8 = "process.exit.code";
 /// 
 /// - 1234
 /// Note: This attribute is experimental and may change in the future.
-pub const PROCESS_PID: []const u8 = "process.pid";
+pub const process_pid = types.IntAttribute{
+    .name = "process.pid",
+    .brief = "Process identifier (PID).",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// Compressed size of the message in bytes.
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_MESSAGE_COMPRESSED_SIZE: []const u8 = "rpc.message.compressed_size";
+pub const rpc_message_compressed_size = types.IntAttribute{
+    .name = "rpc.message.compressed_size",
+    .brief = "Compressed size of the message in bytes.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_MESSAGE_ID: []const u8 = "rpc.message.id";
+pub const rpc_message_id = types.IntAttribute{
+    .name = "rpc.message.id",
+    .brief = "MUST be calculated as two different counters starting from `1` one for sent messages and one for received message.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Whether this is a received or sent message.
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_MESSAGE_TYPE: []const u8 = "rpc.message.type";
+pub const rpc_message_type = types.StringAttribute{
+    .name = "rpc.message.type",
+    .brief = "Whether this is a received or sent message.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// Uncompressed size of the message in bytes.
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_MESSAGE_UNCOMPRESSED_SIZE: []const u8 = "rpc.message.uncompressed_size";
+pub const rpc_message_uncompressed_size = types.IntAttribute{
+    .name = "rpc.message.uncompressed_size",
+    .brief = "Uncompressed size of the message in bytes.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the operation corresponding to the request, as returned by the AWS SDK
 /// 
@@ -1403,7 +2241,12 @@ pub const RPC_MESSAGE_UNCOMPRESSED_SIZE: []const u8 = "rpc.message.uncompressed_
 /// - GetItem
 /// - PutItem
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_METHOD: []const u8 = "rpc.method";
+pub const rpc_method = types.StringAttribute{
+    .name = "rpc.method",
+    .brief = "The name of the operation corresponding to the request, as returned by the AWS SDK",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The name of the service to which a request is made, as returned by the AWS SDK.
 /// 
@@ -1412,7 +2255,12 @@ pub const RPC_METHOD: []const u8 = "rpc.method";
 /// - DynamoDB
 /// - S3
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_SERVICE: []const u8 = "rpc.service";
+pub const rpc_service = types.StringAttribute{
+    .name = "rpc.service",
+    .brief = "The name of the service to which a request is made, as returned by the AWS SDK.",
+    .stability = .development,
+    .requirement_level = .recommended,
+};
 
 /// The value `aws-api`.
 /// 
@@ -1420,7 +2268,12 @@ pub const RPC_SERVICE: []const u8 = "rpc.service";
 /// 
 /// - aws-api
 /// Note: This attribute is experimental and may change in the future.
-pub const RPC_SYSTEM: []const u8 = "rpc.system";
+pub const rpc_system = types.StringAttribute{
+    .name = "rpc.system",
+    .brief = "The value `aws-api`.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// GenAI server address.
 /// 
@@ -1429,7 +2282,12 @@ pub const RPC_SYSTEM: []const u8 = "rpc.system";
 /// - example.com
 /// - 10.1.2.80
 /// - /tmp/my.sock
-pub const SERVER_ADDRESS: []const u8 = "server.address";
+pub const server_address = types.StringAttribute{
+    .name = "server.address",
+    .brief = "GenAI server address.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// GenAI server port.
 /// 
@@ -1438,7 +2296,12 @@ pub const SERVER_ADDRESS: []const u8 = "server.address";
 /// - 80
 /// - 8080
 /// - 443
-pub const SERVER_PORT: []const u8 = "server.port";
+pub const server_port = types.IntAttribute{
+    .name = "server.port",
+    .brief = "GenAI server port.",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The ID of the new session being started.
 /// 
@@ -1446,7 +2309,12 @@ pub const SERVER_PORT: []const u8 = "server.port";
 /// 
 /// - 00112233-4455-6677-8899-aabbccddeeff
 /// Note: This attribute is experimental and may change in the future.
-pub const SESSION_ID: []const u8 = "session.id";
+pub const session_id = types.StringAttribute{
+    .name = "session.id",
+    .brief = "The ID of the new session being started.",
+    .stability = .development,
+    .requirement_level = .required,
+};
 
 /// The previous `session.id` for this user, when known.
 /// 
@@ -1454,12 +2322,22 @@ pub const SESSION_ID: []const u8 = "session.id";
 /// 
 /// - 00112233-4455-6677-8899-aabbccddeeff
 /// Note: This attribute is experimental and may change in the future.
-pub const SESSION_PREVIOUS_ID: []const u8 = "session.previous_id";
+pub const session_previous_id = types.StringAttribute{
+    .name = "session.previous_id",
+    .brief = "The previous `session.id` for this user, when known.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Normalized lowercase protocol name parsed from original string of the negotiated [SSL/TLS protocol version](https://docs.openssl.org/1.1.1/man3/SSL_get_version/#return-values)
 
 /// Note: This attribute is experimental and may change in the future.
-pub const TLS_PROTOCOL_NAME: []const u8 = "tls.protocol.name";
+pub const tls_protocol_name = types.StringAttribute{
+    .name = "tls.protocol.name",
+    .brief = "Normalized lowercase protocol name parsed from original string of the negotiated [SSL/TLS protocol version](https://docs.openssl.org/1.1.1/man3/SSL_get_version/#return-values)",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Numeric part of the version parsed from the original string of the negotiated [SSL/TLS protocol version](https://docs.openssl.org/1.1.1/man3/SSL_get_version/#return-values)
 
@@ -1469,14 +2347,24 @@ pub const TLS_PROTOCOL_NAME: []const u8 = "tls.protocol.name";
 /// - 1.2
 /// - 3
 /// Note: This attribute is experimental and may change in the future.
-pub const TLS_PROTOCOL_VERSION: []const u8 = "tls.protocol.version";
+pub const tls_protocol_version = types.StringAttribute{
+    .name = "tls.protocol.version",
+    .brief = "Numeric part of the version parsed from the original string of the negotiated [SSL/TLS protocol version](https://docs.openssl.org/1.1.1/man3/SSL_get_version/#return-values)",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Absolute URL describing a network resource according to [RFC3986](https://www.rfc-editor.org/rfc/rfc3986)
 /// 
 /// # Examples
 /// 
 /// - https://localhost:9200/index/_search?q=user.id:kimchy
-pub const URL_FULL: []const u8 = "url.full";
+pub const url_full = types.StringAttribute{
+    .name = "url.full",
+    .brief = "Absolute URL describing a network resource according to [RFC3986](https://www.rfc-editor.org/rfc/rfc3986)",
+    .stability = .stable,
+    .requirement_level = .required,
+};
 
 /// The [URI path](https://www.rfc-editor.org/rfc/rfc3986#section-3.3) component
 
@@ -1484,7 +2372,12 @@ pub const URL_FULL: []const u8 = "url.full";
 /// # Examples
 /// 
 /// - /search
-pub const URL_PATH: []const u8 = "url.path";
+pub const url_path = types.StringAttribute{
+    .name = "url.path",
+    .brief = "The [URI path](https://www.rfc-editor.org/rfc/rfc3986#section-3.3) component",
+    .stability = .stable,
+    .requirement_level = .required,
+};
 
 /// The [URI query](https://www.rfc-editor.org/rfc/rfc3986#section-3.4) component
 
@@ -1492,7 +2385,12 @@ pub const URL_PATH: []const u8 = "url.path";
 /// # Examples
 /// 
 /// - q=OpenTelemetry
-pub const URL_QUERY: []const u8 = "url.query";
+pub const url_query = types.StringAttribute{
+    .name = "url.query",
+    .brief = "The [URI query](https://www.rfc-editor.org/rfc/rfc3986#section-3.4) component",
+    .stability = .stable,
+    .requirement_level = .opt_in,
+};
 
 /// The [URI scheme](https://www.rfc-editor.org/rfc/rfc3986#section-3.1) component identifying the used protocol.
 
@@ -1502,7 +2400,12 @@ pub const URL_QUERY: []const u8 = "url.query";
 /// - https
 /// - ftp
 /// - telnet
-pub const URL_SCHEME: []const u8 = "url.scheme";
+pub const url_scheme = types.StringAttribute{
+    .name = "url.scheme",
+    .brief = "The [URI scheme](https://www.rfc-editor.org/rfc/rfc3986#section-3.1) component identifying the used protocol.",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// The low-cardinality template of an [absolute path reference](https://www.rfc-editor.org/rfc/rfc3986#section-4.2).
 
@@ -1513,19 +2416,34 @@ pub const URL_SCHEME: []const u8 = "url.scheme";
 /// - /users/:id
 /// - /users?id={id}
 /// Note: This attribute is experimental and may change in the future.
-pub const URL_TEMPLATE: []const u8 = "url.template";
+pub const url_template = types.StringAttribute{
+    .name = "url.template",
+    .brief = "The low-cardinality template of an [absolute path reference](https://www.rfc-editor.org/rfc/rfc3986#section-4.2).",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 /// Full user-agent string is generated by Cosmos DB SDK
 /// 
 /// # Examples
 /// 
 /// - cosmos-netstandard-sdk/3.23.0\|3.23.1\|1\|X64\|Linux 5.4.0-1098-azure 104 18\|.NET Core 3.1.32\|S\|
-pub const USER_AGENT_ORIGINAL: []const u8 = "user_agent.original";
+pub const user_agent_original = types.StringAttribute{
+    .name = "user_agent.original",
+    .brief = "Full user-agent string is generated by Cosmos DB SDK",
+    .stability = .stable,
+    .requirement_level = .recommended,
+};
 
 /// Specifies the category of synthetic traffic, such as tests or bots.
 
 /// Note: This attribute is experimental and may change in the future.
-pub const USER_AGENT_SYNTHETIC_TYPE: []const u8 = "user_agent.synthetic.type";
+pub const user_agent_synthetic_type = types.StringAttribute{
+    .name = "user_agent.synthetic.type",
+    .brief = "Specifies the category of synthetic traffic, such as tests or bots.",
+    .stability = .development,
+    .requirement_level = .opt_in,
+};
 
 
 test "semantic trace attributes" {

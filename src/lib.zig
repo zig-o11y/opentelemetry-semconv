@@ -11,7 +11,7 @@ pub const trace = @import("trace.zig");
 
 /// The schema URL that matches the version of the semantic conventions that
 /// this module defines.
-pub const SCHEMA_URL: []const u8 = "https://opentelemetry.io/schemas/1.36.0";
+pub const schema_url: []const u8 = "https://opentelemetry.io/schemas/1.36.0";
 
 test "semantic conventions" {
     @import("std").testing.refAllDecls(@This());
