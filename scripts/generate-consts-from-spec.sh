@@ -56,4 +56,6 @@ expression='
 # We replace <key> with Markdown code formatting `key` to prevent the error.
 "${SED[@]}" 's/<key>/`key`/g' src/attribute.zig
 
+zig fmt .
+
 echo "Zig semantic conventions generated successfully!"

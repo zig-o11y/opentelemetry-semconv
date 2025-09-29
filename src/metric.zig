@@ -1176,7 +1176,7 @@ pub const dotnet_gc_collections = types.Metric{
 };
 
 /// The *approximate* number of bytes allocated on the managed GC heap since the process has started. The returned value does not include any native allocations.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`GC.GetTotalAllocatedBytes()`](https://learn.microsoft.com/dotnet/api/system.gc.gettotalallocatedbytes).
 ///
@@ -1194,7 +1194,7 @@ pub const dotnet_gc_heap_total_allocated = types.Metric{
 };
 
 /// The heap fragmentation, as observed during the latest garbage collection.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`GC.GetGCMemoryInfo().GenerationInfo.FragmentationAfterBytes`](https://learn.microsoft.com/dotnet/api/system.gcgenerationinfo.fragmentationafterbytes).
 ///
@@ -1217,7 +1217,7 @@ pub const dotnet_gc_last_collection_heap_fragmentation_size = types.Metric{
 };
 
 /// The managed GC heap size (including fragmentation), as observed during the latest garbage collection.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`GC.GetGCMemoryInfo().GenerationInfo.SizeAfterBytes`](https://learn.microsoft.com/dotnet/api/system.gcgenerationinfo.sizeafterbytes).
 ///
@@ -1240,7 +1240,7 @@ pub const dotnet_gc_last_collection_heap_size = types.Metric{
 };
 
 /// The amount of committed virtual memory in use by the .NET GC, as observed during the latest garbage collection.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`GC.GetGCMemoryInfo().TotalCommittedBytes`](https://learn.microsoft.com/dotnet/api/system.gcmemoryinfo.totalcommittedbytes). Committed virtual memory may be larger than the heap size because it includes both memory for storing existing objects (the heap size) and some extra memory that is ready to handle newly allocated objects in the future.
 ///
@@ -1275,7 +1275,7 @@ pub const dotnet_gc_pause_time = types.Metric{
 };
 
 /// The amount of time the JIT compiler has spent compiling methods since the process has started.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`JitInfo.GetCompilationTime()`](https://learn.microsoft.com/dotnet/api/system.runtime.jitinfo.getcompilationtime).
 ///
@@ -1310,7 +1310,7 @@ pub const dotnet_jit_compiled_il_size = types.Metric{
 };
 
 /// The number of times the JIT compiler (re)compiled methods since the process has started.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`JitInfo.GetCompiledMethodCount()`](https://learn.microsoft.com/dotnet/api/system.runtime.jitinfo.getcompiledmethodcount).
 ///
@@ -1328,7 +1328,7 @@ pub const dotnet_jit_compiled_methods = types.Metric{
 };
 
 /// The number of times there was contention when trying to acquire a monitor lock since the process has started.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`Monitor.LockContentionCount`](https://learn.microsoft.com/dotnet/api/system.threading.monitor.lockcontentioncount).
 ///
@@ -1402,7 +1402,7 @@ pub const dotnet_process_memory_working_set = types.Metric{
 };
 
 /// The number of work items that are currently queued to be processed by the thread pool.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`ThreadPool.PendingWorkItemCount`](https://learn.microsoft.com/dotnet/api/system.threading.threadpool.pendingworkitemcount).
 ///
@@ -1437,7 +1437,7 @@ pub const dotnet_thread_pool_thread_count = types.Metric{
 };
 
 /// The number of work items that the thread pool has completed since the process has started.
-/// 
+///
 ///
 /// Notes: Meter name: `System.Runtime`; Added in: .NET 9.0. This metric reports the same values as calling [`ThreadPool.CompletedWorkItemCount`](https://learn.microsoft.com/dotnet/api/system.threading.threadpool.completedworkitemcount).
 ///
@@ -2306,7 +2306,7 @@ pub const hw_host_energy = types.Metric{
 };
 
 /// By how many degrees Celsius the temperature of the physical host can be increased, before reaching a warning threshold on one of the internal sensors
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -2329,7 +2329,7 @@ pub const hw_host_heating_margin = types.Metric{
 };
 
 /// Instantaneous power consumed by the entire physical host in Watts (`hw.host.energy` is preferred)
-/// 
+///
 ///
 /// Notes: The overall energy usage of a host MUST be reported using the specific `hw.host.energy` and `hw.host.power` metrics **only**, instead of the generic `hw.energy` and `hw.power` described in the previous section, to prevent summing up overlapping values.
 ///
@@ -2879,7 +2879,7 @@ pub const k8s_container_memory_request = types.Metric{
 };
 
 /// Indicates whether the container is currently marked as ready to accept traffic, based on its readiness probe (1 = ready, 0 = not ready)
-/// 
+///
 ///
 /// Notes: This metric SHOULD reflect the value of the `ready` field in the [K8s ContainerStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.30/#containerstatus-v1-core).
 ///
@@ -3761,7 +3761,7 @@ pub const k8s_replicationcontroller_desired_pods = types.Metric{
 
 /// The CPU limits in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3780,7 +3780,7 @@ pub const k8s_resourcequota_cpu_limit_hard = types.Metric{
 
 /// The CPU limits in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3799,7 +3799,7 @@ pub const k8s_resourcequota_cpu_limit_used = types.Metric{
 
 /// The CPU requests in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3818,7 +3818,7 @@ pub const k8s_resourcequota_cpu_request_hard = types.Metric{
 
 /// The CPU requests in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3837,7 +3837,7 @@ pub const k8s_resourcequota_cpu_request_used = types.Metric{
 
 /// The sum of local ephemeral storage limits in the namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3856,7 +3856,7 @@ pub const k8s_resourcequota_ephemeral_storage_limit_hard = types.Metric{
 
 /// The sum of local ephemeral storage limits in the namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3875,7 +3875,7 @@ pub const k8s_resourcequota_ephemeral_storage_limit_used = types.Metric{
 
 /// The sum of local ephemeral storage requests in the namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3894,7 +3894,7 @@ pub const k8s_resourcequota_ephemeral_storage_request_hard = types.Metric{
 
 /// The sum of local ephemeral storage requests in the namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3913,7 +3913,7 @@ pub const k8s_resourcequota_ephemeral_storage_request_used = types.Metric{
 
 /// The huge page requests in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3937,7 +3937,7 @@ pub const k8s_resourcequota_hugepage_count_request_hard = types.Metric{
 
 /// The huge page requests in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3961,7 +3961,7 @@ pub const k8s_resourcequota_hugepage_count_request_used = types.Metric{
 
 /// The memory limits in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3980,7 +3980,7 @@ pub const k8s_resourcequota_memory_limit_hard = types.Metric{
 
 /// The memory limits in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -3999,7 +3999,7 @@ pub const k8s_resourcequota_memory_limit_used = types.Metric{
 
 /// The memory requests in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -4018,7 +4018,7 @@ pub const k8s_resourcequota_memory_request_hard = types.Metric{
 
 /// The memory requests in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -4037,7 +4037,7 @@ pub const k8s_resourcequota_memory_request_used = types.Metric{
 
 /// The object count limits in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -4061,7 +4061,7 @@ pub const k8s_resourcequota_object_count_hard = types.Metric{
 
 /// The object count limits in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core).
 ///
@@ -4085,7 +4085,7 @@ pub const k8s_resourcequota_object_count_used = types.Metric{
 
 /// The total number of PersistentVolumeClaims that can exist in the namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core). The `k8s.storageclass.name` should be required when a resource quota is defined for a specific storage class.
 ///
@@ -4109,7 +4109,7 @@ pub const k8s_resourcequota_persistentvolumeclaim_count_hard = types.Metric{
 
 /// The total number of PersistentVolumeClaims that can exist in the namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core). The `k8s.storageclass.name` should be required when a resource quota is defined for a specific storage class.
 ///
@@ -4133,7 +4133,7 @@ pub const k8s_resourcequota_persistentvolumeclaim_count_used = types.Metric{
 
 /// The storage requests in a specific namespace.
 /// The value represents the configured quota limit of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `hard` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core). The `k8s.storageclass.name` should be required when a resource quota is defined for a specific storage class.
 ///
@@ -4157,7 +4157,7 @@ pub const k8s_resourcequota_storage_request_hard = types.Metric{
 
 /// The storage requests in a specific namespace.
 /// The value represents the current observed total usage of the resource in the namespace.
-/// 
+///
 ///
 /// Notes: This metric is retrieved from the `used` field of the [K8s ResourceQuotaStatus](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.32/#resourcequotastatus-v1-core). The `k8s.storageclass.name` should be required when a resource quota is defined for a specific storage class.
 ///
@@ -5916,7 +5916,7 @@ pub const system_cpu_utilization = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -5979,7 +5979,7 @@ pub const system_disk_limit = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6023,7 +6023,7 @@ pub const system_disk_operation_time = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6093,7 +6093,7 @@ pub const system_filesystem_usage = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6212,7 +6212,7 @@ pub const system_memory_usage = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6232,7 +6232,7 @@ pub const system_memory_utilization = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6325,7 +6325,7 @@ pub const system_network_errors = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6346,7 +6346,7 @@ pub const system_network_io = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6367,7 +6367,7 @@ pub const system_network_packets = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6387,7 +6387,7 @@ pub const system_paging_faults = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6429,7 +6429,7 @@ pub const system_paging_usage = types.Metric{
     .value_type = .double,
 };
 
-/// 
+///
 ///
 /// ## Metadata
 /// | Instrument | Unit | Status |
@@ -6869,7 +6869,6 @@ pub const vcs_repository_count = types.Metric{
     .unit = "{repository}",
     .value_type = .double,
 };
-
 
 test "semantic metrics" {
     @import("std").testing.refAllDecls(@This());

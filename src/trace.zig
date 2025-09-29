@@ -12,10 +12,9 @@ const std = @import("std");
 const types = @import("types.zig");
 
 /// This attribute represents the state of the application.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - created
 /// Note: This attribute is experimental and may change in the future.
 pub const android_app_state = types.StringAttribute{
@@ -26,9 +25,9 @@ pub const android_app_state = types.StringAttribute{
 };
 
 /// The x (horizontal) coordinate of a screen coordinate, in screen pixels.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 0
 /// - 131
 /// Note: This attribute is experimental and may change in the future.
@@ -40,10 +39,9 @@ pub const app_screen_coordinate_x = types.IntAttribute{
 };
 
 /// The y (vertical) component of a screen coordinate, in screen pixels.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 12
 /// - 99
 /// Note: This attribute is experimental and may change in the future.
@@ -55,10 +53,9 @@ pub const app_screen_coordinate_y = types.IntAttribute{
 };
 
 /// An identifier that uniquely differentiates this widget from other widgets in the same application.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - f9bc787d-ff05-48ad-90e1-fca1d46130b3
 /// - submit_order_1829
 /// Note: This attribute is experimental and may change in the future.
@@ -70,9 +67,9 @@ pub const app_widget_id = types.StringAttribute{
 };
 
 /// The name of an application widget.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - submit
 /// - attack
 /// - Clear Cart
@@ -85,10 +82,9 @@ pub const app_widget_name = types.StringAttribute{
 };
 
 /// The unique identifier of the AWS Bedrock Guardrail. A [guardrail](https://docs.aws.amazon.com/bedrock/latest/userguide/guardrails.html) helps safeguard and prevent unwanted behavior from model responses or user messages.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - sgi5gkybzqak
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_bedrock_guardrail_id = types.StringAttribute{
@@ -99,10 +95,9 @@ pub const aws_bedrock_guardrail_id = types.StringAttribute{
 };
 
 /// The unique identifier of the AWS Bedrock Knowledge base. A [knowledge base](https://docs.aws.amazon.com/bedrock/latest/userguide/knowledge-base.html) is a bank of information that can be queried by models to generate more relevant responses and augment prompts.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - XFWUPB9PAW
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_bedrock_knowledge_base_id = types.StringAttribute{
@@ -113,9 +108,9 @@ pub const aws_bedrock_knowledge_base_id = types.StringAttribute{
 };
 
 /// The JSON-serialized value of each item in the `AttributeDefinitions` request field.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"{ \\"AttributeName\\": \\"string\\", \\"AttributeType\\": \\"string\\" }\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_attribute_definitions = types.StringAttribute{
@@ -126,9 +121,9 @@ pub const aws_dynamodb_attribute_definitions = types.StringAttribute{
 };
 
 /// The value of the `AttributesToGet` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"lives\", \"id\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_attributes_to_get = types.StringAttribute{
@@ -148,9 +143,9 @@ pub const aws_dynamodb_consistent_read = types.BooleanAttribute{
 };
 
 /// The JSON-serialized value of each item in the `ConsumedCapacity` response field.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"{ \\"CapacityUnits\\": number, \\"GlobalSecondaryIndexes\\": { \\"string\\" : { \\"CapacityUnits\\": number, \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }, \\"LocalSecondaryIndexes\\": { \\"string\\" : { \\"CapacityUnits\\": number, \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }, \\"ReadCapacityUnits\\": number, \\"Table\\": { \\"CapacityUnits\\": number, \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number }, \\"TableName\\": \\"string\\", \\"WriteCapacityUnits\\": number }\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_consumed_capacity = types.StringAttribute{
@@ -161,9 +156,9 @@ pub const aws_dynamodb_consumed_capacity = types.StringAttribute{
 };
 
 /// The value of the `Count` response parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 10
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_count = types.IntAttribute{
@@ -174,9 +169,9 @@ pub const aws_dynamodb_count = types.IntAttribute{
 };
 
 /// The value of the `ExclusiveStartTableName` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Users
 /// - CatsTable
 /// Note: This attribute is experimental and may change in the future.
@@ -188,9 +183,9 @@ pub const aws_dynamodb_exclusive_start_table = types.StringAttribute{
 };
 
 /// The JSON-serialized value of each item in the `GlobalSecondaryIndexUpdates` request field.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"{ \\"Create\\": { \\"IndexName\\": \\"string\\", \\"KeySchema\\": [ { \\"AttributeName\\": \\"string\\", \\"KeyType\\": \\"string\\" } ], \\"Projection\\": { \\"NonKeyAttributes\\": [ \\"string\\" ], \\"ProjectionType\\": \\"string\\" }, \\"ProvisionedThroughput\\": { \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_global_secondary_index_updates = types.StringAttribute{
@@ -201,9 +196,9 @@ pub const aws_dynamodb_global_secondary_index_updates = types.StringAttribute{
 };
 
 /// The JSON-serialized value of each item of the `GlobalSecondaryIndexes` request field
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"{ \\"IndexName\\": \\"string\\", \\"KeySchema\\": [ { \\"AttributeName\\": \\"string\\", \\"KeyType\\": \\"string\\" } ], \\"Projection\\": { \\"NonKeyAttributes\\": [ \\"string\\" ], \\"ProjectionType\\": \\"string\\" }, \\"ProvisionedThroughput\\": { \\"ReadCapacityUnits\\": number, \\"WriteCapacityUnits\\": number } }\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_global_secondary_indexes = types.StringAttribute{
@@ -214,9 +209,9 @@ pub const aws_dynamodb_global_secondary_indexes = types.StringAttribute{
 };
 
 /// The value of the `IndexName` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - name_to_group
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_index_name = types.StringAttribute{
@@ -227,9 +222,9 @@ pub const aws_dynamodb_index_name = types.StringAttribute{
 };
 
 /// The JSON-serialized value of the `ItemCollectionMetrics` response field.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - { \"string\" : [ { \"ItemCollectionKey\": { \"string\" : { \"B\": blob, \"BOOL\": boolean, \"BS\": [ blob ], \"L\": [ \"AttributeValue\" ], \"M\": { \"string\" : \"AttributeValue\" }, \"N\": \"string\", \"NS\": [ \"string\" ], \"NULL\": boolean, \"S\": \"string\", \"SS\": [ \"string\" ] } }, \"SizeEstimateRangeGB\": [ number ] } ] }
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_item_collection_metrics = types.StringAttribute{
@@ -240,9 +235,9 @@ pub const aws_dynamodb_item_collection_metrics = types.StringAttribute{
 };
 
 /// The value of the `Limit` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 10
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_limit = types.IntAttribute{
@@ -253,9 +248,9 @@ pub const aws_dynamodb_limit = types.IntAttribute{
 };
 
 /// The JSON-serialized value of each item of the `LocalSecondaryIndexes` request field.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"{ \\"IndexArn\\": \\"string\\", \\"IndexName\\": \\"string\\", \\"IndexSizeBytes\\": number, \\"ItemCount\\": number, \\"KeySchema\\": [ { \\"AttributeName\\": \\"string\\", \\"KeyType\\": \\"string\\" } ], \\"Projection\\": { \\"NonKeyAttributes\\": [ \\"string\\" ], \\"ProjectionType\\": \\"string\\" } }\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_local_secondary_indexes = types.StringAttribute{
@@ -266,9 +261,9 @@ pub const aws_dynamodb_local_secondary_indexes = types.StringAttribute{
 };
 
 /// The value of the `ProjectionExpression` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Title
 /// - Title, Price, Color
 /// - Title, Description, RelatedItems, ProductReviews
@@ -281,9 +276,9 @@ pub const aws_dynamodb_projection = types.StringAttribute{
 };
 
 /// The value of the `ProvisionedThroughput.ReadCapacityUnits` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1.0
 /// - 2.0
 /// Note: This attribute is experimental and may change in the future.
@@ -295,9 +290,9 @@ pub const aws_dynamodb_provisioned_read_capacity = types.DoubleAttribute{
 };
 
 /// The value of the `ProvisionedThroughput.WriteCapacityUnits` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1.0
 /// - 2.0
 /// Note: This attribute is experimental and may change in the future.
@@ -318,9 +313,9 @@ pub const aws_dynamodb_scan_forward = types.BooleanAttribute{
 };
 
 /// The value of the `ScannedCount` response parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 50
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_scanned_count = types.IntAttribute{
@@ -331,9 +326,9 @@ pub const aws_dynamodb_scanned_count = types.IntAttribute{
 };
 
 /// The value of the `Segment` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 10
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_segment = types.IntAttribute{
@@ -344,9 +339,9 @@ pub const aws_dynamodb_segment = types.IntAttribute{
 };
 
 /// The value of the `Select` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - ALL_ATTRIBUTES
 /// - COUNT
 /// Note: This attribute is experimental and may change in the future.
@@ -358,9 +353,9 @@ pub const aws_dynamodb_select = types.StringAttribute{
 };
 
 /// The number of items in the `TableNames` response parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 20
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_table_count = types.IntAttribute{
@@ -371,9 +366,9 @@ pub const aws_dynamodb_table_count = types.IntAttribute{
 };
 
 /// The keys in the `RequestItems` object field.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"Users\", \"Cats\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_table_names = types.StringAttribute{
@@ -384,9 +379,9 @@ pub const aws_dynamodb_table_names = types.StringAttribute{
 };
 
 /// The value of the `TotalSegments` request parameter.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_dynamodb_total_segments = types.IntAttribute{
@@ -397,9 +392,9 @@ pub const aws_dynamodb_total_segments = types.IntAttribute{
 };
 
 /// The AWS extended request ID as returned in the response header `x-amz-id-2`.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - wzHcyEWfmOGDIE5QOhTAqFDoDWP3y8IUvpNINCwL9N4TEHbUw0/gZJ+VZTmCNCWR7fezEN3eCiQ=
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_extended_request_id = types.StringAttribute{
@@ -410,10 +405,9 @@ pub const aws_extended_request_id = types.StringAttribute{
 };
 
 /// The full invoked ARN as provided on the `Context` passed to the function (`Lambda-Runtime-Invoked-Function-Arn` header on the `/runtime/invocation/next` applicable).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - arn:aws:lambda:us-east-1:123456:function:myfunction:myalias
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_lambda_invoked_arn = types.StringAttribute{
@@ -424,10 +418,9 @@ pub const aws_lambda_invoked_arn = types.StringAttribute{
 };
 
 /// The UUID of the [AWS Lambda EvenSource Mapping](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html). An event source is mapped to a lambda function. It's contents are read by Lambda and used to trigger a function. This isn't available in the lambda execution context or the lambda runtime environtment. This is going to be populated by the AWS SDK for each language when that UUID is present. Some of these operations are Create/Delete/Get/List/Update EventSourceMapping.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 587ad24b-03b9-4413-8202-bbd56b36e5b7
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_lambda_resource_mapping_id = types.StringAttribute{
@@ -438,9 +431,9 @@ pub const aws_lambda_resource_mapping_id = types.StringAttribute{
 };
 
 /// The AWS request ID as returned in the response headers `x-amzn-requestid`, `x-amzn-request-id` or `x-amz-request-id`.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 79b9da39-b7ae-508a-a6bc-864b2829c622
 /// - C9ER4AJX75574TDJ
 /// Note: This attribute is experimental and may change in the future.
@@ -452,9 +445,9 @@ pub const aws_request_id = types.StringAttribute{
 };
 
 /// The S3 bucket name the request refers to. Corresponds to the `--bucket` parameter of the [S3 API](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html) operations.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - some-bucket-name
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_s3_bucket = types.StringAttribute{
@@ -465,9 +458,9 @@ pub const aws_s3_bucket = types.StringAttribute{
 };
 
 /// The source object (in the form `bucket`/`key`) for the copy operation.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - someFile.yml
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_s3_copy_source = types.StringAttribute{
@@ -478,9 +471,9 @@ pub const aws_s3_copy_source = types.StringAttribute{
 };
 
 /// The delete request container that specifies the objects to be deleted.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Objects=[{Key=string,VersionId=string},{Key=string,VersionId=string}],Quiet=boolean
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_s3_delete = types.StringAttribute{
@@ -491,9 +484,9 @@ pub const aws_s3_delete = types.StringAttribute{
 };
 
 /// The S3 object key the request refers to. Corresponds to the `--key` parameter of the [S3 API](https://docs.aws.amazon.com/cli/latest/reference/s3api/index.html) operations.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - someFile.yml
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_s3_key = types.StringAttribute{
@@ -504,9 +497,9 @@ pub const aws_s3_key = types.StringAttribute{
 };
 
 /// The part number of the part being uploaded in a multipart-upload operation. This is a positive integer between 1 and 10,000.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 3456
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_s3_part_number = types.IntAttribute{
@@ -517,9 +510,9 @@ pub const aws_s3_part_number = types.IntAttribute{
 };
 
 /// Upload ID that identifies the multipart upload.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - dfRtDYWFbkRONycy.Yxwh66Yjlx.cph0gtNBtJ
 /// Note: This attribute is experimental and may change in the future.
 pub const aws_s3_upload_id = types.StringAttribute{
@@ -530,9 +523,9 @@ pub const aws_s3_upload_id = types.StringAttribute{
 };
 
 /// Deprecated, use `azure.service.request.id` instead.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 00000000-0000-0000-0000-000000000000
 /// Note: This attribute is experimental and may change in the future.
 /// Note: This attribute is deprecated. {"note": "Replaced by `azure.service.request.id`.", "reason": "renamed", "renamed_to": "azure.service.request.id"}
@@ -544,9 +537,9 @@ pub const az_service_request_id = types.StringAttribute{
 };
 
 /// The unique identifier of the client instance.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 3ba4827d-4422-483f-b59f-85b74211c11d
 /// - storage-client-1
 /// Note: This attribute is experimental and may change in the future.
@@ -567,9 +560,9 @@ pub const azure_cosmosdb_connection_mode = types.StringAttribute{
 };
 
 /// Account or request [consistency level](https://learn.microsoft.com/azure/cosmos-db/consistency-levels).
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Eventual
 /// - ConsistentPrefix
 /// - BoundedStaleness
@@ -584,10 +577,9 @@ pub const azure_cosmosdb_consistency_level = types.StringAttribute{
 };
 
 /// List of regions contacted during operation in the order that they were contacted. If there is more than one region listed, it indicates that the operation was performed on multiple regions i.e. cross-regional call.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"North Central US\", \"Australia East\", \"Australia Southeast\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const azure_cosmosdb_operation_contacted_regions = types.StringAttribute{
@@ -598,10 +590,9 @@ pub const azure_cosmosdb_operation_contacted_regions = types.StringAttribute{
 };
 
 /// The number of request units consumed by the operation.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 46.18
 /// - 1.0
 /// Note: This attribute is experimental and may change in the future.
@@ -622,9 +613,9 @@ pub const azure_cosmosdb_request_body_size = types.IntAttribute{
 };
 
 /// Cosmos DB sub status code.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1000
 /// - 1002
 /// Note: This attribute is experimental and may change in the future.
@@ -636,10 +627,9 @@ pub const azure_cosmosdb_response_sub_status_code = types.IntAttribute{
 };
 
 /// [Azure Resource Provider Namespace](https://learn.microsoft.com/azure/azure-resource-manager/management/azure-services-resource-providers) as recognized by the client.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Microsoft.DocumentDB
 /// Note: This attribute is experimental and may change in the future.
 pub const azure_resource_provider_namespace = types.StringAttribute{
@@ -650,9 +640,9 @@ pub const azure_resource_provider_namespace = types.StringAttribute{
 };
 
 /// The unique identifier of the service request. It's generated by the Azure service and returned with the response.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 00000000-0000-0000-0000-000000000000
 /// Note: This attribute is experimental and may change in the future.
 pub const azure_service_request_id = types.StringAttribute{
@@ -663,7 +653,6 @@ pub const azure_service_request_id = types.StringAttribute{
 };
 
 /// The consistency level of the query. Based on consistency values from [CQL](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/dml/dmlConfigConsistency.html).
-
 /// Note: This attribute is experimental and may change in the future.
 pub const cassandra_consistency_level = types.StringAttribute{
     .name = "cassandra.consistency.level",
@@ -673,10 +662,9 @@ pub const cassandra_consistency_level = types.StringAttribute{
 };
 
 /// The data center of the coordinating node for a query.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - us-west-2
 /// Note: This attribute is experimental and may change in the future.
 pub const cassandra_coordinator_dc = types.StringAttribute{
@@ -687,10 +675,9 @@ pub const cassandra_coordinator_dc = types.StringAttribute{
 };
 
 /// The ID of the coordinating node for a query.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - be13faa2-8574-4d71-926d-27f16cf8a7af
 /// Note: This attribute is experimental and may change in the future.
 pub const cassandra_coordinator_id = types.StringAttribute{
@@ -701,10 +688,9 @@ pub const cassandra_coordinator_id = types.StringAttribute{
 };
 
 /// The fetch size used for paging, i.e. how many rows will be returned at once.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 5000
 /// Note: This attribute is experimental and may change in the future.
 pub const cassandra_page_size = types.IntAttribute{
@@ -715,7 +701,6 @@ pub const cassandra_page_size = types.IntAttribute{
 };
 
 /// Whether or not the query is idempotent.
-
 /// Note: This attribute is experimental and may change in the future.
 pub const cassandra_query_idempotent = types.BooleanAttribute{
     .name = "cassandra.query.idempotent",
@@ -725,10 +710,9 @@ pub const cassandra_query_idempotent = types.BooleanAttribute{
 };
 
 /// The number of times a query was speculatively executed. Not set or `0` if the query was not executed speculatively.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 0
 /// - 2
 /// Note: This attribute is experimental and may change in the future.
@@ -740,10 +724,9 @@ pub const cassandra_speculative_execution_count = types.IntAttribute{
 };
 
 /// The kind of action a pipeline run is performing.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - BUILD
 /// - RUN
 /// - SYNC
@@ -756,10 +739,9 @@ pub const cicd_pipeline_action_name = types.StringAttribute{
 };
 
 /// The result of a pipeline run.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - success
 /// - failure
 /// - timeout
@@ -773,10 +755,9 @@ pub const cicd_pipeline_result = types.StringAttribute{
 };
 
 /// The human readable name of a task within a pipeline. Task here most closely aligns with a [computing process](https://wikipedia.org/wiki/Pipeline_(computing)) in a pipeline. Other terms for tasks include commands, steps, and procedures.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Run GoLang Linter
 /// - Go Build
 /// - go-test
@@ -790,10 +771,9 @@ pub const cicd_pipeline_task_name = types.StringAttribute{
 };
 
 /// The unique identifier of a task run within a pipeline.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 12097
 /// Note: This attribute is experimental and may change in the future.
 pub const cicd_pipeline_task_run_id = types.StringAttribute{
@@ -804,10 +784,9 @@ pub const cicd_pipeline_task_run_id = types.StringAttribute{
 };
 
 /// The result of a task run.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - success
 /// - failure
 /// - timeout
@@ -821,10 +800,9 @@ pub const cicd_pipeline_task_run_result = types.StringAttribute{
 };
 
 /// The [URL](https://wikipedia.org/wiki/URL) of the pipeline task run, providing the complete address in order to locate and identify the pipeline task run.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - https://github.com/open-telemetry/semantic-conventions/actions/runs/9753949763/job/26920038674?pr=1075
 /// Note: This attribute is experimental and may change in the future.
 pub const cicd_pipeline_task_run_url_full = types.StringAttribute{
@@ -835,9 +813,9 @@ pub const cicd_pipeline_task_run_url_full = types.StringAttribute{
 };
 
 /// Client address - domain name if available without reverse DNS lookup; otherwise, IP address or Unix domain socket name.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 83.164.160.102
 pub const client_address = types.StringAttribute{
     .name = "client.address",
@@ -847,9 +825,9 @@ pub const client_address = types.StringAttribute{
 };
 
 /// The port of whichever client was captured in `client.address`.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 65123
 pub const client_port = types.IntAttribute{
     .name = "client.port",
@@ -859,10 +837,9 @@ pub const client_port = types.IntAttribute{
 };
 
 /// The AWS Region where the requested service is being accessed.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - us-east-1
 /// - us-west-2
 /// Note: This attribute is experimental and may change in the future.
@@ -874,9 +851,9 @@ pub const cloud_region = types.StringAttribute{
 };
 
 /// The [Fully Qualified Azure Resource ID](https://learn.microsoft.com/rest/api/resources/resources/get-by-id) the log is emitted for.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - arn:aws:lambda:REGION:ACCOUNT_ID:function:my-function
 /// - //run.googleapis.com/projects/PROJECT_ID/locations/LOCATION_ID/services/SERVICE_ID
 /// - /subscriptions/<SUBSCRIPTION_GUID>/resourceGroups/<RG>/providers/Microsoft.Web/sites/<FUNCAPP>/functions/<FUNC>
@@ -889,10 +866,9 @@ pub const cloud_resource_id = types.StringAttribute{
 };
 
 /// Cosmos DB container name.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - public.users
 /// - customers
 pub const db_collection_name = types.StringAttribute{
@@ -903,10 +879,9 @@ pub const db_collection_name = types.StringAttribute{
 };
 
 /// The name of the database, fully qualified within the server address and port.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - customers
 /// - test.users
 pub const db_namespace = types.StringAttribute{
@@ -917,9 +892,9 @@ pub const db_namespace = types.StringAttribute{
 };
 
 /// The number of queries included in a batch operation.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 2
 /// - 3
 /// - 4
@@ -931,10 +906,9 @@ pub const db_operation_batch_size = types.IntAttribute{
 };
 
 /// The name of the operation or command being executed.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - create_item
 /// - query_items
 /// - read_item
@@ -946,10 +920,9 @@ pub const db_operation_name = types.StringAttribute{
 };
 
 /// A dynamic value in the url path.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - db.operation.parameter.index=\"test-index\"
 /// - db.operation.parameter=\"123\"
 /// Note: This attribute is experimental and may change in the future.
@@ -961,10 +934,9 @@ pub const db_operation_parameter = types.StringAttribute{
 };
 
 /// A database query parameter, with `<key>` being the parameter name, and the attribute value being a string representation of the parameter value.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - someval
 /// - 55
 /// Note: This attribute is experimental and may change in the future.
@@ -976,10 +948,9 @@ pub const db_query_parameter = types.StringAttribute{
 };
 
 /// Low cardinality summary of a database query.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - SELECT wuser_table
 /// - INSERT shipping_details SELECT orders
 /// - get user by id
@@ -991,10 +962,9 @@ pub const db_query_summary = types.StringAttribute{
 };
 
 /// The database query being executed.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - SELECT * FROM wuser_table where username = ?
 /// - SET mykey ?
 pub const db_query_text = types.StringAttribute{
@@ -1005,10 +975,9 @@ pub const db_query_text = types.StringAttribute{
 };
 
 /// Cosmos DB row count in result set.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 10
 /// - 20
 /// Note: This attribute is experimental and may change in the future.
@@ -1020,10 +989,9 @@ pub const db_response_returned_rows = types.IntAttribute{
 };
 
 /// Cosmos DB status code.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 200
 /// - 201
 pub const db_response_status_code = types.StringAttribute{
@@ -1034,9 +1002,9 @@ pub const db_response_status_code = types.StringAttribute{
 };
 
 /// The name of a stored procedure within the database.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - GetCustomer
 pub const db_stored_procedure_name = types.StringAttribute{
     .name = "db.stored_procedure.name",
@@ -1054,9 +1022,9 @@ pub const db_system_name = types.StringAttribute{
 };
 
 /// List of resolved IP addresses (for DNS lookup) or a single element containing domain name (for reverse lookup).
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"10.0.0.1\", \"2001:0db8:85a3:0000:0000:8a2e:0370:7334\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const dns_answers = types.StringAttribute{
@@ -1067,9 +1035,9 @@ pub const dns_answers = types.StringAttribute{
 };
 
 /// The domain name or an IP address being queried.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - www.example.com
 /// - opentelemetry.io
 /// Note: This attribute is experimental and may change in the future.
@@ -1081,10 +1049,9 @@ pub const dns_question_name = types.StringAttribute{
 };
 
 /// Represents the human-readable identifier of the node/instance to which a request was routed.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - instance-0000000001
 /// Note: This attribute is experimental and may change in the future.
 pub const elasticsearch_node_name = types.StringAttribute{
@@ -1095,9 +1062,9 @@ pub const elasticsearch_node_name = types.StringAttribute{
 };
 
 /// A message providing more detail about an error in human-readable form.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Unexpected input type: string
 /// - The user has exceeded their storage quota
 /// Note: This attribute is experimental and may change in the future.
@@ -1109,10 +1076,9 @@ pub const error_message = types.StringAttribute{
 };
 
 /// Describes a class of error the operation ended with.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - timeout
 /// - java.net.UnknownHostException
 /// - server_certificate_invalid
@@ -1125,7 +1091,6 @@ pub const error_type = types.StringAttribute{
 };
 
 /// Indicates that the exception is escaping the scope of the span.
-
 /// Note: This attribute is deprecated. {"note": "It's no longer recommended to record exceptions that are handled and do not escape the scope of a span.\n", "reason": "obsoleted"}
 pub const exception_escaped = types.BooleanAttribute{
     .name = "exception.escaped",
@@ -1135,9 +1100,9 @@ pub const exception_escaped = types.BooleanAttribute{
 };
 
 /// The exception message.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Division by zero
 /// - Can't convert 'int' object to str implicitly
 pub const exception_message = types.StringAttribute{
@@ -1148,10 +1113,9 @@ pub const exception_message = types.StringAttribute{
 };
 
 /// A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Exception in thread \"main\" java.lang.RuntimeException: Test exception\n at com.example.GenerateTrace.methodB(GenerateTrace.java:13)\n at com.example.GenerateTrace.methodA(GenerateTrace.java:9)\n at com.example.GenerateTrace.main(GenerateTrace.java:5)\n
 pub const exception_stacktrace = types.StringAttribute{
     .name = "exception.stacktrace",
@@ -1161,10 +1125,9 @@ pub const exception_stacktrace = types.StringAttribute{
 };
 
 /// The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - java.net.ConnectException
 /// - OSError
 pub const exception_type = types.StringAttribute{
@@ -1175,7 +1138,6 @@ pub const exception_type = types.StringAttribute{
 };
 
 /// A boolean that is true if the serverless function is executed for the first time (aka cold-start).
-
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_coldstart = types.BooleanAttribute{
     .name = "faas.coldstart",
@@ -1185,10 +1147,9 @@ pub const faas_coldstart = types.BooleanAttribute{
 };
 
 /// A string containing the schedule period as [Cron Expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 0/5 * * * ? *
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_cron = types.StringAttribute{
@@ -1199,10 +1160,9 @@ pub const faas_cron = types.StringAttribute{
 };
 
 /// The name of the source on which the triggering operation was performed. For example, in Cloud Storage or S3 corresponds to the bucket name, and in Cosmos DB to the database name.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - myBucketName
 /// - myDbName
 /// Note: This attribute is experimental and may change in the future.
@@ -1214,10 +1174,9 @@ pub const faas_document_collection = types.StringAttribute{
 };
 
 /// The document name/table subjected to the operation. For example, in Cloud Storage or S3 is the name of the file, and in Cosmos DB the table name.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - myFile.txt
 /// - myTableName
 /// Note: This attribute is experimental and may change in the future.
@@ -1238,10 +1197,9 @@ pub const faas_document_operation = types.StringAttribute{
 };
 
 /// A string containing the time when the data was accessed in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 2020-01-23T13:47:06Z
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_document_time = types.StringAttribute{
@@ -1252,10 +1210,9 @@ pub const faas_document_time = types.StringAttribute{
 };
 
 /// The name of the invoked function.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - my-function
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_invoked_name = types.StringAttribute{
@@ -1266,7 +1223,6 @@ pub const faas_invoked_name = types.StringAttribute{
 };
 
 /// The cloud provider of the invoked function.
-
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_invoked_provider = types.StringAttribute{
     .name = "faas.invoked_provider",
@@ -1276,10 +1232,9 @@ pub const faas_invoked_provider = types.StringAttribute{
 };
 
 /// The cloud region of the invoked function.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - eu-central-1
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_invoked_region = types.StringAttribute{
@@ -1290,10 +1245,9 @@ pub const faas_invoked_region = types.StringAttribute{
 };
 
 /// A string containing the function invocation time in the [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) format expressed in [UTC](https://www.w3.org/TR/NOTE-datetime).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 2020-01-23T13:47:06Z
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_time = types.StringAttribute{
@@ -1304,7 +1258,6 @@ pub const faas_time = types.StringAttribute{
 };
 
 /// Type of the trigger which caused this function invocation.
-
 /// Note: This attribute is experimental and may change in the future.
 pub const faas_trigger = types.StringAttribute{
     .name = "faas.trigger",
@@ -1314,10 +1267,9 @@ pub const faas_trigger = types.StringAttribute{
 };
 
 /// The unique identifier for the flag evaluation context. For example, the targeting key.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 5157782b-2203-4c80-a857-dbbd5e7761db
 /// Note: This attribute is experimental and may change in the future.
 pub const feature_flag_context_id = types.StringAttribute{
@@ -1328,9 +1280,9 @@ pub const feature_flag_context_id = types.StringAttribute{
 };
 
 /// The lookup key of the feature flag.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - logo-color
 /// Note: This attribute is experimental and may change in the future.
 pub const feature_flag_key = types.StringAttribute{
@@ -1341,9 +1293,9 @@ pub const feature_flag_key = types.StringAttribute{
 };
 
 /// Identifies the feature flag provider.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Flag Manager
 /// Note: This attribute is experimental and may change in the future.
 pub const feature_flag_provider_name = types.StringAttribute{
@@ -1354,10 +1306,9 @@ pub const feature_flag_provider_name = types.StringAttribute{
 };
 
 /// The reason code which shows how a feature flag value was determined.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - static
 /// - targeting_match
 /// - error
@@ -1371,9 +1322,9 @@ pub const feature_flag_result_reason = types.StringAttribute{
 };
 
 /// The evaluated value of the feature flag.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - #ff0000
 /// - true
 /// - 3
@@ -1386,10 +1337,9 @@ pub const feature_flag_result_value = types.StringAttribute{
 };
 
 /// A semantic identifier for an evaluated flag value.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - red
 /// - true
 /// - on
@@ -1402,10 +1352,9 @@ pub const feature_flag_result_variant = types.StringAttribute{
 };
 
 /// The identifier of the [flag set](https://openfeature.dev/specification/glossary/#flag-set) to which the feature flag belongs.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - proj-1
 /// - ab98sgs
 /// - service1/dev
@@ -1418,10 +1367,9 @@ pub const feature_flag_set_id = types.StringAttribute{
 };
 
 /// The version of the ruleset used during the evaluation. This may be any stable value which uniquely identifies the ruleset.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1
 /// - 01ABCDEF
 /// Note: This attribute is experimental and may change in the future.
@@ -1433,9 +1381,9 @@ pub const feature_flag_version = types.StringAttribute{
 };
 
 /// Free-form description of the GenAI agent provided by the application.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Helps with math problems
 /// - Generates fiction stories
 /// Note: This attribute is experimental and may change in the future.
@@ -1447,9 +1395,9 @@ pub const gen_ai_agent_description = types.StringAttribute{
 };
 
 /// The unique identifier of the GenAI agent.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - asst_5j66UpCpwteGg4YSxUnt7lPY
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_agent_id = types.StringAttribute{
@@ -1460,9 +1408,9 @@ pub const gen_ai_agent_id = types.StringAttribute{
 };
 
 /// Human-readable name of the GenAI agent provided by the application.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Math Tutor
 /// - Fiction Writer
 /// Note: This attribute is experimental and may change in the future.
@@ -1474,9 +1422,9 @@ pub const gen_ai_agent_name = types.StringAttribute{
 };
 
 /// The unique identifier for a conversation (session, thread), used to store and correlate messages within this conversation.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - conv_5j66UpCpwteGg4YSxUnt7lPY
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_conversation_id = types.StringAttribute{
@@ -1487,9 +1435,9 @@ pub const gen_ai_conversation_id = types.StringAttribute{
 };
 
 /// The data source identifier.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - H7STPQYOND
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_data_source_id = types.StringAttribute{
@@ -1500,9 +1448,9 @@ pub const gen_ai_data_source_id = types.StringAttribute{
 };
 
 /// The service tier requested. May be a specific tier, default, or auto.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - auto
 /// - default
 /// Note: This attribute is experimental and may change in the future.
@@ -1514,9 +1462,9 @@ pub const gen_ai_openai_request_service_tier = types.StringAttribute{
 };
 
 /// The service tier used for the response.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - scale
 /// - default
 /// Note: This attribute is experimental and may change in the future.
@@ -1528,9 +1476,9 @@ pub const gen_ai_openai_response_service_tier = types.StringAttribute{
 };
 
 /// A fingerprint to track any eventual change in the Generative AI environment.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - fp_44709d6fcb
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_openai_response_system_fingerprint = types.StringAttribute{
@@ -1559,9 +1507,9 @@ pub const gen_ai_output_type = types.StringAttribute{
 };
 
 /// The target number of candidate completions to return.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 3
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_choice_count = types.IntAttribute{
@@ -1572,9 +1520,9 @@ pub const gen_ai_request_choice_count = types.IntAttribute{
 };
 
 /// The encoding formats requested in an embeddings operation, if specified.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"base64\"]
 /// - [\"float\", \"binary\"]
 /// Note: This attribute is experimental and may change in the future.
@@ -1586,9 +1534,9 @@ pub const gen_ai_request_encoding_formats = types.StringAttribute{
 };
 
 /// The frequency penalty setting for the GenAI request.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 0.1
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_frequency_penalty = types.DoubleAttribute{
@@ -1599,9 +1547,9 @@ pub const gen_ai_request_frequency_penalty = types.DoubleAttribute{
 };
 
 /// The maximum number of tokens the model generates for a request.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_max_tokens = types.IntAttribute{
@@ -1612,9 +1560,9 @@ pub const gen_ai_request_max_tokens = types.IntAttribute{
 };
 
 /// The name of the GenAI model a request is being made to.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - gpt-4
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_model = types.StringAttribute{
@@ -1625,9 +1573,9 @@ pub const gen_ai_request_model = types.StringAttribute{
 };
 
 /// The presence penalty setting for the GenAI request.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 0.1
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_presence_penalty = types.DoubleAttribute{
@@ -1638,9 +1586,9 @@ pub const gen_ai_request_presence_penalty = types.DoubleAttribute{
 };
 
 /// Requests with same seed value more likely to return same result.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_seed = types.IntAttribute{
@@ -1651,9 +1599,9 @@ pub const gen_ai_request_seed = types.IntAttribute{
 };
 
 /// List of sequences that the model will use to stop generating further tokens.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"forest\", \"lived\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_stop_sequences = types.StringAttribute{
@@ -1664,9 +1612,9 @@ pub const gen_ai_request_stop_sequences = types.StringAttribute{
 };
 
 /// The temperature setting for the GenAI request.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 0.0
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_temperature = types.DoubleAttribute{
@@ -1677,9 +1625,9 @@ pub const gen_ai_request_temperature = types.DoubleAttribute{
 };
 
 /// The top_k sampling setting for the GenAI request.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1.0
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_top_k = types.DoubleAttribute{
@@ -1690,9 +1638,9 @@ pub const gen_ai_request_top_k = types.DoubleAttribute{
 };
 
 /// The top_p sampling setting for the GenAI request.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1.0
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_request_top_p = types.DoubleAttribute{
@@ -1703,9 +1651,9 @@ pub const gen_ai_request_top_p = types.DoubleAttribute{
 };
 
 /// Array of reasons the model stopped generating tokens, corresponding to each generation received.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"stop\"]
 /// - [\"stop\", \"length\"]
 /// Note: This attribute is experimental and may change in the future.
@@ -1717,9 +1665,9 @@ pub const gen_ai_response_finish_reasons = types.StringAttribute{
 };
 
 /// The unique identifier for the completion.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - chatcmpl-123
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_response_id = types.StringAttribute{
@@ -1730,9 +1678,9 @@ pub const gen_ai_response_id = types.StringAttribute{
 };
 
 /// The name of the model that generated the response.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - gpt-4-0613
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_response_model = types.StringAttribute{
@@ -1743,9 +1691,9 @@ pub const gen_ai_response_model = types.StringAttribute{
 };
 
 /// The Generative AI product as identified by the client or server instrumentation.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - openai
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_system = types.StringAttribute{
@@ -1756,9 +1704,9 @@ pub const gen_ai_system = types.StringAttribute{
 };
 
 /// The tool call identifier.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - call_mszuSIzqtI65i1wAUOE8w5H4
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_tool_call_id = types.StringAttribute{
@@ -1769,9 +1717,9 @@ pub const gen_ai_tool_call_id = types.StringAttribute{
 };
 
 /// The tool description.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Multiply two numbers
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_tool_description = types.StringAttribute{
@@ -1782,9 +1730,9 @@ pub const gen_ai_tool_description = types.StringAttribute{
 };
 
 /// Name of the tool utilized by the agent.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - Flights
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_tool_name = types.StringAttribute{
@@ -1795,9 +1743,9 @@ pub const gen_ai_tool_name = types.StringAttribute{
 };
 
 /// The number of tokens used in the GenAI input (prompt).
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 100
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_usage_input_tokens = types.IntAttribute{
@@ -1808,9 +1756,9 @@ pub const gen_ai_usage_input_tokens = types.IntAttribute{
 };
 
 /// The number of tokens used in the GenAI response (completion).
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 180
 /// Note: This attribute is experimental and may change in the future.
 pub const gen_ai_usage_output_tokens = types.IntAttribute{
@@ -1821,9 +1769,9 @@ pub const gen_ai_usage_output_tokens = types.IntAttribute{
 };
 
 /// The GraphQL document being executed.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - query findBookById { bookById(id: ?) { name } }
 /// Note: This attribute is experimental and may change in the future.
 pub const graphql_document = types.StringAttribute{
@@ -1834,9 +1782,9 @@ pub const graphql_document = types.StringAttribute{
 };
 
 /// The name of the operation being executed.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - findBookById
 /// Note: This attribute is experimental and may change in the future.
 pub const graphql_operation_name = types.StringAttribute{
@@ -1847,9 +1795,9 @@ pub const graphql_operation_name = types.StringAttribute{
 };
 
 /// The type of the operation being executed.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - query
 /// - mutation
 /// - subscription
@@ -1862,10 +1810,9 @@ pub const graphql_operation_type = types.StringAttribute{
 };
 
 /// The size of the request payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 3495
 /// Note: This attribute is experimental and may change in the future.
 pub const http_request_body_size = types.IntAttribute{
@@ -1876,10 +1823,9 @@ pub const http_request_body_size = types.IntAttribute{
 };
 
 /// HTTP request headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"application/json\"]
 /// - [\"1.2.3.4\", \"1.2.3.5\"]
 pub const http_request_header = types.StringAttribute{
@@ -1890,9 +1836,9 @@ pub const http_request_header = types.StringAttribute{
 };
 
 /// HTTP request method.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - GET
 /// - POST
 /// - HEAD
@@ -1904,9 +1850,9 @@ pub const http_request_method = types.StringAttribute{
 };
 
 /// Original HTTP method sent by the client in the request line.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - GeT
 /// - ACL
 /// - foo
@@ -1918,10 +1864,9 @@ pub const http_request_method_original = types.StringAttribute{
 };
 
 /// The ordinal number of request resending attempt (for any reason, including redirects).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 3
 pub const http_request_resend_count = types.IntAttribute{
     .name = "http.request.resend_count",
@@ -1931,10 +1876,9 @@ pub const http_request_resend_count = types.IntAttribute{
 };
 
 /// The total size of the request in bytes. This should be the total number of bytes sent over the wire, including the request line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and request body if any.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1437
 /// Note: This attribute is experimental and may change in the future.
 pub const http_request_size = types.IntAttribute{
@@ -1945,10 +1889,9 @@ pub const http_request_size = types.IntAttribute{
 };
 
 /// The size of the response payload body in bytes. This is the number of bytes transferred excluding headers and is often, but not always, present as the [Content-Length](https://www.rfc-editor.org/rfc/rfc9110.html#field.content-length) header. For requests using transport encoding, this should be the compressed size.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 3495
 /// Note: This attribute is experimental and may change in the future.
 pub const http_response_body_size = types.IntAttribute{
@@ -1959,10 +1902,9 @@ pub const http_response_body_size = types.IntAttribute{
 };
 
 /// HTTP response headers, `<key>` being the normalized HTTP Header name (lowercase), the value being the header values.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"application/json\"]
 /// - [\"abc\", \"def\"]
 pub const http_response_header = types.StringAttribute{
@@ -1973,10 +1915,9 @@ pub const http_response_header = types.StringAttribute{
 };
 
 /// The total size of the response in bytes. This should be the total number of bytes sent over the wire, including the status line (HTTP/1.1), framing (HTTP/2 and HTTP/3), headers, and response body and trailers if any.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1437
 /// Note: This attribute is experimental and may change in the future.
 pub const http_response_size = types.IntAttribute{
@@ -1987,9 +1928,9 @@ pub const http_response_size = types.IntAttribute{
 };
 
 /// [HTTP response status code](https://tools.ietf.org/html/rfc7231#section-6).
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 200
 pub const http_response_status_code = types.IntAttribute{
     .name = "http.response.status_code",
@@ -1999,10 +1940,9 @@ pub const http_response_status_code = types.IntAttribute{
 };
 
 /// The matched route, that is, the path template in the format used by the respective server framework.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - /users/:userID?
 /// - {controller}/{action}/{id?}
 pub const http_route = types.StringAttribute{
@@ -2013,7 +1953,6 @@ pub const http_route = types.StringAttribute{
 };
 
 /// This attribute represents the state of the application.
-
 /// Note: This attribute is experimental and may change in the future.
 pub const ios_app_state = types.StringAttribute{
     .name = "ios.app.state",
@@ -2023,9 +1962,9 @@ pub const ios_app_state = types.StringAttribute{
 };
 
 /// Local socket address. Useful in case of a multi-IP host.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 10.1.2.80
 /// - /tmp/my.sock
 pub const network_local_address = types.StringAttribute{
@@ -2036,9 +1975,9 @@ pub const network_local_address = types.StringAttribute{
 };
 
 /// Local socket port. Useful in case of a multi-port host.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 65123
 pub const network_local_port = types.IntAttribute{
     .name = "network.local.port",
@@ -2048,9 +1987,9 @@ pub const network_local_port = types.IntAttribute{
 };
 
 /// Peer address of the database node where the operation was performed.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 10.1.2.80
 /// - /tmp/my.sock
 pub const network_peer_address = types.StringAttribute{
@@ -2061,9 +2000,9 @@ pub const network_peer_address = types.StringAttribute{
 };
 
 /// Peer port number of the network connection.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 65123
 pub const network_peer_port = types.IntAttribute{
     .name = "network.peer.port",
@@ -2073,9 +2012,9 @@ pub const network_peer_port = types.IntAttribute{
 };
 
 /// [OSI application layer](https://wikipedia.org/wiki/Application_layer) or non-OSI equivalent.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - http
 /// - spdy
 pub const network_protocol_name = types.StringAttribute{
@@ -2086,9 +2025,9 @@ pub const network_protocol_name = types.StringAttribute{
 };
 
 /// The actual version of the protocol used for network communication.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1.0
 /// - 1.1
 /// - 2
@@ -2101,10 +2040,9 @@ pub const network_protocol_version = types.StringAttribute{
 };
 
 /// [OSI transport layer](https://wikipedia.org/wiki/Transport_layer) or [inter-process communication method](https://wikipedia.org/wiki/Inter-process_communication).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - tcp
 /// - udp
 /// - unix
@@ -2116,9 +2054,9 @@ pub const network_transport = types.StringAttribute{
 };
 
 /// [OSI network layer](https://wikipedia.org/wiki/Network_layer) or non-OSI equivalent.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - ipv4
 /// - ipv6
 pub const network_type = types.StringAttribute{
@@ -2129,10 +2067,9 @@ pub const network_type = types.StringAttribute{
 };
 
 /// All the command arguments (including the command/executable itself) as received by the process. On Linux-based systems (and some other Unixoid systems supporting procfs), can be set according to the list of null-delimited strings extracted from `proc/[pid]/cmdline`. For libc-based executables, this would be the full argv vector passed to `main`. SHOULD NOT be collected by default unless there is sanitization that excludes sensitive data.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - [\"cmd/otecol\", \"--config=config.yaml\"]
 /// Note: This attribute is experimental and may change in the future.
 pub const process_command_args = types.StringAttribute{
@@ -2143,10 +2080,9 @@ pub const process_command_args = types.StringAttribute{
 };
 
 /// The name of the process executable. On Linux based systems, this SHOULD be set to the base name of the target of `/proc/[pid]/exe`. On Windows, this SHOULD be set to the base name of `GetProcessImageFileNameW`.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - otelcol
 /// Note: This attribute is experimental and may change in the future.
 pub const process_executable_name = types.StringAttribute{
@@ -2157,10 +2093,9 @@ pub const process_executable_name = types.StringAttribute{
 };
 
 /// The full path to the process executable. On Linux based systems, can be set to the target of `proc/[pid]/exe`. On Windows, can be set to the result of `GetProcessImageFileNameW`.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - /usr/bin/cmd/otelcol
 /// Note: This attribute is experimental and may change in the future.
 pub const process_executable_path = types.StringAttribute{
@@ -2171,10 +2106,9 @@ pub const process_executable_path = types.StringAttribute{
 };
 
 /// The exit code of the process.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 127
 /// Note: This attribute is experimental and may change in the future.
 pub const process_exit_code = types.IntAttribute{
@@ -2185,10 +2119,9 @@ pub const process_exit_code = types.IntAttribute{
 };
 
 /// Process identifier (PID).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1234
 /// Note: This attribute is experimental and may change in the future.
 pub const process_pid = types.IntAttribute{
@@ -2235,9 +2168,9 @@ pub const rpc_message_uncompressed_size = types.IntAttribute{
 };
 
 /// The name of the operation corresponding to the request, as returned by the AWS SDK
-/// 
+///
 /// # Examples
-/// 
+///
 /// - GetItem
 /// - PutItem
 /// Note: This attribute is experimental and may change in the future.
@@ -2249,9 +2182,9 @@ pub const rpc_method = types.StringAttribute{
 };
 
 /// The name of the service to which a request is made, as returned by the AWS SDK.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - DynamoDB
 /// - S3
 /// Note: This attribute is experimental and may change in the future.
@@ -2263,9 +2196,9 @@ pub const rpc_service = types.StringAttribute{
 };
 
 /// The value `aws-api`.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - aws-api
 /// Note: This attribute is experimental and may change in the future.
 pub const rpc_system = types.StringAttribute{
@@ -2276,9 +2209,9 @@ pub const rpc_system = types.StringAttribute{
 };
 
 /// GenAI server address.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - example.com
 /// - 10.1.2.80
 /// - /tmp/my.sock
@@ -2290,9 +2223,9 @@ pub const server_address = types.StringAttribute{
 };
 
 /// GenAI server port.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 80
 /// - 8080
 /// - 443
@@ -2304,9 +2237,9 @@ pub const server_port = types.IntAttribute{
 };
 
 /// The ID of the new session being started.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 00112233-4455-6677-8899-aabbccddeeff
 /// Note: This attribute is experimental and may change in the future.
 pub const session_id = types.StringAttribute{
@@ -2317,9 +2250,9 @@ pub const session_id = types.StringAttribute{
 };
 
 /// The previous `session.id` for this user, when known.
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 00112233-4455-6677-8899-aabbccddeeff
 /// Note: This attribute is experimental and may change in the future.
 pub const session_previous_id = types.StringAttribute{
@@ -2330,7 +2263,6 @@ pub const session_previous_id = types.StringAttribute{
 };
 
 /// Normalized lowercase protocol name parsed from original string of the negotiated [SSL/TLS protocol version](https://docs.openssl.org/1.1.1/man3/SSL_get_version/#return-values)
-
 /// Note: This attribute is experimental and may change in the future.
 pub const tls_protocol_name = types.StringAttribute{
     .name = "tls.protocol.name",
@@ -2340,10 +2272,9 @@ pub const tls_protocol_name = types.StringAttribute{
 };
 
 /// Numeric part of the version parsed from the original string of the negotiated [SSL/TLS protocol version](https://docs.openssl.org/1.1.1/man3/SSL_get_version/#return-values)
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - 1.2
 /// - 3
 /// Note: This attribute is experimental and may change in the future.
@@ -2355,9 +2286,9 @@ pub const tls_protocol_version = types.StringAttribute{
 };
 
 /// Absolute URL describing a network resource according to [RFC3986](https://www.rfc-editor.org/rfc/rfc3986)
-/// 
+///
 /// # Examples
-/// 
+///
 /// - https://localhost:9200/index/_search?q=user.id:kimchy
 pub const url_full = types.StringAttribute{
     .name = "url.full",
@@ -2367,10 +2298,9 @@ pub const url_full = types.StringAttribute{
 };
 
 /// The [URI path](https://www.rfc-editor.org/rfc/rfc3986#section-3.3) component
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - /search
 pub const url_path = types.StringAttribute{
     .name = "url.path",
@@ -2380,10 +2310,9 @@ pub const url_path = types.StringAttribute{
 };
 
 /// The [URI query](https://www.rfc-editor.org/rfc/rfc3986#section-3.4) component
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - q=OpenTelemetry
 pub const url_query = types.StringAttribute{
     .name = "url.query",
@@ -2393,10 +2322,9 @@ pub const url_query = types.StringAttribute{
 };
 
 /// The [URI scheme](https://www.rfc-editor.org/rfc/rfc3986#section-3.1) component identifying the used protocol.
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - https
 /// - ftp
 /// - telnet
@@ -2408,10 +2336,9 @@ pub const url_scheme = types.StringAttribute{
 };
 
 /// The low-cardinality template of an [absolute path reference](https://www.rfc-editor.org/rfc/rfc3986#section-4.2).
-
-/// 
+///
 /// # Examples
-/// 
+///
 /// - /users/{id}
 /// - /users/:id
 /// - /users?id={id}
@@ -2424,9 +2351,9 @@ pub const url_template = types.StringAttribute{
 };
 
 /// Full user-agent string is generated by Cosmos DB SDK
-/// 
+///
 /// # Examples
-/// 
+///
 /// - cosmos-netstandard-sdk/3.23.0\|3.23.1\|1\|X64\|Linux 5.4.0-1098-azure 104 18\|.NET Core 3.1.32\|S\|
 pub const user_agent_original = types.StringAttribute{
     .name = "user_agent.original",
@@ -2436,7 +2363,6 @@ pub const user_agent_original = types.StringAttribute{
 };
 
 /// Specifies the category of synthetic traffic, such as tests or bots.
-
 /// Note: This attribute is experimental and may change in the future.
 pub const user_agent_synthetic_type = types.StringAttribute{
     .name = "user_agent.synthetic.type",
@@ -2444,7 +2370,6 @@ pub const user_agent_synthetic_type = types.StringAttribute{
     .stability = .development,
     .requirement_level = .opt_in,
 };
-
 
 test "semantic trace attributes" {
     @import("std").testing.refAllDecls(@This());
