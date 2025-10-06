@@ -62,4 +62,17 @@ pub fn build(b: *std.Build) !void {
     const bash_generator = b.addSystemCommand(&.{script_path.getPath(b)});
     const gen_step = b.step("generate", "Generate code via Weaver");
     gen_step.dependOn(&bash_generator.step);
+
+    // Documentation step
+    const doc_step = b.step("docs", "Generate API documentation");
+    const docs = b.addObject(.{
+        .name = "lib",
+        .root_module = lib_mod,
+    });
+    const install_docs = b.addInstallDirectory(.{
+        .source_dir = docs.getEmittedDocs(),
+        .install_dir = .prefix,
+        .install_subdir = "docs",
+    });
+    doc_step.dependOn(&install_docs.step);
 }
