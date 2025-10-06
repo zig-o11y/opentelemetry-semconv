@@ -4,15 +4,16 @@ A strongly-typed semantic convention library for OpenTelemetry instrumentation i
 
 ## Overview
 
-This library provides Zig type definitions for OpenTelemetry semantic conventions, allowing you to use semantic convention attributes in a type-safe way in your Zig applications. The library mirrors the structure of the official [OpenTelemetry semantic conventions](https://github.com/open-telemetry/semantic-conventions) repository.
+This library provides Zig type definitions for OpenTelemetry semantic conventions, allowing you to use semantic convention attributes, metrics, resources, and traces in a type-safe way in your Zig applications. The library is generated from the official [OpenTelemetry semantic conventions](https://github.com/open-telemetry/semantic-conventions) specification.
 
 ## Features
 
 - **Strongly Typed**: All semantic convention attributes are defined with proper Zig types
-- **Comprehensive**: Covers major semantic convention namespaces (HTTP, Network, URL, Server, Client, Error, User Agent, Telemetry)
-- **Standards Compliant**: Based on OpenTelemetry specification v1.28.0
+- **Comprehensive**: Covers all semantic convention namespaces (attributes, metrics, resources, traces)
+- **Standards Compliant**: Based on OpenTelemetry specification v1.36.0
 - **Zero Dependencies**: Uses only Zig standard library
-- **Well Tested**: Comprehensive test coverage for all modules
+- **Auto-generated**: Generated directly from the official semantic conventions specification
+- **Rich Metadata**: Includes stability levels, requirement levels, descriptions, and well-known enum values
 
 ## Usage
 
@@ -23,61 +24,101 @@ const std = @import("std");
 const semconv = @import("opentelemetry-semconv");
 
 pub fn main() !void {
-    // Use HTTP semantic conventions
-    const http_method_attr = semconv.http.Registry.http_request_method;
-    const method_value = semconv.http.Registry.requestMethodValue.get;
+    // Accessing attributes from the attribute namespace
+    const http_method = semconv.attribute.http_request_method;
+    std.debug.assert(std.mem.eql(u8, http_method.base.name, "http.request.method"));
+    std.debug.assert(http_method.base.stability == .stable);
 
-    // Use JVM semantic conventions
-    const jvm_version_attr = semconv.jvm.Registry.jvm_version;
+    // Attribute with enum values
+    const method_get = semconv.attribute.http_request_methodValue.get;
+    std.debug.assert(std.mem.eql(u8, method_get.toString(), "GET"));
 
-    // Here you would actually set the attribute on metrics data point, log/event or trace attributes
-    std.debug.print("HTTP Method: {s} = {s}\n", .{ http_method_attr.base.name, method_value.toString() });
-    std.debug.print("JVM Version attribute: {s}\n", .{jvm_version_attr.name});
+    // Accessing metrics from the metric namespace
+    const http_server_duration = semconv.metric.http_server_request_duration;
+    std.debug.assert(http_server_duration.instrument == .histogram);
+    std.debug.assert(std.mem.eql(u8, http_server_duration.unit, "s"));
+
+    // Accessing resource attributes
+    const service_name = semconv.resource.service_name;
+    std.debug.assert(service_name.requirement_level == .required);
+
+    // Accessing trace attributes
+    const db_operation_name = semconv.trace.db_operation_name;
+    std.debug.assert(db_operation_name.stability == .stable);
 }
 ```
 
 ### Available Namespaces
 
-All the namespaces from the official OpenTelemetry semconv are defined, most notably:
+The library provides four main namespaces:
 
-- `semconv.http` - HTTP semantic conventions
-- `semconv.network` - Network-level semantic conventions
-- `semconv.url` - URL semantic conventions
-- `semconv.server` - Server semantic conventions
-- `semconv.client` - Client semantic conventions
-- `semconv."@error"` - Error semantic conventions
-- `semconv.user_agent` - User Agent semantic conventions
-- `semconv.telemetry` - Telemetry SDK semantic conventions
+- `semconv.attribute` - All attribute definitions
+- `semconv.metric` - All metric definitions
+- `semconv.resource` - Resource attribute definitions
+- `semconv.trace` - Trace-specific attribute definitions
 
-### Working with Enums
+### Working with Stability Levels
 
-Many semantic conventions include well-known enum values, for example for `http`:
+Use stability information to filter attributes and make informed decisions:
 
 ```zig
 const semconv = @import("opentelemetry-semconv");
 
-// Access HTTP request method attribute and enum values
-const http_method_attr = semconv.http.Registry.http_request_method;
-const get_method = semconv.http.Registry.requestMethodValue.get;
+// Check if an attribute is stable
+const http_method = semconv.attribute.http_request_method;
+if (http_method.base.stability == .stable) {
+    // Safe to use in production
+}
 
-// Check stability and use the attribute
-const attribute_name = if (http_method_attr.base.stability == .stable)
-    http_method_attr.base.name
-else
-    "custom.http.request.method";
-
-std.debug.print("Attribute: {s}, Method: {s}\n", .{ attribute_name, get_method.toString() });
+// Filter experimental attributes
+const android_state = semconv.attribute.android_app_state;
+if (android_state.base.stability == .development) {
+    // Handle experimental attribute
+}
 ```
 
-You can use stability levels to discern if an attribute should be in place.
+### Working with Enum Attributes
 
-Each attribute comes with examples, and the enums allow type-safe assertions.
+Many attributes include type-safe enum values:
+
+```zig
+const semconv = @import("opentelemetry-semconv");
+
+// Access HTTP request method attribute
+const http_method = semconv.attribute.http_request_method;
+
+// Use well-known enum values
+const methods = [_]@TypeOf(semconv.attribute.http_request_methodValue.get){
+    semconv.attribute.http_request_methodValue.get,
+    semconv.attribute.http_request_methodValue.post,
+    semconv.attribute.http_request_methodValue.put,
+    semconv.attribute.http_request_methodValue.delete,
+};
+
+// Convert to string
+const method_str = methods[0].toString(); // "GET"
+```
+
+### Working with Metrics
+
+Access metric metadata including instrument type, unit, and value type:
+
+```zig
+const semconv = @import("opentelemetry-semconv");
+
+const http_duration = semconv.metric.http_server_request_duration;
+// Metric name: "http.server.request.duration"
+// Instrument type: .histogram
+// Unit: "s" (seconds)
+// Stability: .stable
+// Value type: .double
+```
 
 ## Building
 
 ### As a Dependency
 
-Fetch the library with `zig build fetch --save`, then add to your `build.zig`:
+Fetch the library with `zig fetch --save "git+https://zig-o11y/opentelemetry-semconv"`, then add to your `build.zig`:
 
 ```zig
 const semconv_dep = b.dependency("opentelemetry_semconv", .{});
@@ -87,17 +128,42 @@ exe.root_module.addImport("opentelemetry-semconv", semconv_dep.module("opentelem
 ### Building Standalone
 
 ```bash
-# Build (if building as executable)
+# Build the library
 zig build
+
+# Run tests
+zig build test
+
+# Run examples
+zig build examples
+
+# Generate code from spec (requires Docker)
+zig build generate
+```
+
+## Examples
+
+The repository includes two example files:
+
+- [examples/basic.zig](examples/basic.zig) - Shows how to access attributes, metrics, resources, and traces
+- [examples/advanced.zig](examples/advanced.zig) - Demonstrates stability filtering, enum handling, and type system usage
+
+Run the examples:
+
+```bash
+zig build examples
 ```
 
 ## Architecture
 
 The library is organized as follows:
 
-- `src/types.zig` - Core type definitions for attributes, stability levels, etc.
-- `src/*/*.zig` - Individual semantic convention namespace modules
-- `src/root.zig` - Main library interface
+- [src/lib.zig](src/lib.zig) - Main library interface exporting all namespaces
+- [src/types.zig](src/types.zig) - Core type definitions for attributes, metrics, stability levels, etc.
+- [src/attribute.zig](src/attribute.zig) - All attribute definitions (auto-generated)
+- [src/metric.zig](src/metric.zig) - All metric definitions (auto-generated)
+- [src/resource.zig](src/resource.zig) - Resource attribute definitions (auto-generated)
+- [src/trace.zig](src/trace.zig) - Trace attribute definitions (auto-generated)
 
 ### Type System
 
@@ -119,28 +185,56 @@ EnumAttribute(EnumType) = struct {
     well_known_values: EnumType,
 }
 
-// Accessing attributes
-const http_method = semconv.http.Registry.http_request_method; // EnumAttribute
-const http_body_size = semconv.http.Registry.http_request_body_size; // StringAttribute
+// Metric type
+Metric = struct {
+    name: []const u8,
+    brief: []const u8,
+    stability: StabilityLevel,
+    instrument: InstrumentType,
+    unit: []const u8,
+    value_type: MetricValueType,
+}
 ```
+
+### Stability Levels
+
+- `.stable` - The attribute is stable and should not change in backward-incompatible ways
+- `.development` - The attribute is in development and may change
+- `.deprecated` - The attribute is deprecated and should not be used
+- `.experimental` - The attribute is experimental (alias for development)
+
+### Requirement Levels
+
+- `.required` - The attribute MUST be provided
+- `.recommended` - The attribute SHOULD be provided when available
+- `.opt_in` - The attribute MAY be provided but is not required or recommended by default
+- `.conditionally_required` - The attribute is required under specific conditions
+
+## Code Generation
+
+This library is auto-generated from the OpenTelemetry semantic conventions specification using [Weaver](https://github.com/open-telemetry/weaver).
+
+To regenerate the code:
+
+```bash
+zig build generate
+```
+
+This will run the generation script that downloads the latest semantic conventions and generates the Zig code.
 
 ## Testing
 
-Run the test suite:
+Run the tests:
 
 ```bash
 zig build test
 ```
 
-All modules include comprehensive tests covering:
-- Attribute definitions and metadata
-- Enum value parsing and conversion
-- Helper function behavior
-- Edge cases and validation
+## Contributing
 
+Contributions are welcome! Please note that most of the code is auto-generated from the OpenTelemetry specification. If you want to add features or fix bugs, focus on:
 
-## Compatibility
-
-- **Zig Version**: 0.14.x+
-- **OpenTelemetry Spec**: v1.28.0
-- **Platforms**: All platforms supported by Zig
+- [src/types.zig](src/types.zig) - Core type definitions
+- [build.zig](build.zig) - Build configuration
+- [scripts/](scripts/) - Code generation scripts and templates
+- [examples/](examples/) - Example files
