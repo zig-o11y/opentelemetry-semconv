@@ -29,18 +29,21 @@ pub fn build(b: *std.Build) !void {
     // Examples step
     const examples_step = b.step("examples", "Build and run all example executables");
 
-    // Basic example showing HTTP and JVM attribute usage
+    // Example files
     const example_files: []const []const u8 = &.{
-        "basic_usage.zig",
+        "basic.zig",
+        "advanced.zig",
     };
 
     // Create executable for each example
     for (example_files) |example| {
         const example_exe = b.addExecutable(.{
             .name = std.mem.trim(u8, example, ".zig"),
-            .root_source_file = try b.path("examples").join(b.allocator, example),
-            .target = target,
-            .optimize = optimize,
+            .root_module = b.createModule(.{
+                .root_source_file = try b.path("examples").join(b.allocator, example),
+                .target = target,
+                .optimize = .ReleaseSafe,
+            }),
         });
 
         // Add the semconv module to each example
@@ -53,4 +56,10 @@ pub fn build(b: *std.Build) !void {
         examples_step.dependOn(&example_exe.step);
         examples_step.dependOn(&run_examples.step);
     }
+
+    // Add a step to generate the code via Weaver
+    const script_path = try b.path("scripts").join(b.allocator, "generate-consts-from-spec.sh");
+    const bash_generator = b.addSystemCommand(&.{script_path.getPath(b)});
+    const gen_step = b.step("generate", "Generate code via Weaver");
+    gen_step.dependOn(&bash_generator.step);
 }
